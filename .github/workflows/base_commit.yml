@@ -22,7 +22,7 @@ jobs:
 
       aws_backend_bucket: ${{ secrets.AWS_BACKEND_BUCKET }}
       aws_backend_region: ${{ secrets.AWS_BACKEND_REGION }}
-      aws_backend_key:    ${{ secrets.AWS_BACKEND_INFRA_KEY }}
+      aws_backend_key:    ${{ secrets.AWS_BACKEND_KEY }}
 
       acm_crt:     ${{ secrets.API_DEVICE_KEY_PRD }}
       bucket_name: ${{ secrets.SITE_BUCKET_NAME }}
