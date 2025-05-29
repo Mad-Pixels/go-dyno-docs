@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Invoke
-        uses: Mad-Pixels/github-workflows/.github/actions/terraform@main
+        uses: Mad-Pixels/github-workflows/.github/actions/terraform-runner@main
         with:
           aws_access_key_id:     ${{ secrets.aws_access_key }}
           aws_secret_access_key: ${{ secrets.aws_secret_key }}
