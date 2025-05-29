@@ -1,5 +1,5 @@
 module "s3" {
-  source = "../../modules/s3"
+  source = "./s3"
 
   project = local.project
   domain  = local.domain
@@ -11,7 +11,7 @@ module "s3" {
 }
 
 module "cf" {
-  source = "../../modules/cloudfront"
+  source = "./cloudfront"
 
   bucket_id     = module.s3.id
   bucket_arn    = module.s3.arn
