@@ -48,5 +48,5 @@ jobs:
           tf_dir:                terraform
           tf_command:            ${{ inputs.tf_command }}
           tf_vars: >-
-            -var acm_crt=${{ inputs.acm_crt }}
+            -var acm_crt=${{ secrets.acm_crt }}
             -var bucket_name=${{ secrets.bucket_name }}
