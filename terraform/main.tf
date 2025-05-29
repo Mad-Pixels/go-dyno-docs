@@ -1,4 +1,4 @@
-module "s3" {
+module "bucket" {
   source = "./s3"
 
   project = local.project
@@ -24,5 +24,5 @@ module "cf" {
   acm_certificate_arn = var.acm_crt  
 
   shared_tags = local.tags
-  depends_on  = [ module.s3 ]
+  depends_on  = [ module.bucket ]
 }
