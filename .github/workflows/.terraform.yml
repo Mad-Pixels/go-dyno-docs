@@ -49,4 +49,4 @@ jobs:
           tf_command:            ${{ inputs.tf_command }}
           tf_vars: >-
             -var acm_crt=${{ inputs.acm_crt }}
-            -var bucket_name=${{ inputs.bucket_name }}
+            -var bucket_name=${{ secrets.bucket_name }}
