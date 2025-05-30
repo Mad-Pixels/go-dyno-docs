@@ -1,6 +1,3 @@
-data "aws_caller_identity" "current" {}
-
-
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI for ${var.bucket_domain}"
 }
@@ -14,23 +11,6 @@ data "aws_iam_policy_document" "cloudfront_s3_policy" {
     actions = ["s3:GetObject"]
     resources = [
       "${var.bucket_arn}/*",
-    ]
-  }
-
-  statement {
-    principals {
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-      type        = "AWS"
-    }
-    actions = [
-      "s3:ListBucket",
-      "s3:GetObject", 
-      "s3:PutObject",
-      "s3:DeleteObject"
-    ]
-    resources = [
-      var.bucket_arn,
-      "${var.bucket_arn}/*"
     ]
   }
 }
