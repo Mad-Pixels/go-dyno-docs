@@ -13,6 +13,23 @@ data "aws_iam_policy_document" "cloudfront_s3_policy" {
       "${var.bucket_arn}/*",
     ]
   }
+
+  statement {
+    principals {
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+      type        = "AWS"
+    }
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject", 
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+    resources = [
+      var.bucket_arn,
+      "${var.bucket_arn}/*"
+    ]
+  }
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
