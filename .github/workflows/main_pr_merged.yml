@@ -41,7 +41,7 @@ jobs:
         run: npm ci
 
       - name: Build site
-        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner@main
+        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner.yml@main
         with:
           command: docs/build
 
