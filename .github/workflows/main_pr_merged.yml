@@ -41,7 +41,7 @@ jobs:
         run: npm ci
 
       - name: Build site
-        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner.yml@main
+        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner@main
         with:
           command: docs/build
 
@@ -52,8 +52,8 @@ jobs:
           path: docs/.vitepress/dist/
           retention-days: 1
 
-  discover:
-    needs: [build]
+  upload:
+    needs: [discover, terraform-apply]
     runs-on: ubuntu-24.04
     steps:
       - name: Download build artifacts
@@ -62,14 +62,12 @@ jobs:
           name: site-build
           path: dist_files
 
-  upload:
-    needs: [discover, terraform-apply]
-    uses: Mad-Pixels/github-workflows/.github/actions/aws-s3-sync.yml@main
-    with:
-      aws_region: ${{ secrets.AWS_REGION }}
-      bucket_name: ${{ secrets.SITE_BUCKET_NAME }}
-      source_dir: "dist_files"
-      bucket_prefix: ""
-    secrets:
-      aws_access_key: ${{ secrets.AWS_ACCESS_KEY_MAIN }}
-      aws_secret_key: ${{ secrets.AWS_SECRET_KEY_MAIN }}
+      - name: Upload to S3
+        uses: Mad-Pixels/github-workflows/.github/actions/aws-s3-sync@main
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_MAIN }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY_MAIN }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          bucket_name: ${{ secrets.SITE_BUCKET_NAME }}
+          source_dir: "dist_files"
+          bucket_prefix: ""
