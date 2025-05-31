@@ -6,8 +6,8 @@
         src="https://github.com/Mad-Pixels/.github/raw/main/profile/banner.png">
 </picture>
 
-# MadPixels GoDyno docs
-[Docs](go-dyno.madpixels.io) for [GoDyno project](https://github.com/Mad-Pixels/go-dyno) - Type-safe DynamoDB code generator for Go.
+# MadPixels: GoDyno docs
+[Docs](go-dyno.madpixels.io) for [GoDyno project](https://github.com/Mad-Pixels/go-dyno): Type-safe DynamoDB code generator for Go.
 
 # Contributing
 We're open to any new ideas and contributions. We also have some rules and taboos here, so please read this page and our [Code of Conduct](/CODE_OF_CONDUCT.md) carefully.
