@@ -13,6 +13,22 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Taskfile
 .task
 
+# IDE-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Terraform
+.terraform.tfstate.lock.info
+terraform.tfstate.backup
+terraform.tfstate
+tfplan
+.terraform.lock.hcl
+.terraform/
+backend.tf
+backend_aws.hcl
+
 # Runtime data
 pids
 *.pid

@@ -3,7 +3,9 @@ version: '3'
 vars:
   git_root:
     sh: git rev-parse --show-toplevel
-  node_version: "20" # Версия Node.js
+
+  node_version: "20"
+  terraform: 1.9.5
 
 tasks:
   default:
@@ -22,6 +24,7 @@ tasks:
       - node --version
       - npm --version
     silent: true
+    internal: true
 
   _node/install/deps:
     desc: Install all dependencies
@@ -35,6 +38,8 @@ tasks:
       - package-lock.json
     generates:
       - node_modules/**/*
+    silent: true
+    internal: true
 
   _node/install/vitepress:
     desc: Install vitepress if not present
@@ -49,6 +54,20 @@ tasks:
         else
           echo "VitePress already installed"
         fi
+    silent: true
+    internal: true
+
+  _terraform/install:
+    desc: Install 'terraform'.
+    cmds:
+      - curl -sL https://releases.hashicorp.com/terraform/{{.terraform}}/terraform_{{.terraform}}_{{OS}}_{{ARCH}}.zip -o /tmp/terraform.zip
+      - sudo unzip -o /tmp/terraform.zip -d /usr/local/bin/
+      - sudo chmod a+x /usr/local/bin/terraform
+      - terraform version
+    sources:
+      - /usr/local/bin/terraform
+    silent: true
+    internal: true
 
   # =================================================
   # ----------------------PUBLIC--------------------#
@@ -68,6 +87,7 @@ tasks:
           npm add -D vitepress
           npx vitepress init
         fi
+    silent: true
 
   docs/run:
     desc: Run vitepress dev server
@@ -76,6 +96,7 @@ tasks:
       - _node/install/vitepress
     cmds:
       - npm run dev
+    silent: true
 
   docs/build:
     desc: Build vitepress for production
@@ -90,6 +111,7 @@ tasks:
       - ".vitepress/**/*"
     generates:
       - ".vitepress/dist/**/*"
+    silent: true
 
   docs/preview:
     desc: Preview built docs locally
@@ -98,6 +120,15 @@ tasks:
       - docs/build
     cmds:
       - npm run preview
+    silent: true
+
+  terraform/fmt/fix:
+    desc: Run 'terraform fix fmt'.
+    dir: "{{.git_root}}/terraform"
+    deps:
+      - _terraform/install
+    cmd: terraform fmt -recursive --diff --write=true
+    silent: true
 
   clean:
     desc: Clean build artifacts
@@ -106,3 +137,4 @@ tasks:
       - rm -rf docs/.vitepress/dist
       - rm -rf node_modules
       - rm -rf docs/node_modules
+    silent: true

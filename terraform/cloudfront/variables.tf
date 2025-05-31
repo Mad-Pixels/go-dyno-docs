@@ -42,11 +42,11 @@ variable "index_document" {
 
 variable "error_responses" {
   description = "Error responses configuration"
-  type        = map(object({
+  type = map(object({
     response_code      = number
     response_page_path = string
   }))
-  default     = {}
+  default = {}
 }
 
 variable "shared_tags" {

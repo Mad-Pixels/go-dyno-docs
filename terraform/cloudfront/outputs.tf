@@ -7,5 +7,5 @@ output "zone_id" {
 }
 
 output "id" {
-  value = aws_cloudfront_distribution.this.id 
+  value = aws_cloudfront_distribution.this.id
 }

@@ -33,7 +33,7 @@ resource "aws_s3_bucket_website_configuration" "this" {
 
 resource "aws_s3_bucket_cors_configuration" "this" {
   bucket = aws_s3_bucket.this.id
-  
+
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "HEAD"]

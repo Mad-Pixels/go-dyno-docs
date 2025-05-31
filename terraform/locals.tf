@@ -3,6 +3,7 @@ locals {
   domain      = "go-dyno.madpixels.io"
   description = "GoDyno docs portal"
   provisioner = "main"
+  function    = "${path.root}/.tmpl/go-dyno-docs.js"
 
   tags = {
     "Project"     = local.project,

@@ -1,18 +1,18 @@
 data "aws_iam_policy_document" "cloudfront_s3_policy" {
   statement {
     sid = "AllowCloudFrontServicePrincipal"
-    
+
     principals {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
-    
+
     actions = ["s3:GetObject"]
-    
+
     resources = [
       "${var.bucket_arn}/*",
     ]
-    
+
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"

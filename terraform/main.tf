@@ -1,9 +1,9 @@
 module "func_redirect" {
   source = "./function"
-  
-  name        = "${local.project}-redirect"
-  comment     = "${local.project} URL rewriting and language redirect"
-  filepath   = "${path.root}/.tmpl/go-dyno-docs.js"
+
+  name     = "${local.project}-redirect"
+  filepath = local.function
+  comment  = local.description
 }
 
 module "s3" {
@@ -27,7 +27,7 @@ module "cf" {
   description    = local.description
   domain_aliases = [local.domain]
 
-  acm_certificate_arn = var.acm_crt  
+  acm_certificate_arn = var.acm_crt
 
   req_func_list = [
     {
@@ -36,5 +36,5 @@ module "cf" {
   ]
 
   shared_tags = local.tags
-  depends_on  = [ module.s3 ]
+  depends_on  = [module.s3]
 }

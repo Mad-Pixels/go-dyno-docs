@@ -5,5 +5,5 @@ resource "aws_cloudfront_function" "this" {
 
   runtime = "cloudfront-js-2.0"
   publish = true
-  
+
 }
