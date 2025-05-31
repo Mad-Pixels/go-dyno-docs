@@ -3,7 +3,7 @@ module "func_redirect" {
   
   name        = "${local.project}-redirect"
   comment     = "${local.project} URL rewriting and language redirect"
-  filepath   = "${path.root}/.tmp/go-dyno-docs.js"
+  filepath   = "${path.root}/.tmpl/go-dyno-docs.js"
 }
 
 module "s3" {
