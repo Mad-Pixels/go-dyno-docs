@@ -7,12 +7,13 @@
 </picture>
 
 # MadPixels: GoDyno docs
-[Docs](go-dyno.madpixels.io) for [GoDyno project](https://github.com/Mad-Pixels/go-dyno): Type-safe DynamoDB code generator for Go.
+[Docs](https://go-dyno.madpixels.io) for [GoDyno project](https://github.com/Mad-Pixels/go-dyno): Type-safe DynamoDB code generator for Go.
 
 # Contributing
 We're open to any new ideas and contributions. We also have some rules and taboos here, so please read this page and our [Code of Conduct](/CODE_OF_CONDUCT.md) carefully.
 
 ## I want to report an issue
-If you've found an issue and want to report it, please check our [Issues](https://github.com/Mad-Pixels/go-dyno-docs/issues) page.
+- If you've found an issue in docs and want to report it, please check our [Issues](https://github.com/Mad-Pixels/go-dyno-docs/issues) page.
+- If you've found an issue in CLI and want to report it, please check our [Issues](https://github.com/Mad-Pixels/go-dyno/issues) page.
 
 #### Powerd by [vitepress](https://github.com/vuejs/vitepress)
