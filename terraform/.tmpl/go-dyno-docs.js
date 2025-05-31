@@ -23,7 +23,6 @@ function handler(event) {
                     break;
             }
         }
-        
         return {
             statusCode: 302,
             statusDescription: 'Found',
@@ -37,8 +36,11 @@ function handler(event) {
     var lastChar = uri.charAt(len - 1);
     
     if (len > 5 && uri.charAt(len - 5) === '.' && 
-        uri.charAt(len - 4) === 'h' && uri.charAt(len - 3) === 't' && 
-        uri.charAt(len - 2) === 'm' && lastChar === 'l') {
+        uri.charAt(len - 4) === 'h' && 
+        uri.charAt(len - 3) === 't' && 
+        uri.charAt(len - 2) === 'm' && 
+        lastChar === 'l'
+    ) {
         request.uri = uri.substring(0, len - 5);
         return request;
     }
@@ -55,7 +57,6 @@ function handler(event) {
         }
         if (uri.charAt(i) === '/') break;
     }
-    
     if (!hasDot && len > 1) {
         return {
             statusCode: 301,
