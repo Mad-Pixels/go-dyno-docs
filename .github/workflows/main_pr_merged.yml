@@ -74,9 +74,9 @@ jobs:
       - name: Sync directory to S3
         shell: bash
         run: |
-          DEST="s3://${{ secrets.SITE_BUCKET_NAME }}/"
+          DEST="s3://${{ secrets.SITE_BUCKET_NAME }}/" 
           echo "Syncing ${{ inputs.source_dir }} → $DEST"
-          aws s3 sync "build-output" "$DEST" \
+          aws s3 sync "build-output" "$DEST"  --region ${{ secrets.AWS_REGION }} \
             --delete \
             --exclude ".git/*" \
             --exclude ".github/*" \
