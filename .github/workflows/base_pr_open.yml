@@ -1,4 +1,4 @@
-name: Main PR Open
+name: Base PR Open
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ concurrency:
 jobs:
   plan:
     uses: ./.github/workflows/.terraform.yml
-    name: (PRD) Plan
+    name: (Base) Pr Plan
     with:
       tf_command: "plan"
     secrets:
@@ -30,7 +30,7 @@ jobs:
 
   build:
     runs-on: ubuntu-24.04
-    name: (PRD) Build
+    name: (Base) Pr Build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
           command: docs/build
 
   pr-check:
-    name: (Main) PR Check
+    name: (Base) PR Check
     needs: [build, plan]
     runs-on: ubuntu-24.04
     steps:
