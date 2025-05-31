@@ -1,9 +1,9 @@
 module "func_redirect" {
-  source = "./modules/function"
+  source = "./function"
   
-  name        = "${var.project}-redirect"
-  comment     = "${var.project} URL rewriting and language redirect"
-  code_path   = "${path.root}/.tmp/go-dyno-docs.js"
+  name        = "${local.project}-redirect"
+  comment     = "${local.project} URL rewriting and language redirect"
+  filepath   = "${path.root}/.tmp/go-dyno-docs.js"
 }
 
 module "s3" {
