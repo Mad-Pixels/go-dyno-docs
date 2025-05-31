@@ -2,10 +2,177 @@ resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = var.bucket_domain
     origin_id   = "S3-${var.bucket_id}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+  }
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
+  ordered_cache_behavior {
+    path_pattern           = "*.css"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none" 
+      }
     }
+    
+    min_ttl     = 86400 
+    default_ttl = 31536000
+    max_ttl     = 31536000 
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "*.js"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    min_ttl     = 86400
+    default_ttl = 31536000
+    max_ttl     = 31536000
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "*.woff*"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = false 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    min_ttl     = 86400
+    default_ttl = 31536000
+    max_ttl     = 31536000
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "*.png"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = false 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    min_ttl     = 86400
+    default_ttl = 2592000
+    max_ttl     = 31536000
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "*.jpg"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = false 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    min_ttl     = 86400
+    default_ttl = 2592000
+    max_ttl     = 31536000
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "*.svg"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true 
+    
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    min_ttl     = 86400
+    default_ttl = 2592000
+    max_ttl     = 31536000
+  }
+
+  default_cache_behavior {
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true 
+
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-${var.bucket_id}"
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+
+    dynamic "function_association" {
+      for_each = var.req_func_list
+
+      content {
+        event_type   = "viewer-request"
+        function_arn = function_association.value.function_arn
+      }
+    }
+
+    forwarded_values {
+      query_string = false 
+      
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl     = 0     
+    default_ttl = 300   
+    max_ttl     = 86400 
   }
 
   dynamic "custom_error_response" {
@@ -17,46 +184,6 @@ resource "aws_cloudfront_distribution" "this" {
       response_code         = custom_error_response.value.response_code
       response_page_path    = custom_error_response.value.response_page_path
     }
-  }
-
-  default_cache_behavior {
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${var.bucket_id}"
-
-    dynamic "function_association" {
-      for_each = var.req_func_list
-
-      content {
-        event_type   = "viewer-request"
-        function_arn = function_association.value.function_arn
-      }
-    }
-
-    dynamic "function_association" {
-      for_each = var.resp_func_list
-
-      content {
-        event_type   = "viewer-response"
-        function_arn = function_association.value.function_arn
-      }
-    }
-
-    forwarded_values {
-      query_string            = length(var.query_string_cache_keys) > 0 ? true : var.query_string
-      query_string_cache_keys = var.query_string_cache_keys
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
   }
 
   restrictions {
@@ -87,34 +214,42 @@ resource "aws_cloudfront_distribution" "this" {
 
 resource "aws_cloudfront_response_headers_policy" "security_headers" {
   name    = "${var.project}-security-headers"
-  comment = "Security headers policy"
+  comment = "Security headers policy for VitePress documentation"
 
   security_headers_config {
     strict_transport_security {
       access_control_max_age_sec = 31536000
       override                   = true
       include_subdomains         = true
-      preload                    = true
+      preload                    = true 
     }
     
     content_type_options {
-      override = true
+      override = true  
     }
     
     frame_options {
       override     = true
-      frame_option = "DENY"
+      frame_option = "SAMEORIGIN"  
     }
     
     referrer_policy {
       override        = true
-      referrer_policy = "same-origin"
+      referrer_policy = "strict-origin-when-cross-origin"
     }
     
     xss_protection {
       override   = true
       mode_block = true
       protection = true
+    }
+  }
+
+  custom_headers_config {
+    items {
+      header   = "Permissions-Policy"
+      value    = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+      override = true
     }
   }
 }

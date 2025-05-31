@@ -10,14 +10,6 @@ resource "aws_s3_bucket" "this" {
   )
 }
 
-resource "aws_s3_bucket_versioning" "this" {
-  bucket = aws_s3_bucket.this.id
-
-  versioning_configuration {
-    status = var.enable_versioning ? "Enabled" : "Suspended"
-  }
-}
-
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   bucket = aws_s3_bucket.this.id
 
@@ -29,7 +21,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 }
 
 resource "aws_s3_bucket_website_configuration" "this" {
-  count  = var.is_website ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
   index_document {
@@ -61,30 +52,14 @@ resource "aws_s3_bucket_public_access_block" "this" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
-  count  = var.rule != null ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
   rule {
-    id     = var.rule.id
-    status = var.rule.status
+    id     = "cleanup-incomplete-uploads"
+    status = "Enabled"
 
-    filter {
-      prefix = var.rule.filter.prefix
-    }
-
-    dynamic "transition" {
-      for_each = var.rule.transition != null ? [var.rule.transition] : []
-      content {
-        days          = transition.value.days
-        storage_class = transition.value.storage_class
-      }
-    }
-
-    dynamic "expiration" {
-      for_each = var.rule.expiration != null ? [var.rule.expiration] : []
-      content {
-        days = expiration.value.days
-      }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 2
     }
   }
 }

@@ -13,8 +13,6 @@ module "s3" {
   domain  = local.domain
 
   bucket_name = var.bucket_name
-  is_website  = true
-
   shared_tags = local.tags
 }
 
