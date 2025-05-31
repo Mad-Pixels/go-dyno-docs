@@ -76,7 +76,7 @@ jobs:
         run: |
           DEST="s3://${{ secrets.SITE_BUCKET_NAME }}/"
           echo "Syncing ${{ inputs.source_dir }} → $DEST"
-          aws s3 sync "${{ inputs.source_dir }}" "$DEST" \
+          aws s3 sync "build-output" "$DEST" \
             --delete \
             --exclude ".git/*" \
             --exclude ".github/*" \
