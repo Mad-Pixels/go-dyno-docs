@@ -73,10 +73,10 @@ jobs:
           path: docs/.vitepress/dist/
           retention-days: 7
 
-  publish:
+  deploy:
     needs: [build, apply]
     runs-on: ubuntu-24.04
-    name: (Release) Publish
+    name: (Release) Deploy
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -159,7 +159,7 @@ jobs:
 
   publish-release:
     name: Publish Release
-    needs: [build, apply, generate-changelog]
+    needs: [build, apply, deploy, generate-changelog]
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
