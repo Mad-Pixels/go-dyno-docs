@@ -34,6 +34,17 @@ module "cf" {
     }
   ]
 
+  error_responses = {
+    403 = {
+      response_code      = 404
+      response_page_path = "/404.html"
+    },
+    404 = {
+      response_code      = 404
+      response_page_path = "/404.html"
+    }
+  }
+
   shared_tags = local.tags
   depends_on  = [module.s3]
 }

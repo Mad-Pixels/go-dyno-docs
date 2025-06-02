@@ -1,7 +1,6 @@
 {
-  "latest": "v0.0.1",
+  "latest": "v0.0.1-alpha",
   "versions": [
-    "v0.0.1",
     "v0.0.1-alpha"
   ],
   "locales": [

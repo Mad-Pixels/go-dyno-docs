@@ -6,12 +6,10 @@ function createVersionDropdown(locale: string): DefaultTheme.NavItemWithLink[] {
     text: version === versionsConfig.latest ? `${version} (latest)` : version,
     link: `/${locale}/${version}/`
   }))
-
   items.push({
     text: '📋 Changelog',
     link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md',
   })
-
   return items
 }
 
@@ -30,8 +28,12 @@ export default defineConfig({
       title: 'GoDyno',
       description: 'DynamoDB Schema to GoLang Code',
       themeConfig: {
+        logo: {
+          src: '/madpixels.png',
+          alt: 'GoDyno',
+          href: `/en/${versionsConfig.latest}/`
+        },
         nav: [
-          { text: 'Home', link: `/en/${versionsConfig.latest}/` },
           { text: 'Guide', link: `/en/${versionsConfig.latest}/guide/` },
           { text: 'Examples', link: `/en/${versionsConfig.latest}/examples/` },
           { text: 'API Reference', link: `/en/${versionsConfig.latest}/api/` },
@@ -45,9 +47,9 @@ export default defineConfig({
             {
               text: 'Getting Started',
               items: [
-                { text: 'Introduction', link: `/en/${versionsConfig.latest}/guide/` },
-                { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
-                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quick-start` }
+                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quick-start` },
+                { text: 'Introduction', link: `/en/${versionsConfig.latest}/guide/introduction` },
+                { text: 'Examples', link: `/en/${versionsConfig.latest}/guide/examples` },
               ]
             }
           ]
@@ -68,8 +70,12 @@ export default defineConfig({
       title: 'GoDyno',
       description: 'Генератор Go кода из схем DynamoDB',
       themeConfig: {
+        logo: {
+          src: '/madpixels.png',
+          alt: 'GoDyno',
+          href: `/ru/${versionsConfig.latest}/`
+        },
         nav: [
-          { text: 'Главная', link: `/ru/${versionsConfig.latest}/` },
           { text: 'Руководство', link: `/ru/${versionsConfig.latest}/guide/` },
           { text: 'Примеры', link: `/ru/${versionsConfig.latest}/examples/` },
           { text: 'API Справка', link: `/ru/${versionsConfig.latest}/api/` },
@@ -83,9 +89,9 @@ export default defineConfig({
             {
               text: 'Начало работы',
               items: [
-                { text: 'Введение', link: `/ru/${versionsConfig.latest}/guide/` },
-                { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
-                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quick-start` }
+                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quick-start` },
+                { text: 'Введение', link: `/ru/${versionsConfig.latest}/guide/introduction` },
+                { text: 'Примеры', link: `/ru/${versionsConfig.latest}/guide/examples` }
               ]
             }
           ]
@@ -106,9 +112,25 @@ export default defineConfig({
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
+    ['link', { rel: 'canonical', href: 'https://go-dyno.madpixels.io/' }],
+    ['link', { rel: 'apple-touch-icon', href: '/logo.png' }],
+
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/logo.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/logo.png' }],
+
     ['meta', { name: 'theme-color', content: '#646cff' }],
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }],
+
+    ['meta', { property: 'og:description', content: 'Generate type-safe Go code from DynamoDB schemas. Fast. Simple. Reliable.' }],
+    ['meta', { property: 'og:title', content: 'GoDyno: DynamoDB Schema to GoLang Code' }],
+    ['meta', { property: 'og:image', content: 'https://go-dyno.madpixels.io/logo.png' }],
+    ['meta', { property: 'og:url', content: 'https://go-dyno.madpixels.io/' }],
+    ['meta', { property: 'og:site_name', content: 'GoDyno' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'GoDyno' }]
+
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'GoDyno: DynamoDB → GoLang' }],
+    ['meta', { name: 'twitter:description', content: 'Generate type-safe Go code from DynamoDB schemas' }],
+    ['meta', { name: 'twitter:image', content: 'https://go-dyno.madpixels.io/logo.png' }],
   ]
 })
