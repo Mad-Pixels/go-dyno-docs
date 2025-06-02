@@ -10,9 +10,9 @@ resource "aws_cloudfront_function" "router" {
   name    = var.name
   comment = var.comment
   code    = local_file.cloudfront_function.content
-  
+
   runtime = "cloudfront-js-2.0"
   publish = true
-  
+
   depends_on = [local_file.cloudfront_function]
 }
