@@ -91,7 +91,7 @@ tasks:
 
   docs/run:
     desc: Run vitepress dev server
-    dir: "{{.git_root}}/docs"
+    dir: "{{.git_root}}"
     deps:
       - _node/install/vitepress
     cmds:
@@ -100,7 +100,7 @@ tasks:
 
   docs/build:
     desc: Build vitepress for production
-    dir: "{{.git_root}}/docs"
+    dir: "{{.git_root}}"
     deps:
       - _node/install/vitepress
     cmds:
@@ -115,7 +115,7 @@ tasks:
 
   docs/preview:
     desc: Preview built docs locally
-    dir: "{{.git_root}}/docs"
+    dir: "{{.git_root}}"
     deps:
       - docs/build
     cmds:
