@@ -171,22 +171,20 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: "GoDynoDocs ${{ github.ref_name }}"
           body: |
-            # 🎯 DynamoDB Code Generator Docs
-
-            **[GoDyno](https://github.com/Mad-Pixels/go-dyno)** is a powerful CLI tool that generates strongly-typed Go code for AWS DynamoDB operations. Transform your DynamoDB table schemas into production-ready Go structs, query builders, and utilities with zero boilerplate.
-
-            ## 📚 Documentation
-            - [📖 GoDynoDocs](https://go-dyno.madpixels.io)
+            GoDyno is a powerful CLI tool that generates strongly-typed Go code for AWS DynamoDB operations. 
+            ## 🔗 Links
+            - [📖 GoDyno docs](https://go-dyno.madpixels.io)
+            - [🛠️ GoDyno source](https://github.com/Mad-Pixels/go-dyno)
+            - [🚀 GoDyno releases](https://github.com/Mad-Pixels/go-dyno)
+            - [🐳 GoDyno images](https://hub.docker.com/r/madpixels/go-dyno)
+            - [🐞 Report Doc Issues](https://github.com/Mad-Pixels/go-dyno-docs/issues)
+            - [🐛 Report Cli Issues](https://github.com/Mad-Pixels/go-dyno/issues)
+            - [⭐ Give us a star!](https://github.com/Mad-Pixels/go-dyno)
 
             ---
 
             ${{ needs.generate-changelog.outputs.changelog }}
 
             ---
-
-            ## 🤝 Community
-            - [🐛 Report Issues](https://github.com/Mad-Pixels/go-dyno-docs/issues)
-            - [⭐ Give us a star!](https://github.com/Mad-Pixels/go-dyno)
-          
           draft: false
           prerelease: false
