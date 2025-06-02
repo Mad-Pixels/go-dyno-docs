@@ -8,10 +8,10 @@ hero:
   actions:
     - theme: brand
       text: Quickstart (alpha)
-      link: markdown-examples
+      link: ./markdown-examples
     - theme: brand
       text: Usage
-      link: /markdown-examples
+      link: ./markdown-examples
     - theme: alt
       text: Releases
       link: https://github.com/Mad-Pixels/go-dyno/releases

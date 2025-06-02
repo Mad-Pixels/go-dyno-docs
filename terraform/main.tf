@@ -1,7 +1,7 @@
-module "func_redirect" {
-  source = "./function"
+module "router" {
+  source = "./router"
 
-  name     = "${local.project}-redirect"
+  name     = "${local.project}-router"
   comment  = local.description
 }
 

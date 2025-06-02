@@ -6,25 +6,25 @@ function createVersionDropdown(locale: string): DefaultTheme.NavItemWithLink[] {
     text: version === versionsConfig.latest ? `${version} (latest)` : version,
     link: `/${locale}/${version}/`
   }))
-  
+
   items.push({
     text: '📋 Changelog',
     link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md',
-    //target: '_blank'
   })
+
   return items
 }
 
 export default defineConfig({
   title: "GoDyno",
   description: "DynamoDB Schema to GoLang Code",
-  
+
   lastUpdated: true,
   cleanUrls: true,
   metaChunk: true,
 
   locales: {
-    root: {
+    en: {
       label: 'English',
       lang: 'en',
       title: 'GoDyno',
@@ -36,11 +36,10 @@ export default defineConfig({
           { text: 'Examples', link: `/en/${versionsConfig.latest}/examples/` },
           { text: 'API Reference', link: `/en/${versionsConfig.latest}/api/` },
           {
-            text: versionsConfig.latest,
+            text: "Releases",
             items: createVersionDropdown('en')
           }
         ],
-
         sidebar: {
           [`/en/${versionsConfig.latest}/guide/`]: [
             {
@@ -53,18 +52,16 @@ export default defineConfig({
             }
           ]
         },
-
         socialLinks: [
           { icon: 'github', link: 'https://github.com/Mad-Pixels/go-dyno' }
         ],
-
         footer: {
           message: 'Released under the MIT License.',
           copyright: 'Copyright © 2025 Mad-Pixels'
         }
       }
     },
-    
+
     ru: {
       label: 'Русский',
       lang: 'ru',
@@ -77,11 +74,10 @@ export default defineConfig({
           { text: 'Примеры', link: `/ru/${versionsConfig.latest}/examples/` },
           { text: 'API Справка', link: `/ru/${versionsConfig.latest}/api/` },
           {
-            text: versionsConfig.latest,
+            text: "Релизы",
             items: createVersionDropdown('ru')
           }
         ],
-
         sidebar: {
           [`/ru/${versionsConfig.latest}/guide/`]: [
             {
@@ -94,11 +90,9 @@ export default defineConfig({
             }
           ]
         },
-
         socialLinks: [
           { icon: 'github', link: 'https://github.com/Mad-Pixels/go-dyno' }
         ],
-
         footer: {
           message: 'Выпущено под лицензией MIT.',
           copyright: 'Copyright © 2025 Mad-Pixels'
