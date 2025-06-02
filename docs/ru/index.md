@@ -7,10 +7,10 @@ hero:
   tagline: "Типобезопасная разработка с DynamoDB"
   actions:
     - theme: brand
-      text: Быстрый старт
+      text: Старт
       link: /markdown-examples
     - theme: brand
-      text: Использование
+      text: Описание 
       link: /markdown-examples
     - theme: alt
       text: Релизы
@@ -19,7 +19,7 @@ hero:
       text: Образы
       link: https://hub.docker.com/r/madpixels/go-dyno
     - theme: alt
-      text: Исходный код
+      text: Код
       link: https://github.com/Mad-Pixels/go-dyno
   image: /logo.png
 

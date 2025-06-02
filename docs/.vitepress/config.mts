@@ -28,9 +28,11 @@ function createVersionDropdown(): DefaultTheme.NavItemWithLink[] {
     text: version === latestVersion ? `${version} (latest)` : version,
     link: `/versions/${version}/`
   }))
+  
   items.push({
     text: '📋 Changelog',
-    link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md'
+    link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md',
+    target: '_blank'
   })
   return items
 }
@@ -141,7 +143,7 @@ export default defineConfig({
             text: latestVersion,
             items: createVersionDropdown().map(item => ({
               ...item,
-              link: `/ru${item.link}`
+              link: item.link.startsWith('http') ? item.link : `/ru${item.link}`
             }))
           }
         ],
