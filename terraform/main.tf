@@ -30,7 +30,7 @@ module "cf" {
 
   req_func_list = [
     {
-      function_arn = module.func_redirect.function_arn
+      function_arn = module.router.function_arn
     }
   ]
 
