@@ -29,6 +29,29 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   ordered_cache_behavior {
+    path_pattern           = "hashmap.json"
+    target_origin_id       = "S3-${var.bucket_id}"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true
+
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl     = 0
+    default_ttl = 0
+    max_ttl     = 0
+  }
+
+  ordered_cache_behavior {
     path_pattern           = "*.js"
     target_origin_id       = "S3-${var.bucket_id}"
     viewer_protocol_policy = "redirect-to-https"

@@ -23,7 +23,7 @@ variable "index_document" {
 variable "error_document" {
   description = "Name of the error document for the S3 static web site"
   type        = string
-  default     = "error.html"
+  default     = "404.html"
 }
 
 variable "shared_tags" {
