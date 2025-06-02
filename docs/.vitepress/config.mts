@@ -1,68 +1,115 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type DefaultTheme } from 'vitepress'
+
+async function getVersionsFromGitHub() {
+  try {
+    const response = await fetch('https://api.github.com/repos/Mad-Pixels/go-dyno-docs/releases')
+    const releases = await response.json()
+    
+    const versions = releases
+      .filter(release => !release.draft)
+      .map(release => release.tag_name)
+    
+    return {
+      versions,
+      latestVersion: versions[0] || 'v1.0.0'
+    }
+  } catch (error) {
+    return {
+      versions: ['v1.0.0'],
+      latestVersion: 'v1.0.0'
+    }
+  }
+}
+
+const { versions, latestVersion } = await getVersionsFromGitHub()
+
+function createVersionDropdown(): DefaultTheme.NavItemWithLink[] {
+  const items = versions.map(version => ({
+    text: version === latestVersion ? `${version} (latest)` : version,
+    link: `/versions/${version}/`
+  }))
+  items.push({
+    text: '📋 Changelog',
+    link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md'
+  })
+  return items
+}
 
 export default defineConfig({
   title: "GoDyno",
   description: "DynamoDB Schema to GoLang Code",
   
+  rewrites: {
+    'en/:rest*': ':rest*'
+  },
+
+  lastUpdated: true,
+  cleanUrls: true,
+  metaChunk: true,
+
   locales: {
-    en: {
+    root: {
       label: 'English',
       lang: 'en',
       title: 'GoDyno',
       description: 'DynamoDB Schema to GoLang Code',
       themeConfig: {
         nav: [
-          { text: 'Home', link: '/en/' },
-          { text: 'Guide', link: '/en/guide/' },
-          { text: 'Examples', link: '/en/examples/' },
-          { text: 'API Reference', link: '/en/api/' }
+          { text: 'Home', link: '/' },
+          { text: 'Guide', link: '/guide/' },
+          { text: 'Examples', link: '/examples/' },
+          { text: 'API Reference', link: '/api/' },
+          {
+            text: latestVersion,
+            items: createVersionDropdown()
+          }
         ],
 
         sidebar: {
-          '/en/guide/': [
+          '/guide/': [
             {
               text: 'Getting Started',
               items: [
-                { text: 'Introduction', link: '/en/guide/' },
-                { text: 'Installation', link: '/en/guide/installation' },
-                { text: 'Quick Start', link: '/en/guide/quick-start' }
+                { text: 'Introduction', link: '/guide/' },
+                { text: 'Installation', link: '/guide/installation' },
+                { text: 'Quick Start', link: '/guide/quick-start' }
               ]
             },
             {
               text: 'Core Concepts',
               items: [
-                { text: 'Schema Definition', link: '/en/guide/schema' },
-                { text: 'Code Generation', link: '/en/guide/generation' },
-                { text: 'Query Builder', link: '/en/guide/querybuilder' }
+                { text: 'Schema Definition', link: '/guide/schema' },
+                { text: 'Code Generation', link: '/guide/generation' },
+                { text: 'Query Builder', link: '/guide/querybuilder' }
               ]
             },
             {
               text: 'Advanced',
               items: [
-                { text: 'Terraform Integration', link: '/en/guide/terraform' },
-                { text: 'Composite Keys', link: '/en/guide/composite-keys' },
-                { text: 'Secondary Indexes', link: '/en/guide/indexes' }
+                { text: 'Terraform Integration', link: '/guide/terraform' },
+                { text: 'Composite Keys', link: '/guide/composite-keys' },
+                { text: 'Secondary Indexes', link: '/guide/indexes' }
               ]
             }
           ],
-          '/en/examples/': [
+          '/examples/': [
             {
               text: 'Examples',
               items: [
-                { text: 'Simple Table', link: '/en/examples/simple' },
-                { text: 'E-commerce', link: '/en/examples/ecommerce' },
-                { text: 'Social Media', link: '/en/examples/social' },
-                { text: 'Analytics', link: '/en/examples/analytics' }
+                { text: 'Simple Table', link: '/examples/simple' },
+                { text: 'E-commerce', link: '/examples/ecommerce' },
+                { text: 'Social Media', link: '/examples/social' },
+                { text: 'Analytics', link: '/examples/analytics' }
               ]
             }
           ],
-          '/en/api/': [
+          '/api/': [
             {
               text: 'API Reference',
               items: [
-                { text: 'CLI Commands', link: '/en/api/cli' },
-                { text: 'Schema Format', link: '/en/api/schema' },
-                { text: 'Generated Code', link: '/en/api/generated' }
+                { text: 'CLI Commands', link: '/api/cli' },
+                { text: 'Schema Format', link: '/api/schema' },
+                { text: 'Generated Code', link: '/api/generated' }
               ]
             }
           ]
@@ -89,7 +136,14 @@ export default defineConfig({
           { text: 'Главная', link: '/ru/' },
           { text: 'Руководство', link: '/ru/guide/' },
           { text: 'Примеры', link: '/ru/examples/' },
-          { text: 'API Справка', link: '/ru/api/' }
+          { text: 'API Справка', link: '/ru/api/' },
+          {
+            text: latestVersion,
+            items: createVersionDropdown().map(item => ({
+              ...item,
+              link: `/ru${item.link}`
+            }))
+          }
         ],
 
         sidebar: {
@@ -154,7 +208,14 @@ export default defineConfig({
     }
   },
 
-  rewrites: {
-    '^/$': '/en/'
-  }
+  sitemap: {
+    hostname: 'https://go-dyno.madpixels.io/'
+  },
+
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
+    ['meta', { name: 'theme-color', content: '#646cff' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'GoDyno' }]
+  ]
 })
