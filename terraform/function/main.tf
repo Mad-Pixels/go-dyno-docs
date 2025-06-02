@@ -6,7 +6,7 @@ resource "local_file" "cloudfront_function" {
   filename = "${path.module}/generated/cloudfront-function.js"
 }
 
-resource "aws_cloudfront_function" "router" {
+resource "aws_cloudfront_function" "this" {
   name    = var.name
   comment = var.comment
   code    = local_file.cloudfront_function.content
