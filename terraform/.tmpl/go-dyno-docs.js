@@ -2,39 +2,43 @@ function handler(event) {
     var request = event.request;
     var uri = request.uri;
     
+    var LATEST_VERSION = '${latest_version}';
+    var LOCALE_MAPPING = '${locale_mapping}';
+    
     if (uri === '/') {
         var country = request.headers['cloudfront-viewer-country'];
-        var lang = 'en'; 
+        var lang = 'en';
         
         if (country && country.value) {
-            switch (country.value) {
-                case 'RU':
-                case 'BY':
-                case 'KZ':
-                case 'KG':
-                case 'UZ':
-                case 'TJ':
-                case 'AM':
-                case 'AZ':
-                case 'GE':
-                case 'MD':
-                case 'UA':
-                    lang = 'ru';
+            for (var locale in LOCALE_MAPPING) {
+                if (LOCALE_MAPPING[locale].indexOf(country.value) !== -1) {
+                    lang = locale;
                     break;
+                }
             }
         }
         return {
             statusCode: 302,
             statusDescription: 'Found',
             headers: {
-                'location': { value: '/' + lang + '/' }
+                'location': { value: '/' + lang + '/' + LATEST_VERSION + '/' }
+            }
+        };
+    }
+    
+    var localeOnlyMatch = uri.match(/^\/([a-z]{2})\/?$/);
+    if (localeOnlyMatch) {
+        return {
+            statusCode: 302,
+            statusDescription: 'Found',
+            headers: {
+                'location': { value: '/' + localeOnlyMatch[1] + '/' + LATEST_VERSION + '/' }
             }
         };
     }
     
     var len = uri.length;
     var lastChar = uri.charAt(len - 1);
-    
     if (len > 5 && uri.charAt(len - 5) === '.' && 
         uri.charAt(len - 4) === 'h' && 
         uri.charAt(len - 3) === 't' && 

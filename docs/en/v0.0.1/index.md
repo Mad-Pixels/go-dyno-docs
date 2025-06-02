@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: Quickstart
-      link: /markdown-examples
+      link: markdown-examples
     - theme: brand
       text: Usage
       link: /markdown-examples
