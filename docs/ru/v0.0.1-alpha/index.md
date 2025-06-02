@@ -7,7 +7,7 @@ hero:
   tagline: "Типобезопасная разработка с DynamoDB"
   actions:
     - theme: brand
-      text: Старт
+      text: Старт (ru alpha)
       link: /markdown-examples
     - theme: brand
       text: Описание 

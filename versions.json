@@ -1,0 +1,19 @@
+{
+  "latest": "v0.0.1",
+  "versions": [
+    "v0.0.1-alpha",
+    "v0.0.1"
+  ],
+  "locales": [
+    {
+      "code": "en",
+      "label": "English",
+      "countries": ["US", "GB", "CA", "AU", "NZ"]
+    },
+    {
+      "code": "ru", 
+      "label": "Русский",
+      "countries": ["RU", "BY", "KZ", "KG", "UZ", "TJ", "AM", "AZ", "GE", "MD", "UA"]
+    }
+  ]
+}
