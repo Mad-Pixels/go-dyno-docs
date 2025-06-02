@@ -2,7 +2,6 @@ module "func_redirect" {
   source = "./function"
 
   name     = "${local.project}-redirect"
-  filepath = local.function
   comment  = local.description
 }
 
