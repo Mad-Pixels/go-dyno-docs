@@ -183,6 +183,7 @@ jobs:
 
             ---
 
+            ## Changelog 
             ${{ needs.generate-changelog.outputs.changelog }}
 
             ---
