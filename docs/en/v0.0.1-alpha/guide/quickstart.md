@@ -6,29 +6,29 @@ If you haven't installed GoDyno yet, head to the [installation section](https://
 ## Creating Your First Schema
 
 Create a file called `user-posts.json` describing your DynamoDB table:
-```json 
+```json
 {
-    "table_name": "user-posts",
-    "hash_key": "user_id",
-    "range_key": "created_at",
-    "attributes": [
-        {"name": "user_id", "type": "S"},
-        {"name": "created_at", "type": "N"},
-        {"name": "status", "type": "S"}
-    ],
-    "common_attributes": [
-        {"name": "title", "type": "S"},
-        {"name": "content", "type": "S"},
-        {"name": "views", "type": "N"}
-    ],
-    "secondary_indexes": [
-        {
-            "name": "StatusIndex",
-            "hash_key": "status",
-            "range_key": "created_at",
-            "projection_type": "ALL"
-        }
-    ]
+  "table_name": "user-posts",
+  "hash_key": "user_id",
+  "range_key": "created_at",
+  "attributes": [
+    {"name": "user_id", "type": "S"},
+    {"name": "created_at", "type": "N"},
+    {"name": "status", "type": "S"}
+  ],
+  "common_attributes": [
+    {"name": "title", "type": "S"},
+    {"name": "content", "type": "S"},
+    {"name": "views", "type": "N"}
+  ],
+  "secondary_indexes": [
+    {
+      "name": "StatusIndex",
+      "hash_key": "status",
+      "range_key": "created_at",
+      "projection_type": "ALL"
+    }
+  ]
 }
 ```
 
@@ -58,67 +58,71 @@ Once generated, you can start using the code in your application:
 package main
 
 import (
-    "context"
-    "log"
-       
-    "github.com/aws/aws-sdk-go-v2/config"
-    "github.com/aws/aws-sdk-go-v2/service/dynamodb"
-       
-    userposts "your-project/generated/user_posts"
+  "context"
+  "log"
+
+  "github.com/aws/aws-sdk-go-v2/aws"
+  "github.com/aws/aws-sdk-go-v2/config"
+  "github.com/aws/aws-sdk-go-v2/service/dynamodb"
+  "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+
+  userposts "your-project/generated/user_posts"
 )
 
 func main() {
-    // Configure AWS client
-    cfg, err := config.LoadDefaultConfig(context.TODO())
-    if err != nil {
-        log.Fatal(err)
-    }
-    client := dynamodb.NewFromConfig(cfg)
+  // Configure AWS client
+  cfg, err := config.LoadDefaultConfig(context.TODO())
+  if err != nil {
+    log.Fatal(err)
+  }
+  client := dynamodb.NewFromConfig(cfg)
+  ctx := context.TODO()
 
-    // Create a new post
-    post := userposts.SchemaItem{
-        UserId:    "user123",
-        CreatedAt: 1640995200,
-        Status:    "published",
-        Title:     "Мой первый пост",
-        Content:   "Содержание поста...",
-        Views:     0,
-    }
+  // Create a new post
+  post := userposts.SchemaItem{
+    UserId:    "user123",
+    CreatedAt: 1640995200,
+    Status:    "published",
+    Title:     "My First Post",
+    Content:   "This is my first post.",
+    Views:     0,
+  }
 
-    // Save to DynamoDB
-    item, err := userposts.PutItem(post)
-    if err != nil {
-        log.Fatal(err)
-    }
+  // Save to DynamoDB
+  item, err := userposts.PutItem(post)
+  if err != nil {
+    log.Fatal(err)
+  }
 
-    _, err = client.PutItem(ctx, &dynamodb.PutItemInput{
-        TableName: aws.String(userposts.TableName),
-        Item:      item,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+  _, err = client.PutItem(ctx, &dynamodb.PutItemInput{
+    TableName: aws.String(userposts.TableName),
+    Item:      item,
+  })
+  if err != nil {
+    log.Fatal(err)
+  }
 
-    // Type-safe query using QueryBuilder
-    posts, err := userposts.NewQueryBuilder().
-        WithUserId("user123").
-        WithStatus("published").
-        WithCreatedAtGreaterThan(1640990000).
-        OrderByDesc().
-        Limit(10).
-        Execute(ctx, client)
+  // Type-safe query using QueryBuilder
+  posts, err := userposts.NewQueryBuilder().
+    WithUserId("user123").
+    WithStatus("published").
+    WithCreatedAtGreaterThan(1640990000).
+    OrderByDesc().
+    Limit(10).
+    Execute(ctx, client)
 
-    if err != nil {
-        log.Fatal(err)
-    }
+  if err != nil {
+    log.Fatal(err)
+  }
 
-    for _, post := range posts {
-        log.Printf("Пост: %s (просмотры: %d)", post.Title, post.Views)
-    }
+  for _, p := range posts {
+    log.Printf("Post: %s (views: %d)", p.Title, p.Views)
+  }
 }
 ```
 
 ## Key Features
+
 ### Safe Constants
 
 Use generated constants instead of string literals:
@@ -129,28 +133,30 @@ indexName := userposts.IndexStatusIndex // Instead of "StatusIndex"
 ```
 
 ### Building Queries
+
 The QueryBuilder provides a fluent API for constructing queries:
 ```go
 query := userposts.NewQueryBuilder().
-    WithUserId("user123").                   // Partition key
-    WithCreatedAtBetween(start, end).        // Date range
-    WithStatus("published").                 // Filter by status
-    WithViewsGreaterThan(100).               // Popular posts
-    OrderByDesc().                           // Sort descending
-    Limit(20)                                // Limit results
+  WithUserId("user123").               // Partition key
+  WithCreatedAtBetween(start, end).    // Date range
+  WithStatus("published").             // Filter by status
+  WithViewsGreaterThan(100).           // Popular posts
+  OrderByDesc().                       // Sort descending
+  Limit(20)                            // Limit results
 
 posts, err := query.Execute(ctx, dynamoClient)
 ```
 
 ## Terraform Integration
+
 One of GoDyno's core features is using the same schema for both Terraform and code generation:
 ```tf
 # main.tf
 module "user_posts_table" {
-    source = "./terraform-modules/dynamodb"
+  source = "./terraform-modules/dynamodb"
 
-    # Используем ту же схему JSON для инфраструктуры
-    schema_file = file("./user-posts.json")
+  # Use the same JSON schema for infrastructure
+  schema_file = file("./user-posts.json")
 }
 
 # Apply infrastructure

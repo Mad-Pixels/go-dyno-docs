@@ -39,7 +39,7 @@ sudo mv godyno /usr/local/bin/
 
 ## Сборка из исходников
 
-Убедитесь, что у вас установлена и настроена поддерживаемая версия [Go](https://go.dev) Минимальная версия указана в файле [go.mod](https://github.com/Mad-Pixels/go-dyno/blob/main/go.mod).
+Убедитесь, что у вас установлена и настроена поддерживаемая версия [Go](https://go.dev). Минимальная версия указана в файле [go.mod](https://github.com/Mad-Pixels/go-dyno/blob/main/go.mod).
 
 ```bash
 git clone https://github.com/Mad-Pixels/go-dyno.git
@@ -47,7 +47,7 @@ cd go-dyno
 go build -o godyno ./cmd/dyno
 ```
 
-## Docker
+## Использование Docker
 
 Для CI/CD процессов вы можете использовать [Docker-образ](https://hub.docker.com/r/madpixels/go-dyno).
 

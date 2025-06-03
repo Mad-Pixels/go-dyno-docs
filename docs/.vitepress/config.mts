@@ -36,7 +36,7 @@ export default defineConfig({
         nav: [
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
           { text: 'Usage', link: `/ru/${versionsConfig.latest}/guide/usage` },
-          { text: 'Cli-Reference', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
+          { text: 'Cli-Reference', link: `/ru/${versionsConfig.latest}/reference/cli` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -52,14 +52,14 @@ export default defineConfig({
                 { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
               ]
             },
-            {
-              text: 'Reference',
-              collapsible: true,
-               collapsed: true,
-              items: [
-                { text: 'CLI', link: `/en/${versionsConfig.latest}/guide/reference/cli` }
-              ]
-            }
+            // {
+            //   text: 'Reference',
+            //   collapsible: true,
+            //    collapsed: true,
+            //   items: [
+            //     { text: 'CLI', link: `/en/${versionsConfig.latest}//reference/cli` }
+            //   ]
+            // }
           ]
         },
         socialLinks: [
@@ -86,7 +86,7 @@ export default defineConfig({
         nav: [
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
           { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
-          { text: 'Cli-Справочник', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
+          { text: 'Cli-Справочник', link: `/ru/${versionsConfig.latest}/reference/cli` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -102,14 +102,14 @@ export default defineConfig({
                 { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
               ]
             },
-            {
-              text: 'Справочник',
-              collapsible: true,
-               collapsed: true,
-              items: [
-                { text: 'CLI', link: `/en/${versionsConfig.latest}/guide/reference/cli` }
-              ]
-            }
+            // {
+            //   text: 'Справочник',
+            //   collapsible: true,
+            //    collapsed: true,
+            //   items: [
+            //     { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }
+            //   ]
+            // }
           ]
         },
         socialLinks: [
