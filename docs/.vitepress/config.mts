@@ -48,7 +48,7 @@ export default defineConfig({
               text: 'Getting Started',
               items: [
                 { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
-                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quick-start` },
+                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quickstart` },
                 { text: 'Introduction', link: `/en/${versionsConfig.latest}/guide/introduction` },
                 { text: 'Examples', link: `/en/${versionsConfig.latest}/guide/examples` },
               ]
@@ -91,7 +91,7 @@ export default defineConfig({
               text: 'Начало работы',
               items: [
                 { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
-                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quick-start` },
+                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quickstart` },
                 { text: 'Введение', link: `/ru/${versionsConfig.latest}/guide/introduction` },
                 { text: 'Примеры', link: `/ru/${versionsConfig.latest}/guide/examples` }
               ]
