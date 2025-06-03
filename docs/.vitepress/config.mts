@@ -86,7 +86,7 @@ export default defineConfig({
         nav: [
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
           { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
-          { text: 'CLI-Справочник', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
+          { text: 'Cli-Справочник', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')

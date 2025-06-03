@@ -7,11 +7,8 @@ hero:
   tagline: "Типобезопасная разработка с DynamoDB"
   actions:
     - theme: brand
-      text: Старт (ru alpha)
-      link: ./markdown-examples
-    - theme: brand
-      text: Описание 
-      link: ./markdown-examples
+      text: Старт
+      link: ./guide/quickstart
     - theme: alt
       text: Релизы
       link: https://github.com/Mad-Pixels/go-dyno/releases
