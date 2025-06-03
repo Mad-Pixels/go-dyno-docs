@@ -35,8 +35,8 @@ export default defineConfig({
         },
         nav: [
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
-          { text: 'Usage', link: `/ru/${versionsConfig.latest}/guide/usage` },
-          { text: 'Cli-Reference', link: `/ru/${versionsConfig.latest}/reference/cli` },
+          { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
+          { text: 'Cli-Reference', link: `/en/${versionsConfig.latest}/reference/cli` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
