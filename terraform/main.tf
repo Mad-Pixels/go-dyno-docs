@@ -1,8 +1,8 @@
 module "router" {
   source = "./router"
 
-  name     = "${local.project}-router"
-  comment  = local.description
+  name    = "${local.project}-router"
+  comment = local.description
 }
 
 module "s3" {

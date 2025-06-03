@@ -7,11 +7,8 @@ hero:
   tagline: "Type-Safe DynamoDB Development"
   actions:
     - theme: brand
-      text: Quickstart (alpha)
-      link: ./markdown-examples
-    - theme: brand
-      text: Usage
-      link: ./markdown-examples
+      text: Quickstart
+      link: ./guide/quickstart
     - theme: alt
       text: Releases
       link: https://github.com/Mad-Pixels/go-dyno/releases

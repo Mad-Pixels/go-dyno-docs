@@ -34,9 +34,9 @@ export default defineConfig({
           href: `/en/${versionsConfig.latest}/`
         },
         nav: [
-          { text: 'Guide', link: `/en/${versionsConfig.latest}/guide/` },
-          { text: 'Examples', link: `/en/${versionsConfig.latest}/examples/` },
-          { text: 'API Reference', link: `/en/${versionsConfig.latest}/api/` },
+          { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
+          { text: 'Usage', link: `/ru/${versionsConfig.latest}/guide/usage` },
+          { text: 'Cli-Reference', link: `/ru/${versionsConfig.latest}/reference/cli` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -47,11 +47,19 @@ export default defineConfig({
             {
               text: 'Getting Started',
               items: [
-                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quick-start` },
-                { text: 'Introduction', link: `/en/${versionsConfig.latest}/guide/introduction` },
-                { text: 'Examples', link: `/en/${versionsConfig.latest}/guide/examples` },
+                { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
+                { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quickstart` },
+                { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
               ]
-            }
+            },
+            // {
+            //   text: 'Reference',
+            //   collapsible: true,
+            //    collapsed: true,
+            //   items: [
+            //     { text: 'CLI', link: `/en/${versionsConfig.latest}//reference/cli` }
+            //   ]
+            // }
           ]
         },
         socialLinks: [
@@ -76,9 +84,9 @@ export default defineConfig({
           href: `/ru/${versionsConfig.latest}/`
         },
         nav: [
-          { text: 'Руководство', link: `/ru/${versionsConfig.latest}/guide/` },
-          { text: 'Примеры', link: `/ru/${versionsConfig.latest}/examples/` },
-          { text: 'API Справка', link: `/ru/${versionsConfig.latest}/api/` },
+          { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
+          { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
+          { text: 'Cli-Справочник', link: `/ru/${versionsConfig.latest}/reference/cli` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -89,11 +97,19 @@ export default defineConfig({
             {
               text: 'Начало работы',
               items: [
-                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quick-start` },
-                { text: 'Введение', link: `/ru/${versionsConfig.latest}/guide/introduction` },
-                { text: 'Примеры', link: `/ru/${versionsConfig.latest}/guide/examples` }
+                { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
+                { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quickstart` },
+                { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
               ]
-            }
+            },
+            // {
+            //   text: 'Справочник',
+            //   collapsible: true,
+            //    collapsed: true,
+            //   items: [
+            //     { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }
+            //   ]
+            // }
           ]
         },
         socialLinks: [
