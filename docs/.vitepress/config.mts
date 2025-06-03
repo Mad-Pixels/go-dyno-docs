@@ -35,8 +35,8 @@ export default defineConfig({
         },
         nav: [
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
-          { text: 'Guide', link: `/en/${versionsConfig.latest}/guide/` },
-          { text: 'Examples', link: `/en/${versionsConfig.latest}/examples/` },
+          { text: 'Usage', link: `/ru/${versionsConfig.latest}/guide/usage` },
+          { text: 'Cli-Reference', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -49,8 +49,15 @@ export default defineConfig({
               items: [
                 { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
                 { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quickstart` },
-                { text: 'Introduction', link: `/en/${versionsConfig.latest}/guide/introduction` },
-                { text: 'Examples', link: `/en/${versionsConfig.latest}/guide/examples` },
+                { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
+              ]
+            },
+            {
+              text: 'Reference',
+              collapsible: true,
+               collapsed: true,
+              items: [
+                { text: 'CLI', link: `/en/${versionsConfig.latest}/guide/reference/cli` }
               ]
             }
           ]
@@ -78,8 +85,8 @@ export default defineConfig({
         },
         nav: [
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
-          { text: 'Руководство', link: `/ru/${versionsConfig.latest}/guide/` },
-          { text: 'Примеры', link: `/ru/${versionsConfig.latest}/examples/` },
+          { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
+          { text: 'CLI-Справочник', link: `/ru/${versionsConfig.latest}/guide/reference/cli` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -92,8 +99,15 @@ export default defineConfig({
               items: [
                 { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
                 { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quickstart` },
-                { text: 'Введение', link: `/ru/${versionsConfig.latest}/guide/introduction` },
-                { text: 'Примеры', link: `/ru/${versionsConfig.latest}/guide/examples` }
+                { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
+              ]
+            },
+            {
+              text: 'Справочник',
+              collapsible: true,
+               collapsed: true,
+              items: [
+                { text: 'CLI', link: `/en/${versionsConfig.latest}/guide/reference/cli` }
               ]
             }
           ]
