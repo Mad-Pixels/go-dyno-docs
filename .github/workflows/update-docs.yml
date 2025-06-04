@@ -40,22 +40,10 @@ jobs:
             fi
           done
       
-      - name: Create PR via GitHub API
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git checkout -b "docs/${{ github.event.inputs.version }}"
-          git add .
-          git commit -m "🤖 docs: add version ${{ github.event.inputs.version }}" || exit 0
-          git push origin "docs/${{ github.event.inputs.version }}"
-    
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/pulls \
-            -d '{
-              "title": "🚀 GoDyno new docs Release: ${{ github.event.inputs.version }}",
-              "head": "docs/${{ github.event.inputs.version }}",
-              "base": "main",
-              "body": "🚀 A new **GoDyno** release is out — time to update the docs!\n\nThis PR includes a copy of the latest documentation prepared for version `${{ github.event.inputs.version }}`.\n✍️ Make any necessary changes, adjust for the new release, and ship it when ready.\n\n_See the [changelog](https://github.com/Mad-Pixels/go-dyno/blob/main/CHANGELOG.md) for more details._"
-            }'
+      - name: Create Pull RequestAdd commentMore actions
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: "🤖 docs: add version ${{ github.event.inputs.version }}"
+          branch: "docs/${{ github.event.inputs.version }}"
+          title: "🚀 GoDyno new docs Release: ${{ github.event.inputs.version }}"
