@@ -43,7 +43,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "🤖 docs: add version ${{ github.event.inputs.version }}"
           branch: "docs/${{ github.event.inputs.version }}"
           title: "🚀 GoDyno new docs Release: ${{ github.event.inputs.version }}"
