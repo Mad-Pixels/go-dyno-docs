@@ -15,7 +15,7 @@ function createVersionDropdown(locale: string): DefaultTheme.NavItemWithLink[] {
 
 export default defineConfig({
   title: "GoDyno",
-  description: "DynamoDB Schema to GoLang Code",
+  description: "DynamoDB S to GoLang Code",
 
   lastUpdated: true,
   cleanUrls: true,
