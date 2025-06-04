@@ -1,0 +1,53 @@
+name: Update Docs
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag version'
+        required: true
+        type: string
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repo
+        uses: actions/checkout@v4
+
+      - name: Prepare new version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          DOCS_DIR="docs"
+
+          for LOCALE_DIR in $DOCS_DIR/*; do
+            if [[ -d "$LOCALE_DIR" ]]; then
+              LOCALE=$(basename "$LOCALE_DIR")
+
+              if [[ "$LOCALE" =~ ^[a-z]{2}$ ]]; then
+                VERSIONS=($(ls -d "$LOCALE_DIR"/v* 2>/dev/null | xargs -n1 basename | sort -V))
+                LAST_VERSION="${VERSIONS[-1]}"
+
+                SRC="$LOCALE_DIR/$LAST_VERSION"
+                DST="$LOCALE_DIR/$VERSION"
+
+                if [[ -d "$DST" ]]; then
+                  echo "Destination $DST already exists, skipping."
+                else 
+                  cp -r "$SRC" "$DST"
+                fi
+              fi
+            fi
+          done
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "🤖 docs: add version ${{ github.event.inputs.version }}"
+          branch: "docs/${{ github.event.inputs.version }}"
+          title: "🚀 GoDyno new docs Release: ${{ github.event.inputs.version }}"
+          body: |
+            🚀 A new **GoDyno** release is out — time to update the docs!
+
+            This PR includes a copy of the latest documentation prepared for version `${{ github.event.inputs.version }}`.
+            ✍️ Make any necessary changes, adjust for the new release, and ship it when ready.
