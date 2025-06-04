@@ -51,3 +51,5 @@ jobs:
 
             This PR includes a copy of the latest documentation prepared for version `${{ github.event.inputs.version }}`.
             ✍️ Make any necessary changes, adjust for the new release, and ship it when ready.
+
+            _See the [changelog](https://github.com/Mad-Pixels/go-dyno/blob/main/CHANGELOG.md) for more details._
