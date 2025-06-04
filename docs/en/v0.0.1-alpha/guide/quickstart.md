@@ -38,9 +38,10 @@ This schema defines a DynamoDB table for user posts with:
 - Regular data fields: `title`, `content`, `views`
 - A secondary index for querying by status
 
-> **Note:**  
-> _The `attributes` section includes fields used as primary keys and in GSI indexes._  
-> _The `common_attributes` section contains regular data fields that are not indexed but are included in the generated Go struct for completeness._
+::: tip
+_The `attributes` section includes fields used as primary keys and in GSI indexes._  
+_The `common_attributes` section contains regular data fields that are not indexed but are included in the generated Go struct for completeness._
+:::
 
 ## Generating Go Code
 
@@ -66,50 +67,50 @@ import (
   "github.com/aws/aws-sdk-go-v2/service/dynamodb"
   "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 
-  userposts "your-project/generated/user_posts"
+  userposts "your-project/generated/user_posts" // [!code focus]
 )
 
 func main() {
   // Configure AWS client
+  ctx := context.Background()
   cfg, err := config.LoadDefaultConfig(context.TODO())
   if err != nil {
     log.Fatal(err)
   }
-  client := dynamodb.NewFromConfig(cfg)
-  ctx := context.TODO()
+  client := dynamodb.NewFromConfig(cfg)    // [!code focus]
 
-  // Create a new post
-  post := userposts.SchemaItem{
-    UserId:    "user123",
-    CreatedAt: 1640995200,
-    Status:    "published",
-    Title:     "My First Post",
-    Content:   "This is my first post.",
-    Views:     0,
-  }
+  // Create a new post                     // [!code focus]
+  post := userposts.SchemaItem{            // [!code focus]
+    UserId:    "user123",                  // [!code focus]
+    CreatedAt: 1640995200,                 // [!code focus]
+    Status:    "published",                // [!code focus]
+    Title:     "My First Post",            // [!code focus]
+    Content:   "This is my first post.",   // [!code focus]
+    Views:     0,                          // [!code focus]
+  }                                        // [!code focus]
 
-  // Save to DynamoDB
-  item, err := userposts.PutItem(post)
+  // Save to DynamoDB                  // [!code focus]
+  item, err := userposts.PutItem(post) // [!code focus]
   if err != nil {
     log.Fatal(err)
   }
 
-  _, err = client.PutItem(ctx, &dynamodb.PutItemInput{
-    TableName: aws.String(userposts.TableName),
-    Item:      item,
-  })
+  _, err = client.PutItem(ctx, &dynamodb.PutItemInput{ // [!code focus]
+    TableName: aws.String(userposts.TableName),        // [!code focus]
+    Item:      item,                                   // [!code focus]
+  })                                                   // [!code focus]
   if err != nil {
     log.Fatal(err)
   }
 
-  // Type-safe query using QueryBuilder
-  posts, err := userposts.NewQueryBuilder().
-    WithUserId("user123").
-    WithStatus("published").
-    WithCreatedAtGreaterThan(1640990000).
-    OrderByDesc().
-    Limit(10).
-    Execute(ctx, client)
+  // Type-safe query using QueryBuilder      // [!code focus]
+  posts, err := userposts.NewQueryBuilder(). // [!code focus]
+    WithUserId("user123").                   // [!code focus]
+    WithStatus("published").                 // [!code focus]
+    WithCreatedAtGreaterThan(1640990000).    // [!code focus]
+    OrderByDesc().                           // [!code focus]
+    Limit(10).                               // [!code focus]
+    Execute(ctx, client)                     // [!code focus]
 
   if err != nil {
     log.Fatal(err)

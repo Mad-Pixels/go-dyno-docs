@@ -31,7 +31,9 @@ After generation, you will see the following structure:
 ```
 
 The package name and directory are automatically formed from the `table_name` in the schema, converted to a Go-safe format.
-> If your schema includes hyphens, they will be automatically converted to underscores.
+::: tip 
+If your schema includes hyphens, they will be automatically converted to underscores.
+:::
 
 ## Working with the Generated Code
 ### Core Structures
@@ -50,7 +52,9 @@ type SchemaItem struct {
 }
 ```
 
-> The `dynamodbav` tags are used by the AWS SDK for Go to automatically marshal fields to AttributeValue.
+::: tip 
+The `dynamodbav` tags are used by the AWS SDK for Go to automatically marshal fields to AttributeValue.
+:::
 
 **DynamoSchema** – table metadata:
 ```go
@@ -232,14 +236,16 @@ posts, err := userposts.NewQueryBuilder().
   Execute(ctx, dynamoClient)
 ```
 
-> **⚠️ Important:** QueryBuilder automatically determines the type of condition:
-> - **KeyCondition** – attributes that are keys in the chosen index (efficient)
-> - **FilterExpression** – all other attributes (inefficient, filters after read)
->
-> In the example above:
-> - `WithUserId` → KeyCondition (main table hash key)
-> - `WithStatus` → KeyCondition (if StatusIndex is chosen) or FilterExpression
-> - `WithTitle` → FilterExpression (increases RCU, since DynamoDB reads all user items first, then filters by title)
+::: danger
+QueryBuilder automatically determines the type of condition:
+- **KeyCondition** – attributes that are keys in the chosen index (efficient)
+- **FilterExpression** – all other attributes (inefficient, filters after read)
+
+In the example above:
+- `WithUserId` → KeyCondition (main table hash key)
+- `WithStatus` → KeyCondition (if StatusIndex is chosen) or FilterExpression
+- `WithTitle` → FilterExpression (increases RCU, since DynamoDB reads all user items first, then filters by title)
+:::
 
 **Optimal queries (only KeyConditions):**
 ```go

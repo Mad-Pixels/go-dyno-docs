@@ -38,9 +38,10 @@
 - Обычными полями данных: `title`, `content`, `views`
 - Вторичным индексом для запросов по статусу
 
-> **Примечание:**  
-> _Секция `attributes` содержит поля, используемые в качестве ключей основной таблицы и GSI-индексов._  
-> _Секция `common_attributes` включает обычные поля данных, не участвующие в индексации, но необходимые для полноты сгенерированной Go-структуры._
+::: tip
+_Секция `attributes` содержит поля, используемые в качестве ключей основной таблицы и GSI-индексов._  
+_Секция `common_attributes` включает обычные поля данных, не участвующие в индексации, но необходимые для полноты сгенерированной Go-структуры._
+:::
 
 ## Генерация Go-кода
 
@@ -66,7 +67,7 @@ import (
   "github.com/aws/aws-sdk-go-v2/service/dynamodb"
   "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 
-  userposts "your-project/generated/user_posts"
+  userposts "your-project/generated/user_posts" // [!code focus]
 )
 
 func main() {
@@ -76,40 +77,40 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-  client := dynamodb.NewFromConfig(cfg)
+  client := dynamodb.NewFromConfig(cfg) // [!code focus]
 
-  // Создание нового поста
-  post := userposts.SchemaItem{
-    UserId:    "user123",
-    CreatedAt: 1640995200,
-    Status:    "published",
-    Title:     "Мой первый пост",
-    Content:   "Содержание поста...",
-    Views:     0,
-  }
+  // Создание нового поста              // [!code focus]
+  post := userposts.SchemaItem{         // [!code focus]
+    UserId:    "user123",               // [!code focus]
+    CreatedAt: 1640995200,              // [!code focus]
+    Status:    "published",             // [!code focus]
+    Title:     "Мой первый пост",       // [!code focus]
+    Content:   "Содержание поста...",   // [!code focus]
+    Views:     0,                       // [!code focus]
+  }                                     // [!code focus]
 
-  // Сохранение в DynamoDB
-  item, err := userposts.PutItem(post)
+  // Сохранение в DynamoDB              // [!code focus]
+  item, err := userposts.PutItem(post)  // [!code focus]
   if err != nil {
     log.Fatal(err)
   }
 
-  _, err = client.PutItem(ctx, &dynamodb.PutItemInput{
-    TableName: aws.String(userposts.TableName),
-    Item:      item,
-  })
+  _, err = client.PutItem(ctx, &dynamodb.PutItemInput{ // [!code focus]
+    TableName: aws.String(userposts.TableName),        // [!code focus]
+    Item:      item,                                   // [!code focus]
+  })                                                   // [!code focus]
   if err != nil {
     log.Fatal(err)
   }
 
-  // Типобезопасные запросы с помощью QueryBuilder
-  posts, err := userposts.NewQueryBuilder().
-    WithUserId("user123").
-    WithStatus("published").
-    WithCreatedAtGreaterThan(1640990000).
-    OrderByDesc().
-    Limit(10).
-    Execute(ctx, client)
+  // Типобезопасные запросы с помощью QueryBuilder // [!code focus]
+  posts, err := userposts.NewQueryBuilder().       // [!code focus]
+    WithUserId("user123").                         // [!code focus]
+    WithStatus("published").                       // [!code focus]
+    WithCreatedAtGreaterThan(1640990000).          // [!code focus]
+    OrderByDesc().                                 // [!code focus]
+    Limit(10).                                     // [!code focus]
+    Execute(ctx, client)                           // [!code focus]
 
   if err != nil {
     log.Fatal(err)

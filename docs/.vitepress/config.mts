@@ -43,7 +43,7 @@ export default defineConfig({
           }
         ],
         sidebar: {
-          [`/en/${versionsConfig.latest}/guide/`]: [
+          [`/en/${versionsConfig.latest}`]: [
             {
               text: 'Getting Started',
               items: [
@@ -52,14 +52,13 @@ export default defineConfig({
                 { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
               ]
             },
-            // {
-            //   text: 'Reference',
-            //   collapsible: true,
-            //    collapsed: true,
-            //   items: [
-            //     { text: 'CLI', link: `/en/${versionsConfig.latest}//reference/cli` }
-            //   ]
-            // }
+            {
+              text: 'Reference', 
+              collapsed: true, 
+              items: [
+                { text: 'Cli', link: `/en/${versionsConfig.latest}/reference/cli` } 
+              ]
+            }
           ]
         },
         socialLinks: [
@@ -93,7 +92,7 @@ export default defineConfig({
           }
         ],
         sidebar: {
-          [`/ru/${versionsConfig.latest}/guide/`]: [
+          [`/ru/${versionsConfig.latest}/`]: [
             {
               text: 'Начало работы',
               items: [
@@ -102,14 +101,13 @@ export default defineConfig({
                 { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
               ]
             },
-            // {
-            //   text: 'Справочник',
-            //   collapsible: true,
-            //    collapsed: true,
-            //   items: [
-            //     { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }
-            //   ]
-            // }
+            {
+              text: 'Референс', 
+              collapsed: true, 
+              items: [
+                { text: 'Cli', link: `/ru/${versionsConfig.latest}/reference/cli` } 
+              ]
+            }
           ]
         },
         socialLinks: [

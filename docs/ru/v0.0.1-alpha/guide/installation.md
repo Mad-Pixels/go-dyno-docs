@@ -1,6 +1,6 @@
 # Установка
 
-go-dyno предлагает несколько способов установки. Выберите тот, который подходит для вашей среды.
+GoDyno предлагает несколько способов установки. Выберите тот, который подходит для вашей среды.
 
 ## Загрузка бинарного файла
 ### GitHub Releases
@@ -49,8 +49,14 @@ go build -o godyno ./cmd/dyno
 
 ## Использование Docker
 
-Для CI/CD процессов вы можете использовать [Docker-образ](https://hub.docker.com/r/madpixels/go-dyno).
+Вы так же можете использовать [Docker-образ](https://hub.docker.com/r/madpixels/go-dyno).
 
+![Docker](https://img.shields.io/badge/Docker-amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white)
 ```bash
 docker pull madpixels/go-dyno:latest
+
+docker run --rm -v $(pwd):/workspace \
+     madpixels/go-dyno gen           \
+     --cfg /workspace/schema.json    \
+     --dst /workspace/generated
 ```
