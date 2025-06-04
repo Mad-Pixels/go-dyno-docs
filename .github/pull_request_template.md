@@ -2,7 +2,7 @@
 
 - [ Describe changes here ]
 
-# Verification 
+# Checks 
 
 - [ ] My code follows the project coding style and conventions
 - [ ] I have tested my changes locally
