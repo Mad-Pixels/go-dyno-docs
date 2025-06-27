@@ -1,11 +1,7 @@
 # Установка
 
-GoDyno предлагает несколько способов установки. Выберите тот, который подходит для вашей среды.
-
 ## Загрузка бинарного файла
-### GitHub Releases
-
-Вы можете загрузить готовый бинарный файл со страницы [релизов](https://github.com/Mad-Pixels/go-dyno/releases) и добавить его в ваш `$PATH`.
+Список всех релизов доступен [тут](https://github.com/Mad-Pixels/go-dyno/releases).
 
 ![Linux](https://img.shields.io/badge/Linux-amd64%20%7C%20arm64-blue?logo=linux&logoColor=white)
 ::: code-group
@@ -22,7 +18,7 @@ sudo mv godyno /usr/local/bin/
 ```
 :::
 
-![macOS](https://img.shields.io/badge/macOS-Intel%20%7C%20Silicon-lightgrey?logo=apple&logoColor=white)
+![macOS](https://img.shields.io/badge/macOS-Intel%20%7C%20Silicon-2496ED?logo=apple&logoColor=white)
 ::: code-group
 ```bash [Darwin • Intel]
 curl -L https://github.com/Mad-Pixels/go-dyno/releases/latest/download/godyno_darwin_amd64 -o godyno
@@ -39,24 +35,13 @@ sudo mv godyno /usr/local/bin/
 
 ## Сборка из исходников
 
-Убедитесь, что у вас установлена и настроена поддерживаемая версия [Go](https://go.dev). Минимальная версия указана в файле [go.mod](https://github.com/Mad-Pixels/go-dyno/blob/main/go.mod).
+::: info Требования:
+ - Наличие [GoLang](https://go.dev) на локальной машине.  
+   _Минимальная версия указана в файле [go.mod](https://github.com/Mad-Pixels/go-dyno/blob/main/go.mod)_
+:::
 
 ```bash
 git clone https://github.com/Mad-Pixels/go-dyno.git
 cd go-dyno
 go build -o godyno ./cmd/dyno
-```
-
-## Использование Docker
-
-Вы так же можете использовать [Docker-образ](https://hub.docker.com/r/madpixels/go-dyno).
-
-![Docker](https://img.shields.io/badge/Docker-amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white)
-```bash
-docker pull madpixels/go-dyno:latest
-
-docker run --rm -v $(pwd):/workspace \
-     madpixels/go-dyno gen           \
-     --cfg /workspace/schema.json    \
-     --dst /workspace/generated
 ```
