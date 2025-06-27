@@ -3,7 +3,7 @@
 ## Загрузка бинарного файла
 Список всех релизов доступен [тут](https://github.com/Mad-Pixels/go-dyno/releases).
 
-![Linux](https://img.shields.io/badge/Linux-amd64%20%7C%20arm64-blue?logo=linux&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-Amd64%20%7C%20Arm64-blue?logo=linux&logoColor=white)
 ::: code-group
 ```bash [Linux • amd64]
 curl -L https://github.com/Mad-Pixels/go-dyno/releases/latest/download/godyno_linux_amd64 -o godyno
