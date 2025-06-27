@@ -37,6 +37,7 @@ export default defineConfig({
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
           { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
           { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` },
+          { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -86,6 +87,7 @@ export default defineConfig({
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
           { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
           { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` },
+          { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
