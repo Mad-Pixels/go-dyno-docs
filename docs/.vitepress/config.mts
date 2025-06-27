@@ -57,7 +57,8 @@ export default defineConfig({
               text: 'Reference', 
               collapsed: true, 
               items: [
-                { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` } 
+                { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
+                { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` } 
               ]
             }
           ]
