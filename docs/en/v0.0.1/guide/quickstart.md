@@ -44,7 +44,7 @@ _This is a DynamoDB requirement for key fields_.
 * `common_attributes` are regular fields used for storing data.
 :::
 
-[Full JSON schema reference →](../reference/schema)
+[Full JSON schema reference →](../reference/json)
 
 ## ⚡ Step 2: Generate the Code
 ```bash
