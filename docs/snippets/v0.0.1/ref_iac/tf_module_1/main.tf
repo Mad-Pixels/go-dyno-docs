@@ -12,11 +12,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# --- >
+
 module "schema_table" {
   source = "./modules/dynamodb"
-      
   schema = jsondecode(file("${path.module}/schema.json"))
 }
+
+# --- >
 
 output "table_name" {
   value = module.schema_table.table_name

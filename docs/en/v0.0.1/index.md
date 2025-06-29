@@ -34,7 +34,7 @@ features:
       src: /icons/integration.png
       alt: Terraform Integration 
     title: Unified Schema for App and Infrastructure
-    details: A single JSON schema acts as the source of truth for both Go code and Terraform configs — avoiding duplication and drift
+    details: A single JSON schema acts as the source of truth for both Go code and IaC configs — avoiding duplication and drift
   - icon: 
       src: /icons/key.png
       alt: Composite Keys Support
@@ -85,13 +85,13 @@ $ godyno -c schema.json -d ./gen
 # ./gen/basemixed.go 
 # default: generate all objects
 
-# create DynamoDB table from JSON-schema
+# create DynamoDB table from JSON-schema (terraform)
 $ export TF_VAR_schema=$(cat schema.json)
 $ terraform apply
 ```
 
 ::: code-group
-<<< @/snippets/main/schema{json}
-<<< @/snippets/main/basemixed{go}
-<<< @/snippets/main/dynamo{hcl}
+<<< @/snippets/v0.0.1/main/schema{json}
+<<< @/snippets/v0.0.1/main/generated{go}
+<<< @/snippets/v0.0.1/main/terraform{hcl}
 :::

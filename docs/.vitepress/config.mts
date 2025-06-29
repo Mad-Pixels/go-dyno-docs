@@ -35,10 +35,10 @@ export default defineConfig({
         },
         nav: [
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
+          { text: 'IaC', link: `/en/${versionsConfig.latest}/reference/iac` },
+          { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
           { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
-          { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
-          { text: 'TF', link: `/en/${versionsConfig.latest}/reference/terraform` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -57,10 +57,10 @@ export default defineConfig({
               text: 'Reference', 
               collapsed: true, 
               items: [
+                { text: 'IaC', link: `/en/${versionsConfig.latest}/reference/iac` },
+                { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
                 { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
-                { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
-                { text: 'TF', link: `/en/${versionsConfig.latest}/reference/terraform` },
               ]
             }
           ]
@@ -88,10 +88,10 @@ export default defineConfig({
         },
         nav: [
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
+          { text: 'IaC', link: `/ru/${versionsConfig.latest}/reference/iac` },
+          { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
           { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` },
-          { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
-          { text: 'TF', link: `/ru/${versionsConfig.latest}/reference/terraform` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -110,10 +110,10 @@ export default defineConfig({
               text: 'Референс', 
               collapsed: true, 
               items: [
+                { text: 'IaC', link: `/ru/${versionsConfig.latest}/reference/iac` },
+                { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
                 { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` }, 
-                { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
-                { text: 'TF', link: `/ru/${versionsConfig.latest}/reference/terraform` },
               ]
             }
           ]

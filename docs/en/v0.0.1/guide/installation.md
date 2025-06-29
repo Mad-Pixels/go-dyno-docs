@@ -1,6 +1,6 @@
 # Installation
 
-## Downloading the Binary
+## 📦 Downloading the Binary
 A list of all releases is available [here](https://github.com/Mad-Pixels/go-dyno/releases).
 
 ![Linux](https://img.shields.io/badge/Linux-Amd64%20%7C%20Arm64-blue?logo=linux&logoColor=white)
@@ -33,8 +33,7 @@ sudo mv godyno /usr/local/bin/
 ```
 :::
 
-## Build from Source
-
+## 🛠️ Build from Source
 ::: info Requirements:
  - [GoLang](https://go.dev) must be installed locally.  
    _The minimum version is specified in [go.mod](https://github.com/Mad-Pixels/go-dyno/blob/main/go.mod)_

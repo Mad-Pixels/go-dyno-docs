@@ -34,7 +34,7 @@ _Если вы еще не установили GoDyno, перейдите к р
 ## 📋 Шаг 1: Создайте схему
 Опишите вашу DynamoDB таблицу в JSON файле:
 ::: code-group
-<<< @/snippets/quickstart/user_profiles{json}
+<<< @/snippets/v0.0.1/quickstart/JSON-schema{json}
 :::
 
 ::: warning Aттрибуты:
@@ -57,7 +57,7 @@ godyno gen --cfg user_profiles.json --dst ./generated
 В папке `./generated` появится файл `userprofiles.go` с полным набором типобезопасных методов:
 ::: details full content 
 ::: code-group
-<<< @/snippets/quickstart/userprofiles{go}
+<<< @/snippets/v0.0.1/quickstart/generated{go}
 :::
 
 ::: info Сгенерированный код включает:
@@ -75,18 +75,18 @@ godyno gen --cfg user_profiles.json --dst ./generated
 ## 🎯 Шаг 3: Используйте в коде
 ### Основные операции:
 ::: code-group
-<<< @/snippets/quickstart/op_put{go}
-<<< @/snippets/quickstart/op_read{go}
-<<< @/snippets/quickstart/op_update{go}
-<<< @/snippets/quickstart/op_delete{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Put{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Read{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Update{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Delete{go}
 :::
 
 ### Query Builder:
 ::: code-group
-<<< @/snippets/quickstart/qb_base{go}
+<<< @/snippets/v0.0.1/quickstart/Qb-Base{go}
 :::
 
 ### Scan операции:
 ::: code-group
-<<< @/snippets/quickstart/sc_base{go}
+<<< @/snippets/v0.0.1/quickstart/Sc-Base{go}
 :::

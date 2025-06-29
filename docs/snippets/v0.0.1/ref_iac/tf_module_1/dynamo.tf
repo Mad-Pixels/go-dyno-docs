@@ -8,9 +8,11 @@ locals {
 
   lsi_indexes = [
     for idx in var.schema.secondary_indexes : idx
-    if try(idx.type, "GSI") == "LSI"
+    if try(idx.type, "LSI") == "LSI"
   ]
 }
+
+# --- >
 
 resource "aws_dynamodb_table" "this" {
   name           = var.schema.table_name

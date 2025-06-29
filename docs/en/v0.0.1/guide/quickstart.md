@@ -34,7 +34,7 @@ _If you haven’t installed GoDyno yet, head over to the [installation guide](./
 ## 📋 Step 1: Create a Schema
 Describe your DynamoDB table in a JSON file:
 ::: code-group
-<<< @/snippets/quickstart/user_profiles{json}
+<<< @/snippets/v0.0.1/quickstart/JSON-schema{json}
 :::
 
 ::: warning Attributes:
@@ -57,7 +57,7 @@ godyno gen --cfg user_profiles.json --dst ./generated
 A file named `userprofiles.go` will be created in the `./generated` folder, containing a complete set of type-safe methods:
 ::: details full content 
 ::: code-group
-<<< @/snippets/quickstart/userprofiles{go}
+<<< @/snippets/v0.0.1/quickstart/generated{go}
 :::
 
 ::: info The generated code includes:
@@ -75,18 +75,18 @@ A file named `userprofiles.go` will be created in the `./generated` folder, cont
 ## 🎯 Step 3: Use It in Your Code
 ### Core Operations:
 ::: code-group
-<<< @/snippets/quickstart/op_put{go}
-<<< @/snippets/quickstart/op_read{go}
-<<< @/snippets/quickstart/op_update{go}
-<<< @/snippets/quickstart/op_delete{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Put{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Read{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Update{go}
+<<< @/snippets/v0.0.1/quickstart/Op-Delete{go}
 :::
 
 ### Query Builder:
 ::: code-group
-<<< @/snippets/quickstart/qb_base{go}
+<<< @/snippets/v0.0.1/quickstart/Qb-Base{go}
 :::
 
 ### Scan Operations:
 ::: code-group
-<<< @/snippets/quickstart/sc_base{go}
+<<< @/snippets/v0.0.1/quickstart/Sc-Base{go}
 :::

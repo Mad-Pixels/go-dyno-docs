@@ -34,7 +34,7 @@ features:
       src: /icons/integration.png
       alt: Terraform Integration 
     title: Единая схема для приложения и инфраструктуры
-    details: Одна JSON-схема служит источником правды как для генерации Go-кода, так и для Terraform-конфигураций, устраняя дублирование описаний и риск рассинхронизации
+    details: Одна JSON-схема служит источником правды как для генерации Go-кода, так и для IaC-конфигураций, устраняя дублирование описаний и риск рассинхронизации
   - icon: 
       src: /icons/key.png
       alt: Composite Keys Support
@@ -85,13 +85,13 @@ $ godyno -c schema.json -d ./gen
 # ./gen/basemixed.go 
 # по-умолчанию: генерация всех объектов
 
-# создание DynamoDB таблицы из JSON-схемы
+# создание DynamoDB таблицы из JSON-схемы (terraform)
 $ export TF_VAR_schema=$(cat schema.json)
 $ terraform apply
 ```
 
 ::: code-group
-<<< @/snippets/main/schema{json}
-<<< @/snippets/main/basemixed{go}
-<<< @/snippets/main/dynamo{hcl}
+<<< @/snippets/v0.0.1/main/schema{json}
+<<< @/snippets/v0.0.1/main/generated{go}
+<<< @/snippets/v0.0.1/main/terraform{hcl}
 :::

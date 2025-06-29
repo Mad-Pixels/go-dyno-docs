@@ -1,5 +1,4 @@
 project/
-  ├── schema.json
   ├── main.tf  
   └── modules/
        └── dynamodb/

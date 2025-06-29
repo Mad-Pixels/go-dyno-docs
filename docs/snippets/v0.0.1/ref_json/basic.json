@@ -5,8 +5,8 @@
     {"name": "user_id", "type": "S"}
   ],
   "common_attributes": [
-    {"name": "email", "type": "S"},
-    {"name": "age", "type": "N"},
+    {"name": "email",     "type": "S"},
+    {"name": "age",       "type": "N"},
     {"name": "is_active", "type": "BOOL"}
   ]
 }
