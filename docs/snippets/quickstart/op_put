@@ -10,7 +10,8 @@ item, _ := userprofiles.ItemInput(
 	},
 )
 
-_ = client.PutItem(context.Background(), &dynamodb.PutItemInput{
+output, _ := client.PutItem(context.Background(), &dynamodb.PutItemInput{
 	TableName: aws.String(userprofiles.TableName),
 	Item:      item,
 })
+fmt.Printf("OUTPUT: %v\n", output)

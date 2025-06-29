@@ -1,4 +1,11 @@
-activeUsers, err := userprofiles.NewScanBuilder().
+items, err := userprofiles.NewScanBuilder().
 	FilterEQ("is_active", true).
 	FilterBetween("age", 18, 65).
 	Execute(ctx, client)
+if err != nil {
+	log.Fatal(err)
+}
+
+for _, user := range items {
+	fmt.Printf("User: %s, Age: %d\n", user.Email, user.Age)
+}
