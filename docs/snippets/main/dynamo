@@ -28,7 +28,7 @@ locals {
 
   lsi_indexes = [
     for idx in coalesce(var.schema.secondary_indexes, []) : idx
-    if lookup(idx, "type", "GSI") == "LSI"
+    if lookup(idx, "type", "LSI") == "LSI"
   ]
 }
 

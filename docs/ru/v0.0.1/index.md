@@ -79,15 +79,19 @@ CLI инструмент, который трансформирует декла
 <br><br>
 
 ```bash
+# генерация GoLang кода из JSON-схемы
 $ godyno -c schema.json -d ./gen
-# new file: ./gen/basemixed.go (!! include ALL objects !!)
+# результат - новый файл:
+# ./gen/basemixed.go 
+# по-умолчанию: генерация всех объектов
 
-# ...
-$ terraform apply -var="schema=${jsonencode(jsondecode(file("schema.json")))}"
+# создание DynamoDB таблицы из JSON-схемы
+$ export TF_VAR_schema=$(cat schema.json)
+$ terraform apply
 ```
 
 ::: code-group
 <<< @/snippets/main/schema{json}
 <<< @/snippets/main/basemixed{go}
-<<< @/snippets/main/dynamo{tf}
+<<< @/snippets/main/dynamo{hcl}
 :::
