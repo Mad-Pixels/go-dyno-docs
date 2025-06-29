@@ -1,0 +1,14 @@
+{
+  "table_name": "user_profiles",
+  "hash_key": "user_id",
+  "range_key": "timestamp",
+  "attributes": [
+    {"name": "user_id", "type": "S"},
+    {"name": "timestamp", "type": "N"}
+  ],
+  "common_attributes": [
+    {"name": "email", "type": "S"},
+    {"name": "age", "type": "N"},
+    {"name": "is_active", "type": "BOOL"}
+  ]
+}

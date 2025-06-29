@@ -1,0 +1,17 @@
+client := dynamodb.NewFromConfig(cfg)
+
+item, _ := userprofiles.ItemInput(
+	userprofiles.SchemaItem{
+		UserId:    "user123",
+		Timestamp: 1640995200,
+		Email:     "user@example.com",
+		Age:       25,
+		IsActive:  true,
+	},
+)
+
+output, _ := client.PutItem(context.Background(), &dynamodb.PutItemInput{
+	TableName: aws.String(userprofiles.TableName),
+	Item:      item,
+})
+fmt.Printf("OUTPUT: %v\n", output)

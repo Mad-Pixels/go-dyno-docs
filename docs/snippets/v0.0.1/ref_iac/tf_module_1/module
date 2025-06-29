@@ -1,0 +1,7 @@
+project/
+  ├── main.tf  
+  └── modules/
+       └── dynamodb/
+            ├── dynamo.tf 
+            ├── variables.tf
+            └── outputs.tf

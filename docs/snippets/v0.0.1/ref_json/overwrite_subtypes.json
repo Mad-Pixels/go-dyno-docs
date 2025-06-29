@@ -1,0 +1,64 @@
+{
+  "table_name": "analytics_metrics",
+  "hash_key": "user_id", 
+  "range_key": "event_timestamp",
+  "attributes": [
+    {
+      "name": "user_id",
+      "type": "S"
+    },
+    {
+      "name": "event_timestamp", 
+      "type": "N",
+      "subtype": "int64"
+    }
+  ],
+  "common_attributes": [
+    {
+      "name": "session_count",
+      "type": "N", 
+      "subtype": "int32"
+    },
+    {
+      "name": "conversion_rate",
+      "type": "N",
+      "subtype": "float32" 
+    },
+    {
+      "name": "total_revenue_cents",
+      "type": "N",
+      "subtype": "uint64"
+    },
+    {
+      "name": "priority_level",
+      "type": "N",
+      "subtype": "int16"
+    },
+    {
+      "name": "test_scores",
+      "type": "NS",
+      "subtype": "int32"
+    },
+    {
+      "name": "conversion_rates_history", 
+      "type": "NS",
+      "subtype": "float32"
+    },
+    {
+      "name": "transaction_amounts",
+      "type": "NS", 
+      "subtype": "uint64"
+    },
+    {
+      "name": "rating_values",
+      "type": "NS",
+      "subtype": "int16"
+    },
+    {
+      "name": "daily_timestamps",
+      "type": "NS",
+      "subtype": "int64"
+    }
+  ],
+  "secondary_indexes": []
+}

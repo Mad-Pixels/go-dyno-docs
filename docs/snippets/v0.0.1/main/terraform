@@ -1,0 +1,71 @@
+variable "schema" {
+  type = object({
+    table_name           = string
+    hash_key             = string
+    range_key            = optional(string)
+    attributes           = list(object({
+      name = string
+      type = string
+    }))
+    secondary_indexes = optional(list(object({
+      name               = string
+      type               = optional(string, "GSI")
+      hash_key           = optional(string)
+      range_key          = optional(string)
+      projection_type    = string
+      non_key_attributes = optional(list(string))
+      read_capacity      = optional(number)
+      write_capacity     = optional(number)
+    })))
+  })
+}
+
+locals {
+  gsi_indexes = [
+    for idx in coalesce(var.schema.secondary_indexes, []) : idx
+    if lookup(idx, "type", "GSI") == "GSI"
+  ]
+
+  lsi_indexes = [
+    for idx in coalesce(var.schema.secondary_indexes, []) : idx
+    if lookup(idx, "type", "LSI") == "LSI"
+  ]
+}
+
+resource "aws_dynamodb_table" "this" {
+  name         = var.schema.table_name
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = var.schema.hash_key
+  range_key    = var.schema.range_key
+
+  dynamic "attribute" {
+    for_each = var.schema.attributes
+    content {
+      name = attribute.value.name
+      type = attribute.value.type
+    }
+  }
+
+  dynamic "global_secondary_index" {
+    for_each = local.gsi_indexes
+    content {
+      name               = global_secondary_index.value.name
+      hash_key           = global_secondary_index.value.hash_key
+      range_key          = lookup(global_secondary_index.value, "range_key", null)
+      projection_type    = global_secondary_index.value.projection_type
+      read_capacity      = global_secondary_index.value.read_capacity
+      write_capacity     = global_secondary_index.value.write_capacity
+      non_key_attributes = global_secondary_index.value.projection_type == "INCLUDE" ? global_secondary_index.value.non_key_attributes : null
+    }
+  }
+
+  dynamic "local_secondary_index" {
+    for_each = local.lsi_indexes
+    content {
+      name               = local_secondary_index.value.name
+      range_key          = local_secondary_index.value.range_key
+      projection_type    = local_secondary_index.value.projection_type
+      non_key_attributes = local_secondary_index.value.projection_type == "INCLUDE" ? local_secondary_index.value.non_key_attributes : null
+    }
+  }
+}
