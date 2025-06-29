@@ -37,6 +37,7 @@ export default defineConfig({
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
           { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
+          { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -56,7 +57,8 @@ export default defineConfig({
               collapsed: true, 
               items: [
                 { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
-                { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` } 
+                { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
+                { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
               ]
             }
           ]
@@ -86,6 +88,7 @@ export default defineConfig({
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
           { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` },
+          { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -105,7 +108,8 @@ export default defineConfig({
               collapsed: true, 
               items: [
                 { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }, 
-                { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` } 
+                { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` }, 
+                { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
               ]
             }
           ]

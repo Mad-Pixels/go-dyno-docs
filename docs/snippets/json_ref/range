@@ -1,0 +1,13 @@
+{
+  "table_name": "user_sessions",
+  "hash_key": "user_id",
+  "range_key": "session_id",
+  "attributes": [
+    {"name": "user_id", "type": "S"},
+    {"name": "session_id", "type": "S"}
+  ],
+  "common_attributes": [
+    {"name": "created_at", "type": "S"},
+    {"name": "expires_at", "type": "S"}
+  ]
+}
