@@ -73,7 +73,7 @@ godyno gen --cfg user_profiles.json --dst ./generated
 [Полное описание API →](../reference/api)
 
 ## 🎯 Шаг 3: Используйте в коде
-### Основные операции
+### Основные операции:
 ::: code-group
 <<< @/snippets/quickstart/op_put{go}
 <<< @/snippets/quickstart/op_read{go}
@@ -81,12 +81,12 @@ godyno gen --cfg user_profiles.json --dst ./generated
 <<< @/snippets/quickstart/op_delete{go}
 :::
 
-### Query Builder
+### Query Builder:
 ::: code-group
 <<< @/snippets/quickstart/qb_base{go}
 :::
 
-### Scan операции
+### Scan операции:
 ::: code-group
 <<< @/snippets/quickstart/sc_base{go}
 :::

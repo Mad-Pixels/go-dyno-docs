@@ -38,6 +38,7 @@ export default defineConfig({
           { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
           { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
+          { text: 'TF', link: `/en/${versionsConfig.latest}/reference/terraform` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -59,6 +60,7 @@ export default defineConfig({
                 { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
                 { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
+                { text: 'TF', link: `/en/${versionsConfig.latest}/reference/terraform` },
               ]
             }
           ]
@@ -89,6 +91,7 @@ export default defineConfig({
           { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` },
           { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` },
           { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
+          { text: 'TF', link: `/ru/${versionsConfig.latest}/reference/terraform` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -110,6 +113,7 @@ export default defineConfig({
                 { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` }, 
                 { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
+                { text: 'TF', link: `/ru/${versionsConfig.latest}/reference/terraform` },
               ]
             }
           ]

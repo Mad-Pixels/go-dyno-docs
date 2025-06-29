@@ -73,7 +73,7 @@ A file named `userprofiles.go` will be created in the `./generated` folder, cont
 [Full API Reference →](../reference/api)
 
 ## 🎯 Step 3: Use It in Your Code
-### Core Operations
+### Core Operations:
 ::: code-group
 <<< @/snippets/quickstart/op_put{go}
 <<< @/snippets/quickstart/op_read{go}
@@ -81,12 +81,12 @@ A file named `userprofiles.go` will be created in the `./generated` folder, cont
 <<< @/snippets/quickstart/op_delete{go}
 :::
 
-### Query Builder
+### Query Builder:
 ::: code-group
 <<< @/snippets/quickstart/qb_base{go}
 :::
 
-### Scan Operations
+### Scan Operations:
 ::: code-group
 <<< @/snippets/quickstart/sc_base{go}
 :::
