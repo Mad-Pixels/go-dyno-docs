@@ -28,7 +28,7 @@
 `GoDyno` generates type-safe Go code for working with DynamoDB from a JSON schema. Just 3 steps from schema to production-ready code!
 
 ::: tip Installation:
-_If you haven’t installed GoDyno yet, head over to the [installation guide](https://go-dyno.madpixels.io/en/v0.0.1-alpha/guide/installation)._
+_If you haven’t installed GoDyno yet, head over to the [installation guide](./installation)._
 :::
 
 ## 📋 Step 1: Create a Schema
