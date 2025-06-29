@@ -1,0 +1,10 @@
+updates := map[string]any{
+	"email":     "newemail@example.com",
+	"age":       26,
+	"is_active": false,
+}
+
+updateInput, _ := userprofiles.UpdateItemInputFromRaw(
+	"user123", 1640995200, updates,
+)
+_, _ = client.UpdateItem(context.Background(), updateInput)

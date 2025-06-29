@@ -34,7 +34,7 @@ _Если вы еще не установили GoDyno, перейдите к р
 ## 📋 Шаг 1: Создайте схему
 Опишите вашу DynamoDB таблицу в JSON файле:
 ::: code-group
-<<< @/snippets/quickstart/user_profiles.json{json}
+<<< @/snippets/quickstart/user_profiles{json}
 :::
 
 ::: warning Aттрибуты:
@@ -50,37 +50,43 @@ _Это обязательное требование DynamoDB для ключе
 ```bash
 godyno gen --cfg user_profiles.json --dst ./generated
 ```
+[Полное описание СLI-утилиты, флагов и команд →](../reference/cli)
+
+<br><br>
 
 В папке `./generated` появится файл `userprofiles.go` с полным набором типобезопасных методов:
 ::: details full content 
 ::: code-group
-<<< @/snippets/quickstart/userprofiles.go{go}
+<<< @/snippets/quickstart/userprofiles{go}
 :::
 
 ::: info Сгенерированный код включает:
-- Константы: TableName, имена атрибутов и индексов
-- Типы: SchemaItem struct с правильными Go типами
-- Маршаллинг: ItemInput(), ItemOutput() для AWS SDK
-- Query Builder: типобезопасные методы запросов с автодополнением
-- Scan Builder: полнотабличный поиск с фильтрами
-- Пагинация: Limit(), StartFrom() для больших результатов
-- Сортировка: OrderByAsc(), OrderByDesc()
+- `Константы`: _TableName, имена атрибутов и индексов_
+- `Типы`: _SchemaItem struct с правильными Go типами_
+- `Маршаллинг`: _ItemInput(), ItemOutput() для AWS SDK_
+- `Query Builder`: _типобезопасные методы запросов с автодополнением_
+- `Scan Builder`: _полнотабличный поиск с фильтрами_
+- `Пагинация`: _Limit(), StartFrom() для больших результатов_
+- `Сортировка`: _OrderByAsc(), OrderByDesc()_
 :::
 
-[Полное описание СLI-утилиты, флагов и команд →](../reference/cli)
+[Полное описание API →](../reference/api)
 
 ## 🎯 Шаг 3: Используйте в коде
 ### Основные операции
 ::: code-group
-<<< @/snippets/quickstart/op_put.go{go}
+<<< @/snippets/quickstart/op_put{go}
+<<< @/snippets/quickstart/op_read{go}
+<<< @/snippets/quickstart/op_update{go}
+<<< @/snippets/quickstart/op_delete{go}
 :::
 
 ### Query Builder
 ::: code-group
-<<< @/snippets/quickstart/qb_base.go{go}
+<<< @/snippets/quickstart/qb_base{go}
 :::
 
 ### Scan операции
 ::: code-group
-<<< @/snippets/quickstart/sc_base.go{go}
+<<< @/snippets/quickstart/sc_base{go}
 :::

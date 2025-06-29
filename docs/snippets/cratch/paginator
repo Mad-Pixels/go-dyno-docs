@@ -1,0 +1,48 @@
+func getAllUserProfiles(ctx context.Context, client *dynamodb.Client, userID string) ([]userprofiles.SchemaItem, error) {
+	var allUsers []userprofiles.SchemaItem
+	var lastKey map[string]types.AttributeValue
+
+	for {
+		// Создаем НОВЫЙ QueryBuilder каждую итерацию
+		query := userprofiles.NewQueryBuilder().
+			WithEQ("user_id", userID).
+			FilterBetween("age", 25, 35).
+			FilterEQ("is_active", true).
+			OrderByDesc().
+			Limit(25)
+
+		// Добавляем пагинацию если есть
+		if lastKey != nil {
+			query = query.StartFrom(lastKey)
+		}
+
+		// Строим запрос
+		input, err := query.BuildQuery()
+		if err != nil {
+			return nil, fmt.Errorf("failed to build query: %w", err)
+		}
+
+		// Выполняем запрос
+		result, err := client.Query(ctx, input)
+		if err != nil {
+			return nil, fmt.Errorf("query execution failed: %w", err)
+		}
+
+		// Маршаллим результаты
+		var batch []userprofiles.SchemaItem
+		err = attributevalue.UnmarshalListOfMaps(result.Items, &batch)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal results: %w", err)
+		}
+
+		allUsers = append(allUsers, batch...)
+
+		// Проверяем пагинацию
+		if result.LastEvaluatedKey == nil {
+			break // Больше данных нет
+		}
+		lastKey = result.LastEvaluatedKey
+	}
+
+	return allUsers, nil
+}

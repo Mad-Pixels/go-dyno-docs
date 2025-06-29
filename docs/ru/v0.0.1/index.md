@@ -87,7 +87,7 @@ $ terraform apply -var="schema=${jsonencode(jsondecode(file("schema.json")))}"
 ```
 
 ::: code-group
-<<< @/snippets/main/schema.json{json}
-<<< @/snippets/main/basemixed.go{go}
-<<< @/snippets/main/dynamo.tf{tf}
+<<< @/snippets/main/schema{json}
+<<< @/snippets/main/basemixed{go}
+<<< @/snippets/main/dynamo{tf}
 :::
