@@ -36,6 +36,23 @@ function handler(event) {
       }
     };
   }
+
+  var docPageMatch = uri.match(/^\/([a-z]{2})\/([^\/]+)\/(.+)$/);
+  if (docPageMatch) {
+    var locale = docPageMatch[1];
+    var version = docPageMatch[2];
+    var path = docPageMatch[3];
+    
+    if (path.charAt(path.length - 1) === '/') {
+      path = path.substring(0, path.length - 1);
+    }
+    
+    var hasDot = path.indexOf('.') !== -1;
+    if (!hasDot && path !== '') {
+      request.uri = '/' + locale + '/' + version + '/' + path + '.html';
+      return request;
+    }
+  }
     
   var len = uri.length;
   var lastChar = uri.charAt(len - 1);
@@ -62,6 +79,9 @@ function handler(event) {
     if (uri.charAt(i) === '/') break;
   }
   if (!hasDot && len > 1) {
+    if (uri.match(/\/(icons?|images?|assets?|static|css|js)\//)) {
+      return request;
+    }
     return {
       statusCode: 301,
       statusDescription: 'Moved Permanently',
