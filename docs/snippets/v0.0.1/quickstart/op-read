@@ -1,0 +1,10 @@
+key, _ := userprofiles.KeyInputFromRaw("user123", 1640995200)
+
+output, _ := client.GetItem(context.Background(), &dynamodb.GetItemInput{
+	TableName: aws.String(userprofiles.TableName),
+	Key:       key,
+})
+
+var user userprofiles.SchemaItem
+_ = attributevalue.UnmarshalMap(output.Item, &user)
+fmt.Printf("User: %s, Age: %d\n", user.Email, user.Age)

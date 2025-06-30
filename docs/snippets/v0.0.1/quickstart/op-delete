@@ -1,0 +1,2 @@
+deleteInput, _ := userprofiles.DeleteItemInputFromRaw("user123", 1640995200)
+_, _ = client.DeleteItem(context.Background(), deleteInput)

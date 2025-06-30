@@ -6,10 +6,6 @@ function createVersionDropdown(locale: string): DefaultTheme.NavItemWithLink[] {
     text: version === versionsConfig.latest ? `${version} (latest)` : version,
     link: `/${locale}/${version}/`
   }))
-  items.push({
-    text: '📋 Changelog',
-    link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md',
-  })
   return items
 }
 
@@ -35,8 +31,10 @@ export default defineConfig({
         },
         nav: [
           { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
-          { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
-          { text: 'Cli-Reference', link: `/en/${versionsConfig.latest}/reference/cli` },
+          { text: 'IaC', link: `/en/${versionsConfig.latest}/reference/iac` },
+          { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
+          { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` },
+          { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
           {
             text: "Releases",
             items: createVersionDropdown('en')
@@ -49,14 +47,24 @@ export default defineConfig({
               items: [
                 { text: 'Installation', link: `/en/${versionsConfig.latest}/guide/installation` },
                 { text: 'Quick Start', link: `/en/${versionsConfig.latest}/guide/quickstart` },
-                { text: 'Usage', link: `/en/${versionsConfig.latest}/guide/usage` },
               ]
             },
             {
               text: 'Reference', 
               collapsed: true, 
               items: [
-                { text: 'Cli', link: `/en/${versionsConfig.latest}/reference/cli` } 
+                { text: 'IaC', link: `/en/${versionsConfig.latest}/reference/iac` },
+                { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
+                { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
+                { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
+              ]
+            },
+            {
+              text: 'Product', 
+              collapsed: false, 
+              items: [
+                { text: 'Changelog', link: `/en/${versionsConfig.latest}/product/changelog` },
+                { text: '⭐ Give Us a star', link: `https://github.com/Mad-Pixels/go-dyno` },
               ]
             }
           ]
@@ -84,8 +92,10 @@ export default defineConfig({
         },
         nav: [
           { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
-          { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
-          { text: 'Cli-Справочник', link: `/ru/${versionsConfig.latest}/reference/cli` },
+          { text: 'IaC', link: `/ru/${versionsConfig.latest}/reference/iac` },
+          { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
+          { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` },
+          { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` },
           {
             text: "Релизы",
             items: createVersionDropdown('ru')
@@ -98,14 +108,24 @@ export default defineConfig({
               items: [
                 { text: 'Установка', link: `/ru/${versionsConfig.latest}/guide/installation` },
                 { text: 'Быстрый старт', link: `/ru/${versionsConfig.latest}/guide/quickstart` },
-                { text: 'Использование', link: `/ru/${versionsConfig.latest}/guide/usage` },
               ]
             },
             {
               text: 'Референс', 
               collapsed: true, 
               items: [
-                { text: 'Cli', link: `/ru/${versionsConfig.latest}/reference/cli` } 
+                { text: 'IaC', link: `/ru/${versionsConfig.latest}/reference/iac` },
+                { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
+                { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }, 
+                { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` }, 
+              ]
+            },
+            {
+              text: 'Продукт', 
+              collapsed: false, 
+              items: [
+                { text: 'Изменения', link: `/ru/${versionsConfig.latest}/product/changelog` },
+                { text: '⭐ Give Us a star', link: `https://github.com/Mad-Pixels/go-dyno` },
               ]
             }
           ]
