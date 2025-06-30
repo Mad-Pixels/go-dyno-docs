@@ -34,7 +34,7 @@ _Если вы еще не установили GoDyno, перейдите к р
 ## 📋 Шаг 1: Создайте схему
 Опишите вашу DynamoDB таблицу в JSON файле:
 ::: code-group
-<<< @/snippets/v0.0.1/quickstart/JSON-schema{json}
+<<< @/snippets/v0.0.1/quickstart/json-schema{json}
 :::
 
 ::: warning Aттрибуты:

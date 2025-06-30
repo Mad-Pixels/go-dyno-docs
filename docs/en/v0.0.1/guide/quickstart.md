@@ -34,7 +34,7 @@ _If you haven’t installed GoDyno yet, head over to the [installation guide](./
 ## 📋 Step 1: Create a Schema
 Describe your DynamoDB table in a JSON file:
 ::: code-group
-<<< @/snippets/v0.0.1/quickstart/JSON-schema{json}
+<<< @/snippets/v0.0.1/quickstart/json-schema{json}
 :::
 
 ::: warning Attributes:
