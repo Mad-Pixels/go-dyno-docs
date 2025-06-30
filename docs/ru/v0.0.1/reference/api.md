@@ -231,7 +231,11 @@ func NewQueryBuilder() *QueryBuilder
 _(это быстрее и дешевле чем `Filter`)_
 :::
 ```go
-func (qb *QueryBuilder) With(field string, op OperatorType, values ...any) *QueryBuilder
+func (qb *QueryBuilder) With(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *QueryBuilder
 ```
 ::: info Добавляет условие для запросов в DynamoDB.
 Принимает:
@@ -499,7 +503,11 @@ for _, item := range items {
 _(используйте с умом)_
 :::
 ```go
-func (qb *QueryBuilder) Filter(field string, op OperatorType, values ...any) *QueryBuilder
+func (qb *QueryBuilder) Filter(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *QueryBuilder
 ```
 ::: info Добавляет условие для фильтрации полученныйх из DynamoDB значений.
 Принимает:
@@ -1032,7 +1040,9 @@ for _, item := range items {
 
 ### qb.StartFrom
 ```go
-func (qb *QueryBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *QueryBuilder
+func (qb *QueryBuilder) StartFrom(
+  lastEvaluatedKey map[string]types.AttributeValue,
+) *QueryBuilder
 ```
 ::: warning Пагинация
 **`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных и размер ответа превышает `1MB`.  
@@ -1135,7 +1145,13 @@ func (qb *QueryBuilder) BuildQuery() (*dynamodb.QueryInput, error)
 
 ### qb.Execute
 ```go
-func (qb *QueryBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
+func (qb *QueryBuilder) Execute(
+  ctx context.Context, 
+  client *dynamodb.Client,
+) (
+  []SchemaItem, 
+  error,
+)
 ```
 ::: info Выполняет запрос.
 Принимает:
@@ -1156,7 +1172,11 @@ func NewScanBuilder() *ScanBuilder
 
 ### `Обобщенный метод` Filter
 ```go
-func (sb *ScanBuilder) Filter(field string, op OperatorType, values ...any) *ScanBuilder
+func (sb *ScanBuilder) Filter(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *ScanBuilder
 ```
 ::: info Добавляет условие для фильтрации полученныйх из DynamoDB значений.
 Принимает:
@@ -1333,7 +1353,11 @@ for _, item := range items {
 
 ### sb.FilterBetween
 ```go
-func (sb *ScanBuilder) FilterBetween(field string, start, end any) *ScanBuilder
+func (sb *ScanBuilder) FilterBetween(
+  field string, 
+  start, 
+  end any,
+) *ScanBuilder
 ```
 ::: info Добавляет фильтр `диапазона`.
 Принимает:
@@ -1384,7 +1408,10 @@ for _, item := range items {
 
 ### sb.FilterNotContains
 ```go
-func (sb *ScanBuilder) FilterNotContains(field string, value any) *ScanBuilder
+func (sb *ScanBuilder) FilterNotContains(
+  field string, 
+  value any,
+) *ScanBuilder
 ```
 ::: info Добавляет фильтр `НЕ содержит`.
 Принимает:
@@ -1585,7 +1612,9 @@ for _, item := range items {
 
 ### sb.StartFrom
 ```go
-func (sb *ScanBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *ScanBuilder
+func (sb *ScanBuilder) StartFrom(
+  lastEvaluatedKey map[string]types.AttributeValue,
+) *ScanBuilder
 ```
 ::: warning Пагинация
 **`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных и размер ответа превышает `1MB`.  
@@ -1674,7 +1703,10 @@ for _, item := range items {
 
 ### sb.WithParallelScan
 ```go
-func (sb *ScanBuilder) WithParallelScan(totalSegments, segment int) *ScanBuilder
+func (sb *ScanBuilder) WithParallelScan(
+  totalSegments, 
+  segment int,
+) *ScanBuilder
 ```
 ::: warning Параллельное сканирование
 Увеличивает потребление RCU пропорционально количеству сегментов. 
@@ -1692,7 +1724,13 @@ func (sb *ScanBuilder) BuildScan() (*dynamodb.ScanInput, error)
 
 ### sb.Execute
 ```go
-func (sb *ScanBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
+func (sb *ScanBuilder) Execute(
+  ctx context.Context, 
+  client *dynamodb.Client,
+) (
+  []SchemaItem, 
+  error,
+)
 ```
 ::: info Выполняет сканирование.
 Принимает:
@@ -1720,7 +1758,12 @@ func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
 _Превышение лимита вернет ошибку._
 :::
 ```go
-func BatchItemsInput(items []SchemaItem) ([]map[string]types.AttributeValue, error)
+func BatchItemsInput(
+  items []SchemaItem,
+) (
+  []map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Преобразует массив SchemaItem в массив AttributeValue maps.
 Принимает:
@@ -1733,7 +1776,13 @@ func BatchItemsInput(items []SchemaItem) ([]map[string]types.AttributeValue, err
 
 ### KeyInput
 ```go
-func KeyInput(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
+func KeyInput(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Создает ключ из значений hash и range ключей.
 _`rangeKeyValue` может быть **`nil`** если таблица использует только hash key_
@@ -1749,7 +1798,13 @@ _`rangeKeyValue` может быть **`nil`** если таблица испо�
 
 ### KeyInputFromRaw
 ```go
-func KeyInputFromRaw(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
+func KeyInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Создает ключ из сырых значений с валидацией.
 Принимает:
@@ -1776,7 +1831,14 @@ func KeyInputFromItem(item SchemaItem) (map[string]types.AttributeValue, error)
 
 ### UpdateItemInputFromRaw
 ```go
-func UpdateItemInputFromRaw(hashKeyValue, rangeKeyValue any, updates map[string]any) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updates map[string]any,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Создает UpdateItemInput из сырых значений.
 Принимает:
@@ -1791,7 +1853,17 @@ func UpdateItemInputFromRaw(hashKeyValue, rangeKeyValue any, updates map[string]
 
 ### UpdateItemInputWithCondition
 ```go
-func UpdateItemInputWithCondition(hashKeyValue, rangeKeyValue any, updates map[string]any, conditionExpression string, conditionAttributeNames map[string]string, conditionAttributeValues map[string]types.AttributeValue) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputWithCondition(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updates map[string]any, 
+  conditionExpression string, 
+  conditionAttributeNames map[string]string, 
+  conditionAttributeValues map[string]types.AttributeValue,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Создает UpdateItemInput с условным выражением.
 Принимает:
@@ -1809,7 +1881,15 @@ func UpdateItemInputWithCondition(hashKeyValue, rangeKeyValue any, updates map[s
 
 ### UpdateItemInputWithExpression
 ```go
-func UpdateItemInputWithExpression(hashKeyValue, rangeKeyValue any, updateBuilder expression.UpdateBuilder, conditionBuilder *expression.ConditionBuilder) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputWithExpression(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updateBuilder expression.UpdateBuilder, 
+  conditionBuilder *expression.ConditionBuilder,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Создает UpdateItemInput с expression builders.
 Принимает:
@@ -1825,7 +1905,13 @@ func UpdateItemInputWithExpression(hashKeyValue, rangeKeyValue any, updateBuilde
 
 ### DeleteItemInputFromRaw
 ```go
-func DeleteItemInputFromRaw(hashKeyValue, rangeKeyValue any) (*dynamodb.DeleteItemInput, error)
+func DeleteItemInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  *dynamodb.DeleteItemInput, 
+  error,
+)
 ```
 ::: info Создает DeleteItemInput из значений ключей.
 Принимает:
@@ -1839,7 +1925,16 @@ func DeleteItemInputFromRaw(hashKeyValue, rangeKeyValue any) (*dynamodb.DeleteIt
 
 ### DeleteItemInputWithCondition
 ```go
-func DeleteItemInputWithCondition(hashKeyValue, rangeKeyValue any, conditionExpression string, expressionAttributeNames map[string]string, expressionAttributeValues map[string]types.AttributeValue) (*dynamodb.DeleteItemInput, error)
+func DeleteItemInputWithCondition(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  conditionExpression string, 
+  expressionAttributeNames map[string]string, 
+  expressionAttributeValues map[string]types.AttributeValue,
+) (
+  *dynamodb.DeleteItemInput, 
+  error,
+)
 ```
 ::: info Создает DeleteItemInput с условным выражением.
 Принимает:
@@ -1856,7 +1951,12 @@ func DeleteItemInputWithCondition(hashKeyValue, rangeKeyValue any, conditionExpr
 
 ### BatchDeleteItemsInput
 ```go
-func BatchDeleteItemsInput(keys []map[string]types.AttributeValue) (*dynamodb.BatchWriteItemInput, error)
+func BatchDeleteItemsInput(
+  keys []map[string]types.AttributeValue,
+) (
+  *dynamodb.BatchWriteItemInput, 
+  error,
+)
 ```
 ::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
 :::
@@ -1871,7 +1971,12 @@ func BatchDeleteItemsInput(keys []map[string]types.AttributeValue) (*dynamodb.Ba
 
 ### BatchDeleteItemsInputFromRaw
 ```go
-func BatchDeleteItemsInputFromRaw(items []SchemaItem) (*dynamodb.BatchWriteItemInput, error)
+func BatchDeleteItemsInputFromRaw(
+  items []SchemaItem,
+) (
+  *dynamodb.BatchWriteItemInput, 
+  error,
+)
 ```
 ::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
 :::
@@ -1913,7 +2018,12 @@ func ExtractOldImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 
 ### ExtractKeys
 ```go
-func ExtractKeys(record events.DynamoDBEventRecord) (map[string]types.AttributeValue, error)
+func ExtractKeys(
+  record events.DynamoDBEventRecord,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Извлекает ключи элемента из stream record.
 Принимает:
@@ -1962,8 +2072,12 @@ func IsRemoveEvent(record events.DynamoDBEventRecord) bool
 
 ### ExtractChangedAttributes
 ```go
-func ExtractChangedAttributes(record events.DynamoDBEventRecord) ([]string, error)
-```
+func ExtractChangedAttributes(
+  record events.DynamoDBEventRecord,
+) (
+  []string, 
+  error,
+)```
 ::: info Возвращает список изменившихся атрибутов.
 Принимает:
 - `record` - запись stream
@@ -1975,7 +2089,10 @@ func ExtractChangedAttributes(record events.DynamoDBEventRecord) ([]string, erro
 
 ### HasAttributeChanged
 ```go
-func HasAttributeChanged(record events.DynamoDBEventRecord, attributeName string) bool
+func HasAttributeChanged(
+  record events.DynamoDBEventRecord, 
+  attributeName string,
+) bool
 ```
 ::: info Проверяет, изменился ли конкретный атрибут.
 Принимает:
@@ -2145,7 +2262,14 @@ func ValidateOperator(fieldName string, op OperatorType) bool
 
 ### BuildConditionExpression
 ```go
-func BuildConditionExpression(field string, op OperatorType, values []any) (expression.ConditionBuilder, error)
+func BuildConditionExpression(
+  field string, 
+  op OperatorType, 
+  values []any,
+) (
+  expression.ConditionBuilder, 
+  error,
+)
 ```
 ::: info Создает условие фильтрации.
 Принимает:
@@ -2160,7 +2284,14 @@ func BuildConditionExpression(field string, op OperatorType, values []any) (expr
 
 ### BuildKeyConditionExpression
 ```go
-func BuildKeyConditionExpression(field string, op OperatorType, values []any) (expression.KeyConditionBuilder, error)
+func BuildKeyConditionExpression(
+  field string, 
+  op OperatorType, 
+  values []any,
+) (
+  expression.KeyConditionBuilder, 
+  error,
+)
 ```
 ::: info Создает ключевое условие.
 Принимает:

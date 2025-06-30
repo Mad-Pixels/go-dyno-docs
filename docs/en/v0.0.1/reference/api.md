@@ -236,7 +236,11 @@ All `With` methods are applied **BEFORE** reading data from DynamoDB.
 _(This is faster and cheaper than using `Filter`)_
 :::
 ```go
-func (qb *QueryBuilder) With(field string, op OperatorType, values ...any) *QueryBuilder
+func (qb *QueryBuilder) With(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *QueryBuilder
 ```
 ::: info Adds a condition for DynamoDB queries.
 Accepts:
@@ -504,7 +508,11 @@ All `Filter` methods are applied **AFTER** reading data from DynamoDB.
 _(use with caution)_
 :::
 ```go
-func (qb *QueryBuilder) Filter(field string, op OperatorType, values ...any) *QueryBuilder
+func (qb *QueryBuilder) Filter(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *QueryBuilder
 ```
 ::: info Adds a condition for filtering values retrieved from DynamoDB.
 Accepts:
@@ -1037,7 +1045,9 @@ for _, item := range items {
 
 ### qb.StartFrom
 ```go
-func (qb *QueryBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *QueryBuilder
+func (qb *QueryBuilder) StartFrom(
+  lastEvaluatedKey map[string]types.AttributeValue,
+) *QueryBuilder
 ```
 ::: warning Pagination  
 **`LastEvaluatedKey`** can be **`null`** even if more data exists and the response size exceeds `1MB`.  
@@ -1140,7 +1150,13 @@ func (qb *QueryBuilder) BuildQuery() (*dynamodb.QueryInput, error)
 
 ### qb.Execute
 ```go
-func (qb *QueryBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
+func (qb *QueryBuilder) Execute(
+  ctx context.Context, 
+  client *dynamodb.Client,
+) (
+  []SchemaItem, 
+  error,
+)
 ```
 ::: info Executes the query.  
 Accepts:
@@ -1161,7 +1177,11 @@ func NewScanBuilder() *ScanBuilder
 
 ### `Generic method` Filter
 ```go
-func (sb *ScanBuilder) Filter(field string, op OperatorType, values ...any) *ScanBuilder
+func (sb *ScanBuilder) Filter(
+  field string, 
+  op OperatorType, 
+  values ...any,
+) *ScanBuilder
 ```
 ::: info Adds a condition to filter the values retrieved from DynamoDB.  
 Accepts:
@@ -1338,7 +1358,11 @@ for _, item := range items {
 
 ### sb.FilterBetween
 ```go
-func (sb *ScanBuilder) FilterBetween(field string, start, end any) *ScanBuilder
+func (sb *ScanBuilder) FilterBetween(
+  field string, 
+  start, 
+  end any,
+) *ScanBuilder
 ```
 ::: info Adds a `between` filter.  
 Accepts:
@@ -1389,7 +1413,10 @@ for _, item := range items {
 
 ### sb.FilterNotContains
 ```go
-func (sb *ScanBuilder) FilterNotContains(field string, value any) *ScanBuilder
+func (sb *ScanBuilder) FilterNotContains(
+  field string, 
+  value any,
+) *ScanBuilder
 ```
 ::: info Adds a `not contains` filter.  
 Accepts:
@@ -1590,7 +1617,9 @@ for _, item := range items {
 
 ### sb.StartFrom
 ```go
-func (sb *ScanBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *ScanBuilder
+func (sb *ScanBuilder) StartFrom(
+  lastEvaluatedKey map[string]types.AttributeValue,
+) *ScanBuilder
 ```
 ::: warning Pagination  
 **`LastEvaluatedKey`** can be **`null`** even if there is more data and the response size exceeds `1MB`.  
@@ -1679,7 +1708,10 @@ for _, item := range items {
 
 ### sb.WithParallelScan
 ```go
-func (sb *ScanBuilder) WithParallelScan(totalSegments, segment int) *ScanBuilder
+func (sb *ScanBuilder) WithParallelScan(
+  totalSegments, 
+  segment int,
+) *ScanBuilder
 ```
 ::: warning Parallel Scan
 Increases RCU consumption proportionally to the number of segments.
@@ -1697,7 +1729,13 @@ func (sb *ScanBuilder) BuildScan() (*dynamodb.ScanInput, error)
 
 ### sb.Execute
 ```go
-func (sb *ScanBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
+func (sb *ScanBuilder) Execute(
+  ctx context.Context, 
+  client *dynamodb.Client,
+) (
+  []SchemaItem, 
+  error,
+)
 ```
 ::: info Executes the scan operation.  
 Takes:
@@ -1725,7 +1763,12 @@ Returns:
 _Exceeding the limit will result in an error._
 :::
 ```go
-func BatchItemsInput(items []SchemaItem) ([]map[string]types.AttributeValue, error)
+func BatchItemsInput(
+  items []SchemaItem,
+) (
+  []map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Converts a slice of `SchemaItem` into a slice of `AttributeValue` maps.  
 Takes:
@@ -1738,7 +1781,13 @@ Returns:
 
 ### KeyInput
 ```go
-func KeyInput(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
+func KeyInput(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Creates a key from hash and range key values.  
 _`rangeKeyValue` can be **`nil`** if the table uses only a hash key_
@@ -1754,7 +1803,13 @@ Returns:
 
 ### KeyInputFromRaw
 ```go
-func KeyInputFromRaw(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
+func KeyInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Creates a key from raw values with validation.
 Takes:
@@ -1781,7 +1836,14 @@ Returns:
 
 ### UpdateItemInputFromRaw
 ```go
-func UpdateItemInputFromRaw(hashKeyValue, rangeKeyValue any, updates map[string]any) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updates map[string]any,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Creates an UpdateItemInput from raw values.  
 Accepts:  
@@ -1796,7 +1858,17 @@ Returns:
 
 ### UpdateItemInputWithCondition
 ```go
-func UpdateItemInputWithCondition(hashKeyValue, rangeKeyValue any, updates map[string]any, conditionExpression string, conditionAttributeNames map[string]string, conditionAttributeValues map[string]types.AttributeValue) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputWithCondition(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updates map[string]any, 
+  conditionExpression string, 
+  conditionAttributeNames map[string]string, 
+  conditionAttributeValues map[string]types.AttributeValue,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Creates an UpdateItemInput with a condition expression.  
 Accepts:  
@@ -1814,7 +1886,15 @@ Returns:
 
 ### UpdateItemInputWithExpression
 ```go
-func UpdateItemInputWithExpression(hashKeyValue, rangeKeyValue any, updateBuilder expression.UpdateBuilder, conditionBuilder *expression.ConditionBuilder) (*dynamodb.UpdateItemInput, error)
+func UpdateItemInputWithExpression(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  updateBuilder expression.UpdateBuilder, 
+  conditionBuilder *expression.ConditionBuilder,
+) (
+  *dynamodb.UpdateItemInput, 
+  error,
+)
 ```
 ::: info Creates an UpdateItemInput using expression builders.  
 Accepts:  
@@ -1830,7 +1910,13 @@ Returns:
 
 ### DeleteItemInputFromRaw
 ```go
-func DeleteItemInputFromRaw(hashKeyValue, rangeKeyValue any) (*dynamodb.DeleteItemInput, error)
+func DeleteItemInputFromRaw(
+  hashKeyValue, 
+  rangeKeyValue any,
+) (
+  *dynamodb.DeleteItemInput, 
+  error,
+)
 ```
 ::: info Creates a DeleteItemInput from key values.  
 Accepts:  
@@ -1844,7 +1930,16 @@ Returns:
 
 ### DeleteItemInputWithCondition
 ```go
-func DeleteItemInputWithCondition(hashKeyValue, rangeKeyValue any, conditionExpression string, expressionAttributeNames map[string]string, expressionAttributeValues map[string]types.AttributeValue) (*dynamodb.DeleteItemInput, error)
+func DeleteItemInputWithCondition(
+  hashKeyValue, 
+  rangeKeyValue any, 
+  conditionExpression string, 
+  expressionAttributeNames map[string]string, 
+  expressionAttributeValues map[string]types.AttributeValue,
+) (
+  *dynamodb.DeleteItemInput, 
+  error,
+)
 ```
 ::: info Creates a DeleteItemInput with a condition expression.  
 Accepts:  
@@ -1861,7 +1956,12 @@ Returns:
 
 ### BatchDeleteItemsInput
 ```go
-func BatchDeleteItemsInput(keys []map[string]types.AttributeValue) (*dynamodb.BatchWriteItemInput, error)
+func BatchDeleteItemsInput(
+  keys []map[string]types.AttributeValue,
+) (
+  *dynamodb.BatchWriteItemInput, 
+  error,
+)
 ```
 ::: warning Maximum of **`25`** items per batch operation.  
 _Exceeding the limit will result in an error._
@@ -1877,7 +1977,12 @@ Returns:
 
 ### BatchDeleteItemsInputFromRaw
 ```go
-func BatchDeleteItemsInputFromRaw(items []SchemaItem) (*dynamodb.BatchWriteItemInput, error)
+func BatchDeleteItemsInputFromRaw(
+  items []SchemaItem,
+) (
+  *dynamodb.BatchWriteItemInput, 
+  error,
+)
 ```
 ::: warning Maximum of **`25`** items per batch operation.  
 _Exceeding the limit will result in an error._
@@ -1920,7 +2025,12 @@ Returns:
 
 ### ExtractKeys
 ```go
-func ExtractKeys(record events.DynamoDBEventRecord) (map[string]types.AttributeValue, error)
+func ExtractKeys(
+  record events.DynamoDBEventRecord,
+) (
+  map[string]types.AttributeValue, 
+  error,
+)
 ```
 ::: info Extracts the item's keys from a stream record.  
 Accepts:  
@@ -1969,7 +2079,12 @@ Returns:
 
 ### ExtractChangedAttributes
 ```go
-func ExtractChangedAttributes(record events.DynamoDBEventRecord) ([]string, error)
+func ExtractChangedAttributes(
+  record events.DynamoDBEventRecord,
+) (
+  []string, 
+  error,
+)
 ```
 ::: info Returns a list of changed attributes.  
 Accepts:  
@@ -1982,7 +2097,10 @@ Returns:
 
 ### HasAttributeChanged
 ```go
-func HasAttributeChanged(record events.DynamoDBEventRecord, attributeName string) bool
+func HasAttributeChanged(
+  record events.DynamoDBEventRecord, 
+  attributeName string,
+) bool
 ```
 ::: info Checks whether a specific attribute has changed.  
 Accepts:  
@@ -2152,7 +2270,14 @@ Returns:
 
 ### BuildConditionExpression
 ```go
-func BuildConditionExpression(field string, op OperatorType, values []any) (expression.ConditionBuilder, error)
+func BuildConditionExpression(
+  field string, 
+  op OperatorType, 
+  values []any,
+) (
+  expression.ConditionBuilder, 
+  error,
+)
 ```
 ::: info Creates a filter condition.  
 Accepts:  
@@ -2167,7 +2292,14 @@ Returns:
 
 ### BuildKeyConditionExpression
 ```go
-func BuildKeyConditionExpression(field string, op OperatorType, values []any) (expression.KeyConditionBuilder, error)
+func BuildKeyConditionExpression(
+  field string, 
+  op OperatorType, 
+  values []any,
+) (
+  expression.KeyConditionBuilder, 
+  error,
+)
 ```
 ::: info Creates a key condition.  
 Accepts:  
