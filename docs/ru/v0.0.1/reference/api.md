@@ -1,67 +1,79 @@
-# API Reference
+---
+outline: [2, 3]
+---
 
-## Содержание
+<div v-pre>
+  <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+    style="
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background-color: #007bff;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    "
+    aria-label="Наверх"
+  >
+    <img src="/icons/arrow-top.png" alt="Наверх" style="width: 24px; height: 24px;" />
+  </button>
+</div>
 
-- [Константы](#константы)
-- [Структуры данных](#структуры-данных)
-- [QueryBuilder](#querybuilder)
-- [ScanBuilder](#scanbuilder)
-- [Input Functions](#input-functions)
-- [Stream Functions](#stream-functions)
-- [Validation Functions](#validation-functions)
-- [Operators](#operators)
-
-::: tip Соглашения
-**`With*`** методы - ключевые условия (применяются ДО чтения)  
-**`Filter*`** методы - фильтры (применяются ПОСЛЕ чтения)  
-**`*Input`** функции - создание DynamoDB inputs  
-**`Extract*`** функции - извлечение из Stream events
-:::
+# Описание API
 
 ## Константы
-
 ### TableName
 ```go
 const TableName = "table-name"
 ```
-_Имя таблицы DynamoDB._
+::: info Имя таблицы DynamoDB
+:::
 
-### Column константы
+### Column
 ```go
 const ColumnId = "id"
 const ColumnEmail = "email"
 const ColumnTimestamp = "timestamp"
 ```
-_Имена столбцов таблицы._ 
-
-::: tip
-Обращение к колонке: **Column[[ ColumnName ]]**
+::: info Имена столбцов таблицы
+:::
+::: tip Нейминг колонок
+Названия всех описанных в таблице колонок начинаются с `Column` и используют CamelCase синтаксис
 :::
 
-### Index константы
+### Index
 ```go
 const IndexEmailIndex = "email-index"
 ```
-_Имена вторичных индексов._
-
-::: tip
-Обращение к индексам: Index[[ name ]]
+::: info Имена вторичных индексов
+:::
+::: tip Нейминг индексов
+Названия всех описанных в таблице индексов начинаются с `Index` и используют CamelCase синтаксис
 :::
 
-### AttributeNames
+### Attribute
 ```go
 var AttributeNames = []string{"id", "timestamp", "email"}
 ```
-_Список всех имен атрибутов._
+::: info Cлайс строк со всеми именами атрибутов таблицы DynamoDB
+:::
 
-### KeyAttributeNames
+### KeyAttribute
 ```go
 var KeyAttributeNames = []string{"id", "timestamp"}
 ```
-_Список ключевых атрибутов._
+::: info Cлайс строк с первичными ключами таблицы DynamoDB
+:::
 
 ## Структуры данных
-
 ### SchemaItem
 ```go
 type SchemaItem struct {
@@ -70,7 +82,8 @@ type SchemaItem struct {
   Timestamp int64  `dynamodbav:"timestamp"`
 }
 ```
-_Основная структура элемента таблицы._
+::: info Структура, которая представляет одну запись в DynamoDB
+:::
 
 ### TableSchema
 ```go
@@ -81,777 +94,1707 @@ var TableSchema = DynamoSchema{
   // ...
 }
 ```
-_Метаданные схемы таблицы._
+::: info Глобальная переменная типа `DynamoSchema`, которая содержит всю мета-информацию о таблице
+:::
+::: details мета дата
+```go
+var TableSchema = DynamoSchema{
+   TableName: "user-profiles",
+   HashKey:   "user_id",
+   RangeKey:  "profile_type",
+   
+   Attributes: []Attribute{
+       {Name: "user_id", Type: "S"},
+       {Name: "profile_type", Type: "S"},
+       {Name: "created_at", Type: "N"},
+       {Name: "status", Type: "S"},
+   },
+   
+   CommonAttributes: []Attribute{
+       {Name: "email", Type: "S"},
+       {Name: "is_active", Type: "BOOL"},
+       {Name: "tags", Type: "SS"},
+       {Name: "scores", Type: "NS"},
+   },
+   
+   SecondaryIndexes: []SecondaryIndex{
+       {
+           Name:           "status-created-index",
+           HashKey:        "status",
+           RangeKey:       "created_at",
+           ProjectionType: "ALL",
+       },
+       {
+           Name:           "category-profile-index", 
+           HashKey:        "category_id",
+           RangeKey:       "profile_type",
+           ProjectionType: "INCLUDE",
+           NonKeyAttributes: []string{"email", "is_active"},
+       },
+       {
+           Name:             "user-created-lsi",
+           HashKey:          "user_id",
+           RangeKey:         "created_at",
+           ProjectionType:   "KEYS_ONLY",
+           HashKeyParts: []CompositeKeyPart{
+               {IsConstant: false, Value: "user_id"},
+               {IsConstant: true, Value: "PROFILE"},
+           },
+           RangeKeyParts: []CompositeKeyPart{
+               {IsConstant: false, Value: "created_at"},
+               {IsConstant: true, Value: "2024"},
+           },
+       },
+   },
+   
+   FieldsMap: map[string]FieldInfo{
+       "user_id": {
+           DynamoType:       "S",
+           IsKey:            true,
+           IsHashKey:        true,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("S"),
+       },
+       "profile_type": {
+           DynamoType:       "S",
+           IsKey:            true,
+           IsHashKey:        false,
+           IsRangeKey:       true,
+           AllowedOperators: buildAllowedOperators("S"),
+       },
+       "created_at": {
+           DynamoType:       "N",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("N"),
+       },
+       "status": {
+           DynamoType:       "S",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("S"),
+       },
+       "email": {
+           DynamoType:       "S",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("S"),
+       },
+       "is_active": {
+           DynamoType:       "BOOL",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("BOOL"),
+       },
+       "tags": {
+           DynamoType:       "SS",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("SS"),
+       },
+       "scores": {
+           DynamoType:       "NS",
+           IsKey:            false,
+           IsHashKey:        false,
+           IsRangeKey:       false,
+           AllowedOperators: buildAllowedOperators("NS"),
+       },
+   },
+}
+```
+:::
 
 ## QueryBuilder
-
-::: warning 
-**Ключевые условия: `With[[ name ]]`** 
-_(WithEQ, WithGT и т.д.)_
-
+::: danger `With` / `Filter`  
+- `With` _(WithEQ, WithGT и т.д.)_  
 Применяются **`ДО`** чтения данных из DynamoDB и определяют какие элементы будут прочитаны.
 
-**Фильтры: `With[[ name ]]`**
-_(FilterEQ, FilterGT и т.д.)_
-
-Применяются **`ПОСЛЕ`** чтения данных и влияют только на то, что возвращается в результате.
-_(DynamoDB всё равно считывает все элементы, соответствующие ключевым условиям, и вы платите за все прочитанные данные.)_
+- `Filter` _(FilterEQ, FilterGT и т.д.)_  
+Применяются **`ПОСЛЕ`** чтения данных и влияют только на то, что возвращается в результате.  
 :::
 
 ### NewQueryBuilder
 ```go
 func NewQueryBuilder() *QueryBuilder
 ```
-_Создает новый QueryBuilder._
+::: info Создает новый `QueryBuilder`
+:::
 
-**Возвращает:** `*QueryBuilder`
+### `Обобщенный метод` With
+::: warning Влияние на запрос:
+Все методы `With` приминяются **`ДО`** чтения данных из DynamoDB.  
+_(это быстрее и дешевле чем `Filter`)_
+:::
+```go
+func (qb *QueryBuilder) With(field string, op OperatorType, values ...any) *QueryBuilder
+```
+::: info Добавляет условие для запросов в DynamoDB.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+- `op` - тип операции
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().With("user_id", EQ, "123")
 
-### WithEQ
+queryInput, err := query.BuildQuery()
+if err != nil {
+    return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+    return err
+}
+
+for _, item := range items {
+    fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### qb.WithEQ
 ```go
 func (qb *QueryBuilder) WithEQ(field string, value any) *QueryBuilder
 ```
-_Добавляет условие равенства для ключей._
-
-**Параметры:**
+::: info Добавляет условие `равно` для ключей.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  WithEQ("created_at", timestamp).
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+    return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+    return err
+}
 
-### WithGT
+for _, item := range items {
+    fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### qb.WithGT
 ```go
 func (qb *QueryBuilder) WithGT(field string, value any) *QueryBuilder
 ```
-_Добавляет условие "больше" для range key._
-
-**Параметры:**
+::: info Добавляет условие `больше` для range key.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithGT("created_at", yesterdayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithLT
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.WithLT
 ```go
 func (qb *QueryBuilder) WithLT(field string, value any) *QueryBuilder
 ```
-_Добавляет условие "меньше" для range key._
-
-**Параметры:**
+::: info Добавляет условие `меньше` для range key.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithLT("created_at", yesterdayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithGTE
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.WithGTE
 ```go
 func (qb *QueryBuilder) WithGTE(field string, value any) *QueryBuilder
 ```
-_Добавляет условие "больше или равно" для range key._
-
-**Параметры:**
+::: info Добавляет условие `больше или равно` для range key.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithGTE("created_at", yesterdayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithLTE
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.WithLTE
 ```go
 func (qb *QueryBuilder) WithLTE(field string, value any) *QueryBuilder
 ```
-_Добавляет условие "меньше или равно" для range key._
-
-**Параметры:**
+::: info Добавляет условие `меньше или равно` для range key.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithLTE("created_at", yesterdayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithBetween
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.WithBetween
 ```go
 func (qb *QueryBuilder) WithBetween(field string, start, end any) *QueryBuilder
 ```
-_Добавляет условие диапазона для range key._
-
-**Параметры:**
+::: info Добавляет условие `условие диапазона` для range key.
+Принимает:
 - `field` - имя поля
 - `start` - начальное значение
 - `end` - конечное значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithBetween("created_at", yesterdayTimestamp, todayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithBeginsWith
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.WithBeginsWith
 ```go
 func (qb *QueryBuilder) WithBeginsWith(field string, value any) *QueryBuilder
 ```
-_Добавляет условие "начинается с" для range key._
-
-**Параметры:**
+::: info Добавляет условие `начинается с` для range key.
+Принимает:
 - `field` - имя поля
-- `value` - префикс
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().WithBeginsWith("created_at", yesterdayTimestamp)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### Filter
-
-::: warning
-Все методы **`Filter[[ name ]]`** применяются **`ПОСЛЕ`** чтения данных из DynamoDB.  
-_Это означает, что вы платите за все прочитанные элементы, даже если фильтр исключает их из результата._ 
-  
-**Старайтесь использовать ключевые условия **`With[[ name ]]`** для эффективной фильтрации.**
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
 :::
 
-```go
-func (qb *QueryBuilder) Filter(field string, op OperatorType, values ...any) *QueryBuilder
-```
-_Добавляет фильтр с указанным оператором._
-
-**Параметры:**
-- `field` - имя поля
-- `op` - оператор
-- `values` - значения
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterEQ
-```go
-func (qb *QueryBuilder) FilterEQ(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр равенства._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterNE
-```go
-func (qb *QueryBuilder) FilterNE(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр неравенства._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterGT
-```go
-func (qb *QueryBuilder) FilterGT(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "больше"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterLT
-```go
-func (qb *QueryBuilder) FilterLT(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "меньше"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterGTE
-```go
-func (qb *QueryBuilder) FilterGTE(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "больше или равно"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterLTE
-```go
-func (qb *QueryBuilder) FilterLTE(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "меньше или равно"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterBetween
-```go
-func (qb *QueryBuilder) FilterBetween(field string, start, end any) *QueryBuilder
-```
-_Добавляет фильтр диапазона._
-
-**Параметры:**
-- `field` - имя поля
-- `start` - начальное значение
-- `end` - конечное значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterContains
-```go
-func (qb *QueryBuilder) FilterContains(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр содержания._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - искомое значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterNotContains
-```go
-func (qb *QueryBuilder) FilterNotContains(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "не содержит"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - значение
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterBeginsWith
-```go
-func (qb *QueryBuilder) FilterBeginsWith(field string, value any) *QueryBuilder
-```
-_Добавляет фильтр "начинается с"._
-
-**Параметры:**
-- `field` - имя поля
-- `value` - префикс
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterIn
-```go
-func (qb *QueryBuilder) FilterIn(field string, values ...any) *QueryBuilder
-```
-_Добавляет фильтр "входит в список"._
-
-**Параметры:**
-- `field` - имя поля
-- `values` - список значений
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterNotIn
-```go
-func (qb *QueryBuilder) FilterNotIn(field string, values ...any) *QueryBuilder
-```
-_Добавляет фильтр "не входит в список"._
-
-**Параметры:**
-- `field` - имя поля
-- `values` - список значений
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterExists
-```go
-func (qb *QueryBuilder) FilterExists(field string) *QueryBuilder
-```
-_Добавляет фильтр существования атрибута._
-
-**Параметры:**
-- `field` - имя поля
-
-**Возвращает:** `*QueryBuilder`
-
-### FilterNotExists
-```go
-func (qb *QueryBuilder) FilterNotExists(field string) *QueryBuilder
-```
-_Добавляет фильтр отсутствия атрибута._
-
-**Параметры:**
-- `field` - имя поля
-
-**Возвращает:** `*QueryBuilder`
-
-### WithIndex
+### qb.WithIndex
 ```go
 func (qb *QueryBuilder) WithIndex(indexName string) *QueryBuilder
 ```
-_Указывает индекс для запроса._
+::: info Принудительно указывает, какой `secondary index` использовать для запроса вместо автоматического выбора.
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("status", "active").
+  WithIndex("status-created-index")
 
-**Параметры:**
-- `indexName` - имя индекса
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-**Возвращает:** `*QueryBuilder`
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+::: info Дополнительно
+`Без WithIndex:`
+- QueryBuilder автоматически выбирает оптимальный индекс
+- Ищет GSI/LSI который поддерживает твои ключи
 
-### OrderByAsc
+`С WithIndex:`
+- QueryBuilder принудительно использует указанный индекс
+- Игнорирует автоматический выбор
+:::
+
+### `Обобщенный метод` Filter
+::: warning Влияние на запрос:
+Все методы `Filter` приминяются **`ПОСЛЕ`** чтения данных из DynamoDB.  
+_(используйте с умом)_
+:::
+```go
+func (qb *QueryBuilder) Filter(field string, op OperatorType, values ...any) *QueryBuilder
+```
+::: info Добавляет условие для фильтрации полученныйх из DynamoDB значений.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+- `op` - тип операции
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  With("user_id", EQ, "123").
+  Filter("status", CONTAINS, "active")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+    return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+    return err
+}
+
+for _, item := range items {
+    fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### qb.FilterEQ
+```go
+func (qb *QueryBuilder) FilterEQ(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `равенства`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterEQ("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterNE
+```go
+func (qb *QueryBuilder) FilterNE(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `неравенства`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterNE("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterGT
+```go
+func (qb *QueryBuilder) FilterGT(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `больше`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterGT("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterLT
+```go
+func (qb *QueryBuilder) FilterLT(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `меньше`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterLT("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterGTE
+```go
+func (qb *QueryBuilder) FilterGTE(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `больше или равно`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterGTE("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterLTE
+```go
+func (qb *QueryBuilder) FilterLTE(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `меньше или равно`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterLTE("age", 18)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterBetween
+```go
+func (qb *QueryBuilder) FilterBetween(field string, start, end any) *QueryBuilder
+```
+::: info Добавляет фильтр `диапазона`.
+Принимает:
+- `field` - имя поля
+- `start` - начальное значение
+- `end` - конечное значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterBetween("age", 18, 35)
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterContains
+```go
+func (qb *QueryBuilder) FilterContains(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `содержит`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterContains("email", "@gmail.com")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterNotContains
+```go
+func (qb *QueryBuilder) FilterNotContains(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `НЕ содержит`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterNotContains("email", "@gmail.com")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterBeginsWith
+```go
+func (qb *QueryBuilder) FilterBeginsWith(field string, value any) *QueryBuilder
+```
+::: info Добавляет фильтр `начинается с`.
+Принимает:
+- `field` - имя поля
+- `value` - значение
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterBeginsWith("email", "alex")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterIn
+```go
+func (qb *QueryBuilder) FilterIn(field string, values ...any) *QueryBuilder
+```
+::: info Добавляет фильтр `входит в список`.
+Принимает:
+- `field` - имя поля
+- `value` - список значений
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterIn("email", []string{"alex@gmail.com", "john@gmail.com"})
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterNotIn
+```go
+func (qb *QueryBuilder) FilterNotIn(field string, values ...any) *QueryBuilder
+```
+::: info Добавляет фильтр `НЕ входит в список`.
+Принимает:
+- `field` - имя поля
+- `value` - список значений
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterNotIn("email", []string{"alex@gmail.com", "john@gmail.com"})
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterExists
+```go
+func (qb *QueryBuilder) FilterExists(field string) *QueryBuilder
+```
+::: info Добавляет фильтр `НЕ пустое поле`.
+Принимает:
+- `field` - имя поля
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterExists("email")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.FilterNotExists
+```go
+func (qb *QueryBuilder) FilterNotExists(field string) *QueryBuilder
+```
+::: info Добавляет фильтр `пустое поле`.
+Принимает:
+- `field` - имя поля
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  FilterNotExists("email")
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
+
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.OrderByAsc
 ```go
 func (qb *QueryBuilder) OrderByAsc() *QueryBuilder
 ```
-Устанавливает сортировку по возрастанию.
+::: info Устанавливает сортировку по возрастанию.
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  OrderByAsc()
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### OrderByDesc
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.OrderByDesc
 ```go
 func (qb *QueryBuilder) OrderByDesc() *QueryBuilder
 ```
-_Устанавливает сортировку по убыванию._
+::: info Устанавливает сортировку по убыванию.
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  OrderByDesc()
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### Limit
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### qb.Limit
 ```go
 func (qb *QueryBuilder) Limit(limit int) *QueryBuilder
 ```
-_Устанавливает лимит результатов._
-
-**Параметры:**
+::: info Устанавливает лимит результатов.
+Принимает:
 - `limit` - максимальное количество
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+  WithEQ("user_id", "123").
+  Limit(10)
 
-**Возвращает:** `*QueryBuilder`
+queryInput, err := query.BuildQuery()
+if err != nil {
+  return err
+}
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### StartFrom
-
-::: tip Пагинация
-**`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных, если размер ответа превышает 1MB.  
-Всегда проверяйте наличие LastEvaluatedKey для продолжения пагинации.
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
 :::
 
+### qb.StartFrom
 ```go
 func (qb *QueryBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *QueryBuilder
 ```
-_Устанавливает стартовый ключ для пагинации._
+::: warning Пагинация
+**`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных и размер ответа превышает `1MB`.  
 
-**Параметры:**
+_Всегда проверяйте наличие LastEvaluatedKey для продолжения пагинации._
+:::
+
+::: info Устанавливает стартовый ключ для пагинации.
+Принимает:
 - `lastEvaluatedKey` - последний ключ
+:::
+::: details Пример
+```go
+var lastKey map[string]types.AttributeValue
 
-**Возвращает:** `*QueryBuilder`
+query1 := NewQueryBuilder().
+    WithEQ("user_id", "123").
+    Limit(10)
 
-### WithProjection
+result1, err := dynamoClient.Query(ctx, query1Input)
+lastKey = result1.LastEvaluatedKey
+
+query2 := NewQueryBuilder().
+    WithEQ("user_id", "123").
+    StartFrom(lastKey).
+    Limit(10)
+```
+:::
+
+### qb.WithProjection
 ```go
 func (qb *QueryBuilder) WithProjection(attributes []string) *QueryBuilder
 ```
-_Устанавливает проекцию атрибутов._
+::: info Указывает какие конкретные поля вернуть из DynamoDB вместо всех полей записи.
+Принимает:
+- `attributes` - список полей
 
-::: tip Проекция
-Проекция **снижает потребление bandwidth** но **НЕ снижает RCU** - вы платите за чтение всех атрибутов элемента.
+Без WithProjection:
+```go
+type SchemaItem struct {
+    Id          string   // ✅
+    Name        string   // ✅ 
+    Email       string   // ✅
+    Description string   // ✅ (не нужно, но вернётся)
+    Content     string   // ✅ (не нужно, но вернётся)
+    Tags        []string // ✅ (не нужно, но вернётся)
+    ViewCount   int      // ✅ (не нужно, но вернётся)
+}
+```
+
+С WithProjection:
+```go
+// Возвращает ТОЛЬКО указанные поля
+WithProjection([]string{"id", "name", "email"})
+
+// В результате будут только:
+type PartialItem struct {
+    Id    string  // ✅
+    Name  string  // ✅
+    Email string  // ✅
+    // Description - отсутствует
+    // Content - отсутствует  
+    // Tags - отсутствует
+    // ViewCount - отсутствует
+}
+```
+:::
+::: warning Проекция **снижает потребление `bandwidth`** но **НЕ снижает `RCU`** - вы платите за чтение всех атрибутов элемента.
+:::
+::: details Пример
+```go
+query := NewQueryBuilder().
+    WithEQ("user_id", "123").
+    WithProjection([]string{"id", "email", "created_at"})
+
+queryInput, err := query.BuildQuery()
+if err != nil {
+    return err
+}
+
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+    return err
+}
+
+for _, item := range items {
+    fmt.Printf("ID: %s, Email: %s, Created: %s\n", 
+        item.Id, item.Email, item.CreatedAt)
+}
+```
 :::
 
-**Параметры:**
-- `attributes` - список атрибутов
-
-**Возвращает:** `*QueryBuilder`
-
-### BuildQuery
+### qb.BuildQuery
 ```go
 func (qb *QueryBuilder) BuildQuery() (*dynamodb.QueryInput, error)
 ```
-_Строит DynamoDB QueryInput._
-
+::: info Строит DynamoDB QueryInput.
 **Возвращает:** `*dynamodb.QueryInput, error`
+:::
 
-### Execute
+### qb.Execute
 ```go
 func (qb *QueryBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
 ```
-_Выполняет запрос._
-
-**Параметры:**
+::: info Выполняет запрос.
+Принимает:
 - `ctx` - контекст
 - `client` - DynamoDB клиент
-
-**Возвращает:** `[]SchemaItem, error`
+:::
 
 ## ScanBuilder
-
-::: warning 
-**Ключевые условия: `With[[ name ]]`** 
-_(WithEQ, WithGT и т.д.)_
-
-Применяются **`ДО`** чтения данных из DynamoDB и определяют какие элементы будут прочитаны.
-
-**Фильтры: `Filter[[ name ]]`**
-_(FilterEQ, FilterGT и т.д.)_
-
-Применяются **`ПОСЛЕ`** чтения данных и влияют только на то, что возвращается в результате.
-_(DynamoDB всё равно считывает все элементы, соответствующие ключевым условиям, и вы платите за все прочитанные данные.)_
+::: warning Scan читает всю таблицу.
 :::
 
 ### NewScanBuilder
 ```go
 func NewScanBuilder() *ScanBuilder
 ```
-_Создает новый ScanBuilder._
+::: info Создает новый `ScanBuilder`
+:::
 
-**Возвращает:** `*ScanBuilder`
-
-### Filter
+### `Обобщенный метод` Filter
 ```go
 func (sb *ScanBuilder) Filter(field string, op OperatorType, values ...any) *ScanBuilder
 ```
-_Добавляет фильтр с указанным оператором._
-
-**Параметры:**
+::: info Добавляет условие для фильтрации полученныйх из DynamoDB значений.
+Принимает:
 - `field` - имя поля
-- `op` - оператор
-- `values` - значения
+- `value` - значение
+- `op` - тип операции
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  Filter("user_id", EQ, "123").
+  Filter("status", CONTAINS, "active")
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterEQ
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterEQ
 ```go
 func (sb *ScanBuilder) FilterEQ(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр равенства._
-
-**Параметры:**
+::: info Добавляет фильтр `равенства`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterEQ("user_id", "123").
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterNE
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterNE
 ```go
 func (sb *ScanBuilder) FilterNE(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр неравенства._
-
-**Параметры:**
+::: info Добавляет фильтр `неравенства`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterNE("user_id", "123").
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterGT
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterGT
 ```go
 func (sb *ScanBuilder) FilterGT(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "больше"._
-
-**Параметры:**
+::: info Добавляет фильтр `больше`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterGT("age", 18).
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterLT
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterLT
 ```go
 func (sb *ScanBuilder) FilterLT(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "меньше"._
-
-**Параметры:**
+::: info Добавляет фильтр `меньше`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterLT("age", 18).
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterGTE
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterGTE
 ```go
 func (sb *ScanBuilder) FilterGTE(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "больше или равно"._
-
-**Параметры:**
+::: info Добавляет фильтр `больше или равно`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterGTE("age", 18).
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterLTE
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterLTE
 ```go
 func (sb *ScanBuilder) FilterLTE(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "меньше или равно"._
-
-**Параметры:**
+::: info Добавляет фильтр `меньше или равно`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterLTE("age", 18).
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterBetween
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterBetween
 ```go
 func (sb *ScanBuilder) FilterBetween(field string, start, end any) *ScanBuilder
 ```
-_Добавляет фильтр диапазона._
-
-**Параметры:**
+::: info Добавляет фильтр `диапазона`.
+Принимает:
 - `field` - имя поля
 - `start` - начальное значение
 - `end` - конечное значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterBetween("age", 18, 35).
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterContains
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterContains
 ```go
 func (sb *ScanBuilder) FilterContains(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр содержания._
-
-**Параметры:**
+::: info Добавляет фильтр `содержит`.
+Принимает:
 - `field` - имя поля
-- `value` - искомое значение
+- `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterContains("email", "@gmail.com").
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterNotContains
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterNotContains
 ```go
 func (sb *ScanBuilder) FilterNotContains(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "не содержит"._
-
-**Параметры:**
+::: info Добавляет фильтр `НЕ содержит`.
+Принимает:
 - `field` - имя поля
 - `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterContains("email", "@gmail.com").
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterBeginsWith
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterBeginsWith
 ```go
 func (sb *ScanBuilder) FilterBeginsWith(field string, value any) *ScanBuilder
 ```
-_Добавляет фильтр "начинается с"._
-
-**Параметры:**
+::: info Добавляет фильтр `начинается С`.
+Принимает:
 - `field` - имя поля
-- `value` - префикс
+- `value` - значение
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterBeginsWith("email", "alex").
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterIn
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.FilterIn
 ```go
 func (sb *ScanBuilder) FilterIn(field string, values ...any) *ScanBuilder
 ```
-_Добавляет фильтр "входит в список"._
-
-**Параметры:**
+::: info Добавляет фильтр `входит в список`.
+Принимает:
 - `field` - имя поля
-- `values` - список значений
+- `value` - список значений
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterIn("email", []string{"alex@gmail.com", "john@gmail.com"})
 
-**Возвращает:** `*ScanBuilder`
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterNotIn
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### sb.FilterNotIn
 ```go
 func (sb *ScanBuilder) FilterNotIn(field string, values ...any) *ScanBuilder
 ```
-_Добавляет фильтр "не входит в список"._
-
-**Параметры:**
+::: info Добавляет фильтр `НЕ входит в список`.
+Принимает:
 - `field` - имя поля
-- `values` - список значений
+- `value` - список значений
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterNotIn("email", []string{"alex@gmail.com", "john@gmail.com"})
 
-**Возвращает:** `*ScanBuilder`
+items, err := query.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterExists
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### sb.FilterExists
 ```go
 func (sb *ScanBuilder) FilterExists(field string) *ScanBuilder
 ```
-_Добавляет фильтр существования атрибута._
-
-**Параметры:**
+::: info Добавляет фильтр `НЕ пустое поле`.
+Принимает:
 - `field` - имя поля
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterExists("email")
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### FilterNotExists
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
+:::
+
+### sb.FilterNotExists
 ```go
 func (sb *ScanBuilder) FilterNotExists(field string) *ScanBuilder
 ```
-_Добавляет фильтр отсутствия атрибута._
-
-**Параметры:**
+::: info Добавляет фильтр `пустое поле`.
+Принимает:
 - `field` - имя поля
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterNotExists("email")
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### WithIndex
-::: info Типы индексов
-**GSI** (Global Secondary Index) имеют отдельные RCU/WCU настройки.  
-**LSI** (Local Secondary Index) используют RCU/WCU основной таблицы.
+for _, item := range items {
+  fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
+}
+```
 :::
 
+### sb.WithIndex
 ```go
 func (sb *ScanBuilder) WithIndex(indexName string) *ScanBuilder
 ```
-_Указывает индекс для сканирования._
+::: info Выполняем сканирование по конкретному индексу
+- **GSI** (Global Secondary Index) имеют отдельные RCU/WCU настройки.  
+- **LSI** (Local Secondary Index) используют RCU/WCU основной таблицы.
 
-**Параметры:**
+Принимает:
 - `indexName` - имя индекса
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  WithIndex("status-index").
+  FilterEQ("status", "active")
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### Limit
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
+:::
+
+### sb.Limit
 ```go
 func (sb *ScanBuilder) Limit(limit int) *ScanBuilder
 ```
-_Устанавливает лимит результатов._
-
-**Параметры:**
+::: info Устанавливает лимит результатов.
+Принимает:
 - `limit` - максимальное количество
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+  FilterEQ("status", "active").
+  Limit(10)
 
-**Возвращает:** `*ScanBuilder`
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+  return err
+}
 
-### StartFrom
-
-::: tip Пагинация
-**`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных, если размер ответа превышает 1MB.  
-Всегда проверяйте наличие LastEvaluatedKey для продолжения пагинации.
+for _, item := range items {
+  fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
+}
+```
 :::
 
+### sb.StartFrom
 ```go
 func (sb *ScanBuilder) StartFrom(lastEvaluatedKey map[string]types.AttributeValue) *ScanBuilder
 ```
-_Устанавливает стартовый ключ для пагинации._
+::: warning Пагинация
+**`LastEvaluatedKey`** может быть **`null`** даже если есть больше данных и размер ответа превышает `1MB`.  
 
-**Параметры:**
+_Всегда проверяйте наличие LastEvaluatedKey для продолжения пагинации._
+:::
+::: info Устанавливает стартовый ключ для пагинации.
+Принимает:
 - `lastEvaluatedKey` - последний ключ
+:::
+::: details Пример
+```go
+var lastKey map[string]types.AttributeValue
 
-**Возвращает:** `*ScanBuilder`
+scan1 := NewScanBuilder().
+   FilterEQ("status", "active").
+   Limit(10)
 
-### WithProjection
+result1, err := dynamoClient.Scan(ctx, scan1Input)
+lastKey = result1.LastEvaluatedKey
+
+scan2 := NewScanBuilder().
+   FilterEQ("status", "active").
+   StartFrom(lastKey).
+   Limit(10)
+```
+:::
+
+### sb.WithProjection
 ```go
 func (sb *ScanBuilder) WithProjection(attributes []string) *ScanBuilder
 ```
-_Устанавливает проекцию атрибутов._
+::: info Указывает какие конкретные поля вернуть из DynamoDB вместо всех полей записи.
+Принимает:
+- `attributes` - список полей
 
-**Параметры:**
-- `attributes` - список атрибутов
+Без WithProjection:
+```go
+type SchemaItem struct {
+    Id          string   // ✅
+    Name        string   // ✅ 
+    Email       string   // ✅
+    Description string   // ✅ (не нужно, но вернётся)
+    Content     string   // ✅ (не нужно, но вернётся)
+    Tags        []string // ✅ (не нужно, но вернётся)
+    ViewCount   int      // ✅ (не нужно, но вернётся)
+}
+```
 
-**Возвращает:** `*ScanBuilder`
+С WithProjection:
+```go
+// Возвращает ТОЛЬКО указанные поля
+WithProjection([]string{"id", "name", "email"})
 
-### WithParallelScan
+// В результате будут только:
+type PartialItem struct {
+    Id    string  // ✅
+    Name  string  // ✅
+    Email string  // ✅
+    // Description - отсутствует
+    // Content - отсутствует  
+    // Tags - отсутствует
+    // ViewCount - отсутствует
+}
+```
+:::
+::: warning Проекция **снижает потребление `bandwidth`** но **НЕ снижает `RCU`** - вы платите за чтение всех атрибутов элемента.
+:::
+::: details Пример
+```go
+scan := NewScanBuilder().
+   FilterEQ("status", "active").
+   WithProjection([]string{"id", "email", "created_at"})
 
-::: warning Параллельное сканирование
-Увеличивает потребление RCU пропорционально количеству сегментов. Используйте осторожно в production среде.
+items, err := scan.Execute(ctx, dynamoClient)
+if err != nil {
+   return err
+}
+
+for _, item := range items {
+   fmt.Printf("ID: %s, Email: %s, Created: %s\n", 
+       item.Id, item.Email, item.CreatedAt)
+}
+```
 :::
 
+### sb.WithParallelScan
 ```go
 func (sb *ScanBuilder) WithParallelScan(totalSegments, segment int) *ScanBuilder
 ```
-_Настраивает параллельное сканирование._
+::: warning Параллельное сканирование
+Увеличивает потребление RCU пропорционально количеству сегментов. 
 
-**Параметры:**
-- `totalSegments` - общее количество сегментов
-- `segment` - номер сегмента
+_Используйте осторожно в production среде._
+:::
 
-**Возвращает:** `*ScanBuilder`
-
-### BuildScan
+### sb.BuildScan
 ```go
 func (sb *ScanBuilder) BuildScan() (*dynamodb.ScanInput, error)
 ```
-_Строит DynamoDB ScanInput._
-
+::: info Строит DynamoDB ScanInput.
 **Возвращает:** `*dynamodb.ScanInput, error`
+:::
 
-### Execute
+### sb.Execute
 ```go
 func (sb *ScanBuilder) Execute(ctx context.Context, client *dynamodb.Client) ([]SchemaItem, error)
 ```
-_Выполняет сканирование._
-
-**Параметры:**
+::: info Выполняет сканирование.
+Принимает:
 - `ctx` - контекст
 - `client` - DynamoDB клиент
-
-**Возвращает:** `[]SchemaItem, error`
+:::
 
 ## Input Functions
-
 ### ItemInput
 ```go
 func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
-_Преобразует SchemaItem в DynamoDB AttributeValue map._
-
-**Параметры:**
+::: info Преобразует SchemaItem в DynamoDB AttributeValue map.
+Принимает:
 - `item` - элемент схемы
 
-**Возвращает:** `map[string]types.AttributeValue, error`
-
-### BatchItemsInput
-
-::: warning Лимит DynamoDB
-Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+Возвращает:
+- `map[string]types.AttributeValue`
+- `error`
 :::
 
+### BatchItemsInput
+::: warning Максимум **`25`** элементов в одной batch операции. 
+
+_Превышение лимита вернет ошибку._
+:::
 ```go
 func BatchItemsInput(items []SchemaItem) ([]map[string]types.AttributeValue, error)
 ```
-_Преобразует массив SchemaItem в массив AttributeValue maps._
+::: info Преобразует массив SchemaItem в массив AttributeValue maps.
+Принимает:
+- `items` - элементы схемы (список)
 
-**Параметры:**
-- `items` - элементы схемы
-
-**Возвращает:** `[]map[string]types.AttributeValue, error`
+Возвращает:
+- `[]map[string]types.AttributeValue`
+- `error`
+:::
 
 ### KeyInput
 ```go
 func KeyInput(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
 ```
-_Создает ключ из значений hash и range ключей._
+::: info Создает ключ из значений hash и range ключей.
+_`rangeKeyValue` может быть **`nil`** если таблица использует только hash key_
 
-::: info Range Key
-**`rangeKeyValue`** может быть **`nil`** если таблица использует только hash key.
-:::
-
-**Параметры:**
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 
-**Возвращает:** `map[string]types.AttributeValue, error`
+Возвращает:
+- `map[string]types.AttributeValue`
+- `error`
+:::
 
 ### KeyInputFromRaw
 ```go
 func KeyInputFromRaw(hashKeyValue, rangeKeyValue any) (map[string]types.AttributeValue, error)
 ```
-_Создает ключ из сырых значений с валидацией._
-
-**Параметры:**
+::: info Создает ключ из сырых значений с валидацией.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 
-**Возвращает:** `map[string]types.AttributeValue, error`
+Возвращает:
+- `map[string]types.AttributeValue`
+- `error`
+:::
 
 ### KeyInputFromItem
 ```go
 func KeyInputFromItem(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
-_Извлекает ключ из SchemaItem._
-
-**Параметры:**
+::: info Извлекает ключ из SchemaItem.
+Принимает:
 - `item` - элемент схемы
 
-**Возвращает:** `map[string]types.AttributeValue, error`
+Возвращает:
+- `map[string]types.AttributeValue`
+- `error`
+:::
 
 ### UpdateItemInputFromRaw
 ```go
 func UpdateItemInputFromRaw(hashKeyValue, rangeKeyValue any, updates map[string]any) (*dynamodb.UpdateItemInput, error)
 ```
-_Создает UpdateItemInput из сырых значений._
-
-**Параметры:**
+::: info Создает UpdateItemInput из сырых значений.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 - `updates` - карта обновлений
 
-**Возвращает:** `*dynamodb.UpdateItemInput, error`
+Возвращает:
+- `*dynamodb.UpdateItemInput`
+- `error`
+:::
 
 ### UpdateItemInputWithCondition
 ```go
 func UpdateItemInputWithCondition(hashKeyValue, rangeKeyValue any, updates map[string]any, conditionExpression string, conditionAttributeNames map[string]string, conditionAttributeValues map[string]types.AttributeValue) (*dynamodb.UpdateItemInput, error)
 ```
-_Создает UpdateItemInput с условным выражением._
-
-**Параметры:**
+::: info Создает UpdateItemInput с условным выражением.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 - `updates` - карта обновлений
@@ -859,252 +1802,283 @@ _Создает UpdateItemInput с условным выражением._
 - `conditionAttributeNames` - имена атрибутов условия
 - `conditionAttributeValues` - значения атрибутов условия
 
-**Возвращает:** `*dynamodb.UpdateItemInput, error`
+Возвращает:
+- `*dynamodb.UpdateItemInput`
+- `error`
+:::
 
 ### UpdateItemInputWithExpression
 ```go
 func UpdateItemInputWithExpression(hashKeyValue, rangeKeyValue any, updateBuilder expression.UpdateBuilder, conditionBuilder *expression.ConditionBuilder) (*dynamodb.UpdateItemInput, error)
 ```
-_Создает UpdateItemInput с expression builders._
-
-**Параметры:**
+::: info Создает UpdateItemInput с expression builders.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 - `updateBuilder` - построитель обновлений
 - `conditionBuilder` - построитель условий
 
-**Возвращает:** `*dynamodb.UpdateItemInput, error`
+Возвращает:
+- `*dynamodb.UpdateItemInput`
+- `error`
+:::
 
 ### DeleteItemInputFromRaw
 ```go
 func DeleteItemInputFromRaw(hashKeyValue, rangeKeyValue any) (*dynamodb.DeleteItemInput, error)
 ```
-_Создает DeleteItemInput из значений ключей._
-
-**Параметры:**
+::: info Создает DeleteItemInput из значений ключей.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 
-**Возвращает:** `*dynamodb.DeleteItemInput, error`
+Возвращает:
+- `*dynamodb.DeleteItemInput`
+- `error`
+:::
 
 ### DeleteItemInputWithCondition
 ```go
 func DeleteItemInputWithCondition(hashKeyValue, rangeKeyValue any, conditionExpression string, expressionAttributeNames map[string]string, expressionAttributeValues map[string]types.AttributeValue) (*dynamodb.DeleteItemInput, error)
 ```
-_Создает DeleteItemInput с условным выражением._
-
-**Параметры:**
+::: info Создает DeleteItemInput с условным выражением.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 - `conditionExpression` - условное выражение
 - `expressionAttributeNames` - имена атрибутов условия
 - `expressionAttributeValues` - значения атрибутов условия
 
-**Возвращает:** `*dynamodb.DeleteItemInput, error`
-
-### BatchDeleteItemsInput
-
-::: warning Лимит DynamoDB
-Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+Возвращает:
+- `*dynamodb.DeleteItemInput`
+- `error`
 :::
 
+### BatchDeleteItemsInput
 ```go
 func BatchDeleteItemsInput(keys []map[string]types.AttributeValue) (*dynamodb.BatchWriteItemInput, error)
 ```
-_Создает BatchWriteItemInput для удаления элементов._
-
-**Параметры:**
+::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+:::
+::: info Создает BatchWriteItemInput для удаления элементов.
+Принимает:
 - `keys` - ключи элементов
 
-**Возвращает:** `*dynamodb.BatchWriteItemInput, error`
+Возвращает:
+- `*dynamodb.BatchWriteItemInput`
+- `error`
+:::
 
 ### BatchDeleteItemsInputFromRaw
 ```go
 func BatchDeleteItemsInputFromRaw(items []SchemaItem) (*dynamodb.BatchWriteItemInput, error)
 ```
-_Создает BatchWriteItemInput из SchemaItems._
-
-**Параметры:**
+::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+:::
+::: info Создает BatchWriteItemInput из SchemaItems.
+Принимает:
 - `items` - элементы схемы
 
-**Возвращает:** `*dynamodb.BatchWriteItemInput, error`
+Возвращает:
+- `*dynamodb.BatchWriteItemInput`
+- `error`
+:::
 
 ## Stream Functions
-
 ### ExtractNewImage
 ```go
 func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-_Извлекает новое состояние элемента из stream record._
-
-**Параметры:**
+::: info Извлекает новое состояние элемента из stream record.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `*SchemaItem, error`
+Возвращает:
+- `*SchemaItem`
+- `error`
+:::
 
 ### ExtractOldImage
 ```go
 func ExtractOldImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-_Извлекает старое состояние элемента из stream record._
-
-**Параметры:**
+::: info Извлекает старое состояние элемента из stream record.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `*SchemaItem, error`
+Возвращает:
+- `*SchemaItem`
+- `error`
+:::
 
 ### ExtractKeys
 ```go
 func ExtractKeys(record events.DynamoDBEventRecord) (map[string]types.AttributeValue, error)
 ```
-_Извлекает ключи элемента из stream record._
-
-**Параметры:**
+::: info Извлекает ключи элемента из stream record.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `map[string]types.AttributeValue, error`
+Возвращает:
+- `map[string]types.AttributeValue`
+- `error`
+:::
 
 ### IsInsertEvent
 ```go
 func IsInsertEvent(record events.DynamoDBEventRecord) bool
 ```
-_Проверяет, является ли событие вставкой._
-
-**Параметры:**
+::: info Проверяет, является ли событие вставкой.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### IsModifyEvent
 ```go
 func IsModifyEvent(record events.DynamoDBEventRecord) bool
 ```
-_Проверяет, является ли событие модификацией._
-
-**Параметры:**
+::: info Проверяет, является ли событие модификацией.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### IsRemoveEvent
 ```go
 func IsRemoveEvent(record events.DynamoDBEventRecord) bool
 ```
-_Проверяет, является ли событие удалением._
-
-**Параметры:**
+::: info Проверяет, является ли событие удалением.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### ExtractChangedAttributes
 ```go
 func ExtractChangedAttributes(record events.DynamoDBEventRecord) ([]string, error)
 ```
-_Возвращает список изменившихся атрибутов._
-
-**Параметры:**
+::: info Возвращает список изменившихся атрибутов.
+Принимает:
 - `record` - запись stream
 
-**Возвращает:** `[]string, error`
+Возвращает:
+- `[]string`
+- `error`
+:::
 
 ### HasAttributeChanged
 ```go
 func HasAttributeChanged(record events.DynamoDBEventRecord, attributeName string) bool
 ```
-_Проверяет, изменился ли конкретный атрибут._
-
-**Параметры:**
+::: info Проверяет, изменился ли конкретный атрибут.
+Принимает:
 - `record` - запись stream
 - `attributeName` - имя атрибута
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ## Validation Functions
-
 ### validateHashKey
 ```go
 func validateHashKey(value any) error
 ```
-_Проверяет значение hash key._
-
-**Параметры:**
+::: info Проверяет значение hash key.
+Принимает:
 - `value` - значение
 
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ### validateRangeKey
 ```go
 func validateRangeKey(value any) error
 ```
-_Проверяет значение range key._
-
-**Параметры:**
+::: info Проверяет значение range key.
+Принимает:
 - `value` - значение
 
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ### validateKeyInputs
 ```go
 func validateKeyInputs(hashKeyValue, rangeKeyValue any) error
 ```
-_Проверяет значения ключей._
-
-**Параметры:**
+::: info Проверяет значения ключей.
+Принимает:
 - `hashKeyValue` - значение hash key
 - `rangeKeyValue` - значение range key
 
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ### validateUpdatesMap
 ```go
 func validateUpdatesMap(updates map[string]any) error
 ```
-_Проверяет карту обновлений._
-
-**Параметры:**
+::: info Проверяет карту обновлений.
+Принимает:
 - `updates` - карта обновлений
 
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ### validateConditionExpression
 ```go
 func validateConditionExpression(expr string) error
 ```
-_Проверяет условное выражение._
-
-**Параметры:**
+::: info Проверяет условное выражение.
+Принимает:
 - `expr` - выражение
 
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ### validateBatchSize
 ```go
 func validateBatchSize(size int, operation string) error
 ```
-_Проверяет размер batch операции._
-
-**Параметры:**
+::: info Проверяет размер batch операции.
+Принимает:
 - `size` - размер
 - `operation` - тип операции
 
-**Возвращает:** `error`
-
-### validateIncrementValue
-```go
-func validateIncrementValue(value int) error
-```
-_Проверяет значение инкремента._
-
-**Параметры:**
-- `value` - значение
-
-**Возвращает:** `error`
+Возвращает:
+- `error`
+:::
 
 ## Operators
+::: warning Ключевые условия VS Фильтры
+**Ключевые условия (Key Conditions)** - применяются `ДО` чтения:
+- Определяют какие элементы читать из DynamoDB
+- Влияют на стоимость операции (RCU)
+- Поддерживают только: [`EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`]
+- `EQ` обязателен для partition key
+- Остальные операторы только для sort key
 
-::: info Ключевые условия vs Фильтры
-Не все операторы можно использовать в ключевых условиях. CONTAINS, BEGINS_WITH, EXISTS и другие работают только как фильтры и применяются после чтения данных.
+**Фильтры (Filter Expressions)** - применяются `ПОСЛЕ` чтения:
+- Фильтруют уже прочитанные данные
+- НЕ влияют на стоимость операции (платите за все прочитанное)
+- Поддерживают ВСЕ операторы
+- Операторы только для фильтров: [`CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`]
+
+**Рекомендация:** 
+
+Используйте ключевые условия максимально, а фильтры - только для дополнительной фильтрации.
 :::
 
 ### OperatorType
@@ -1133,82 +2107,70 @@ const (
 )
 ```
 
-::: info Ключевые условия vs Фильтры
-
-**Ключевые условия (Key Conditions)** - применяются ДО чтения:
-- Определяют какие элементы читать из DynamoDB
-- Влияют на стоимость операции (RCU)
-- Поддерживают только: `EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`
-- `EQ` обязателен для partition key
-- Остальные операторы только для sort key
-
-**Фильтры (Filter Expressions)** - применяются ПОСЛЕ чтения:
-- Фильтруют уже прочитанные данные
-- НЕ влияют на стоимость операции (платите за все прочитанное)
-- Поддерживают ВСЕ операторы
-- Операторы только для фильтров: `CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`
-
-**Рекомендация:** Используйте ключевые условия максимально, а фильтры - только для дополнительной фильтрации.
-
-:::
-
 ### ValidateValues
 ```go
 func ValidateValues(op OperatorType, values []any) bool
 ```
-_Проверяет количество значений для оператора._
-
-**Параметры:**
+::: info Проверяет количество значений для оператора.
+Принимает:
 - `op` - оператор
 - `values` - значения
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### IsKeyConditionOperator
 ```go
 func IsKeyConditionOperator(op OperatorType) bool
 ```
-_Проверяет, может ли оператор использоваться в key conditions._
-
-**Параметры:**
+::: info Проверяет, может ли оператор использоваться в key conditions.
+Принимает:
 - `op` - оператор
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### ValidateOperator
 ```go
 func ValidateOperator(fieldName string, op OperatorType) bool
 ```
-Проверяет совместимость оператора с полем.
-
-**Параметры:**
+::: info Проверяет совместимость оператора с полем.
+Принимает:
 - `fieldName` - имя поля
 - `op` - оператор
 
-**Возвращает:** `bool`
+Возвращает:
+- `bool`
+:::
 
 ### BuildConditionExpression
 ```go
 func BuildConditionExpression(field string, op OperatorType, values []any) (expression.ConditionBuilder, error)
 ```
-_Создает условие фильтрации._
-
-**Параметры:**
+::: info Создает условие фильтрации.
+Принимает:
 - `field` - имя поля
 - `op` - оператор
 - `values` - значения
 
-**Возвращает:** `expression.ConditionBuilder, error`
+Возвращает:
+- `expression.ConditionBuilder`
+- `error`
+:::
 
 ### BuildKeyConditionExpression
 ```go
 func BuildKeyConditionExpression(field string, op OperatorType, values []any) (expression.KeyConditionBuilder, error)
 ```
-_Создает ключевое условие._
-
-**Параметры:**
+::: info Создает ключевое условие.
+Принимает:
 - `field` - имя поля
 - `op` - оператор
 - `values` - значения
 
-**Возвращает:** `expression.KeyConditionBuilder, error`
+Возвращает:
+- `expression.KeyConditionBuilder`
+- `error`
+:::
