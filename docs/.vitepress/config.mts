@@ -6,10 +6,6 @@ function createVersionDropdown(locale: string): DefaultTheme.NavItemWithLink[] {
     text: version === versionsConfig.latest ? `${version} (latest)` : version,
     link: `/${locale}/${version}/`
   }))
-  items.push({
-    text: '📋 Changelog',
-    link: 'https://github.com/Mad-Pixels/go-dyno-docs/blob/main/CHANGELOG.md',
-  })
   return items
 }
 
@@ -61,6 +57,14 @@ export default defineConfig({
                 { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
                 { text: 'CLI', link: `/en/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/en/${versionsConfig.latest}/reference/api` },
+              ]
+            },
+            {
+              text: 'Product', 
+              collapsed: false, 
+              items: [
+                { text: 'Changelog', link: `/en/${versionsConfig.latest}/product/changelog` },
+                { text: '⭐ Give Us a star', link: `https://github.com/Mad-Pixels/go-dyno` },
               ]
             }
           ]
@@ -114,6 +118,14 @@ export default defineConfig({
                 { text: 'JSON', link: `/ru/${versionsConfig.latest}/reference/json` },
                 { text: 'CLI', link: `/ru/${versionsConfig.latest}/reference/cli` }, 
                 { text: 'API', link: `/ru/${versionsConfig.latest}/reference/api` }, 
+              ]
+            },
+            {
+              text: 'Продукт', 
+              collapsed: false, 
+              items: [
+                { text: 'Изменения', link: `/ru/${versionsConfig.latest}/product/changelog` },
+                { text: '⭐ Give Us a star', link: `https://github.com/Mad-Pixels/go-dyno` },
               ]
             }
           ]

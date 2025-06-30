@@ -64,7 +64,7 @@ jobs:
               LOCALE=$(basename "$LOCALE_DIR")
               
               if [[ "$LOCALE" =~ ^[a-z]{2}$ ]]; then
-                CHANGELOG_FILE="$LOCALE_DIR/$VERSION/guide/changelog.md"
+                CHANGELOG_FILE="$LOCALE_DIR/$VERSION/product/changelog.md"
                 
                 if [[ -f "$CHANGELOG_FILE" ]]; then
                   # Create temporary file with new content

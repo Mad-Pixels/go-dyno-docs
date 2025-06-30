@@ -1,5 +1,4 @@
 # Installation
-
 ## 📦 Downloading the Binary
 A list of all releases is available [here](https://github.com/Mad-Pixels/go-dyno/releases).
 
