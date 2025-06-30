@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./.media/logo.png" alt="GoDyno Logo" />
+  <img src="./docs/public/logo.png" alt="GoDyno Logo" />
   <br>
   <h3 align="center">Type-safe DynamoDB code generation</h3>
 </div>
