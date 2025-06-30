@@ -11,7 +11,7 @@ Below are some example approaches for working with a JSON schema and IaC tools.
 _GoDyno does not enforce any particular use of IaC tools._
 :::
 
-## Terraform
+## 🌍 Terraform
 ### Example of a module for describing a DynamoDB table
 ::: code-group
 <<< @/snippets/v0.0.1/ref_iac/tf_module_1/module{bash}

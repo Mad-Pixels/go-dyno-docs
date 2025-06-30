@@ -29,7 +29,7 @@ outline: [2, 3]
 
 # Описание API
 
-## Константы
+## 🔢 Константы
 ### TableName
 ```go
 const TableName = "table-name"
@@ -73,7 +73,7 @@ var KeyAttributeNames = []string{"id", "timestamp"}
 ::: info Cлайс строк с первичными ключами таблицы DynamoDB
 :::
 
-## Структуры данных
+## 🧬 Структуры данных
 ### SchemaItem
 ```go
 type SchemaItem struct {
@@ -1159,7 +1159,7 @@ func (qb *QueryBuilder) Execute(
 - `client` - DynamoDB клиент
 :::
 
-## ScanBuilder
+## 🧭 ScanBuilder
 ::: warning Scan читает всю таблицу.
 :::
 
@@ -1738,7 +1738,7 @@ func (sb *ScanBuilder) Execute(
 - `client` - DynamoDB клиент
 :::
 
-## Input Functions
+## 📥 Input Functions
 ### ItemInput
 ```go
 func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
@@ -1989,7 +1989,7 @@ func BatchDeleteItemsInputFromRaw(
 - `error`
 :::
 
-## Stream Functions
+## 🔁 Stream Functions
 ### ExtractNewImage
 ```go
 func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
@@ -2103,7 +2103,7 @@ func HasAttributeChanged(
 - `bool`
 :::
 
-## Validation Functions
+## 🛡️ Validation Functions
 ### validateHashKey
 ```go
 func validateHashKey(value any) error
@@ -2178,7 +2178,7 @@ func validateBatchSize(size int, operation string) error
 - `error`
 :::
 
-## Operators
+## ⚖️ Operators
 ::: warning Ключевые условия VS Фильтры
 **Ключевые условия (Key Conditions)** - применяются `ДО` чтения:
 - Определяют какие элементы читать из DynamoDB

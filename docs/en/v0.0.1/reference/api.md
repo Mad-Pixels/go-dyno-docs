@@ -29,7 +29,7 @@ outline: [2, 3]
 
 # API Reference
 
-## Constants
+## 🔢 Constants
 ### TableName
 ```go
 const TableName = "table-name"
@@ -78,7 +78,7 @@ var KeyAttributeNames = []string{"id", "timestamp"}
 ::: info Slice of strings containing the primary key attributes of the DynamoDB table.
 :::
 
-## Data Structs
+## 🧬 Data Structs
 ### SchemaItem
 ```go
 type SchemaItem struct {
@@ -214,7 +214,7 @@ var TableSchema = DynamoSchema{
 ```
 :::
 
-## QueryBuilder
+## 🎯 QueryBuilder
 ::: danger `With` / `Filter`  
 - `With` _(WithEQ, WithGT, etc.)_  
 Applied **BEFORE** reading data from DynamoDB and determine which items will be read.
@@ -1164,7 +1164,7 @@ Accepts:
 - `client` - DynamoDB client
 :::
 
-## ScanBuilder
+## 🧭 ScanBuilder
 ::: warning `Scan` reads the entire table.
 :::
 
@@ -1743,7 +1743,7 @@ Takes:
 - `client` – DynamoDB client  
 :::
 
-## Input Functions
+## 📥 Input Functions
 ### ItemInput
 ```go
 func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
@@ -1996,7 +1996,7 @@ Returns:
 - `error`  
 :::
 
-## Stream Functions
+## 🔁 Stream Functions
 ### ExtractNewImage
 ```go
 func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
@@ -2111,7 +2111,7 @@ Returns:
 - `bool`  
 :::
 
-## Validation Functions
+## 🛡️ Validation Functions
 ### validateHashKey
 ```go
 func validateHashKey(value any) error
@@ -2186,7 +2186,7 @@ Returns:
 - `error`  
 :::
 
-## Operators
+## ⚖️ Operators
 ::: warning Key Conditions VS Filters  
 **Key Conditions** – applied `BEFORE` reading:  
 - Define which items to read from DynamoDB  

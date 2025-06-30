@@ -1,5 +1,5 @@
 # JSON Schema Description
-## Basic Structure
+## 📐 Basic Structure
 The JSON schema consists of several sections:
 1. `table_name` - the name of the DynamoDB table  
 2. `hash_key` / `range_key` - the table's primary keys  
@@ -7,7 +7,7 @@ The JSON schema consists of several sections:
 4. `common_attributes` - regular data fields  
 5. `secondary_indexes` - secondary indexes (GSI/LSI)
 
-## Examples
+## 🧾 Examples
 ::: code-group
 <<< @/snippets/v0.0.1/ref_json/basic.json{json}
 <<< @/snippets/v0.0.1/ref_json/full.json{json}
@@ -15,7 +15,7 @@ The JSON schema consists of several sections:
 <<< @/snippets/v0.0.1/ref_json/composite_keys.json{json}
 :::
 
-## Required Fields
+## 🔒 Required Fields
 ### `table_name`
 > **Type:** `string`  
 > **Example:** `"user_profiles"` 
@@ -88,7 +88,7 @@ Used in primary keys and indexes.
   | `"NS"`        | `"int16"`  | `[]int16`   | Set of 16-bit integers         |
   :::
 
-## Optional Fields
+## 🔓 Optional Fields
 ### `range_key`
 > **Type:** `string`  
 > **Example:** `"timestamp"`
@@ -156,7 +156,7 @@ These attributes CANNOT be used in index keys — only for storing information.
   ::: warning **Applies only to:** GSI
   :::
 
-## Composite Keys
+## 🔑 Composite Keys
 ```json
 {
   "name": "user_status_index",
@@ -168,7 +168,7 @@ These attributes CANNOT be used in index keys — only for storing information.
 ::: warning Composite key `user_id#status` creates a key by combining the `user_id` and `status` attributes.
 :::
 
-## Validation
+## 🛡️ Validation
 GoDyno automatically checks:
 - All keys reference existing attributes  
 - Index names are unique  

@@ -1,6 +1,6 @@
 # CLI Reference
 
-## Settings
+## ⚙️ Settings
 #### Logging:
 | Level   | Description                     | When to Use                |
 |---------|---------------------------------|----------------------------|
@@ -15,7 +15,7 @@
 ::: warning Disable colored output via the `GODYNO_LOG_NO_COLOR` environment variable.
 :::
 
-## Commands
+## 💻 Commands
 | Command   | Description                             | 
 |-----------|-----------------------------------------|
 | `version` | Display the current version             |
