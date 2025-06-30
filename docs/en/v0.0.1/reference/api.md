@@ -68,7 +68,7 @@ All defined indexes start with `Index` and follow CamelCase syntax.
 ```go
 var AttributeNames = []string{"id", "timestamp", "email"}
 ```
-::: info Cлайс строк со всеми именами атрибутов таблицы DynamoDB
+::: info Slice of strings with all attribute names from the DynamoDB table
 :::
 
 ### KeyAttribute
@@ -1770,123 +1770,125 @@ Returns:
 ```go
 func KeyInputFromItem(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
-::: info Извлекает ключ из SchemaItem.
-Принимает:
-- `item` - элемент схемы
+::: info Extracts the key from a SchemaItem.  
+Accepts:  
+- `item` – the schema item  
 
-Возвращает:
-- `map[string]types.AttributeValue`
-- `error`
+Returns:  
+- `map[string]types.AttributeValue`  
+- `error`  
 :::
 
 ### UpdateItemInputFromRaw
 ```go
 func UpdateItemInputFromRaw(hashKeyValue, rangeKeyValue any, updates map[string]any) (*dynamodb.UpdateItemInput, error)
 ```
-::: info Создает UpdateItemInput из сырых значений.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
-- `updates` - карта обновлений
+::: info Creates an UpdateItemInput from raw values.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
+- `updates` – update map  
 
-Возвращает:
-- `*dynamodb.UpdateItemInput`
-- `error`
+Returns:  
+- `*dynamodb.UpdateItemInput`  
+- `error`  
 :::
 
 ### UpdateItemInputWithCondition
 ```go
 func UpdateItemInputWithCondition(hashKeyValue, rangeKeyValue any, updates map[string]any, conditionExpression string, conditionAttributeNames map[string]string, conditionAttributeValues map[string]types.AttributeValue) (*dynamodb.UpdateItemInput, error)
 ```
-::: info Создает UpdateItemInput с условным выражением.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
-- `updates` - карта обновлений
-- `conditionExpression` - условное выражение
-- `conditionAttributeNames` - имена атрибутов условия
-- `conditionAttributeValues` - значения атрибутов условия
+::: info Creates an UpdateItemInput with a condition expression.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
+- `updates` – update map  
+- `conditionExpression` – condition expression  
+- `conditionAttributeNames` – condition attribute names  
+- `conditionAttributeValues` – condition attribute values  
 
-Возвращает:
-- `*dynamodb.UpdateItemInput`
-- `error`
+Returns:  
+- `*dynamodb.UpdateItemInput`  
+- `error`  
 :::
 
 ### UpdateItemInputWithExpression
 ```go
 func UpdateItemInputWithExpression(hashKeyValue, rangeKeyValue any, updateBuilder expression.UpdateBuilder, conditionBuilder *expression.ConditionBuilder) (*dynamodb.UpdateItemInput, error)
 ```
-::: info Создает UpdateItemInput с expression builders.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
-- `updateBuilder` - построитель обновлений
-- `conditionBuilder` - построитель условий
+::: info Creates an UpdateItemInput using expression builders.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
+- `updateBuilder` – update expression builder  
+- `conditionBuilder` – condition expression builder  
 
-Возвращает:
-- `*dynamodb.UpdateItemInput`
-- `error`
+Returns:  
+- `*dynamodb.UpdateItemInput`  
+- `error`  
 :::
 
 ### DeleteItemInputFromRaw
 ```go
 func DeleteItemInputFromRaw(hashKeyValue, rangeKeyValue any) (*dynamodb.DeleteItemInput, error)
 ```
-::: info Создает DeleteItemInput из значений ключей.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
+::: info Creates a DeleteItemInput from key values.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
 
-Возвращает:
-- `*dynamodb.DeleteItemInput`
-- `error`
+Returns:  
+- `*dynamodb.DeleteItemInput`  
+- `error`  
 :::
 
 ### DeleteItemInputWithCondition
 ```go
 func DeleteItemInputWithCondition(hashKeyValue, rangeKeyValue any, conditionExpression string, expressionAttributeNames map[string]string, expressionAttributeValues map[string]types.AttributeValue) (*dynamodb.DeleteItemInput, error)
 ```
-::: info Создает DeleteItemInput с условным выражением.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
-- `conditionExpression` - условное выражение
-- `expressionAttributeNames` - имена атрибутов условия
-- `expressionAttributeValues` - значения атрибутов условия
+::: info Creates a DeleteItemInput with a condition expression.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
+- `conditionExpression` – condition expression  
+- `expressionAttributeNames` – condition attribute names  
+- `expressionAttributeValues` – condition attribute values  
 
-Возвращает:
-- `*dynamodb.DeleteItemInput`
-- `error`
+Returns:  
+- `*dynamodb.DeleteItemInput`  
+- `error`  
 :::
 
 ### BatchDeleteItemsInput
 ```go
 func BatchDeleteItemsInput(keys []map[string]types.AttributeValue) (*dynamodb.BatchWriteItemInput, error)
 ```
-::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+::: warning Maximum of **`25`** items per batch operation.  
+_Exceeding the limit will result in an error._
 :::
-::: info Создает BatchWriteItemInput для удаления элементов.
-Принимает:
-- `keys` - ключи элементов
+::: info Creates `BatchWriteItemInput` for deleting items.  
+Accepts:  
+- `keys` – item keys  
 
-Возвращает:
-- `*dynamodb.BatchWriteItemInput`
-- `error`
+Returns:  
+- `*dynamodb.BatchWriteItemInput`  
+- `error`  
 :::
 
 ### BatchDeleteItemsInputFromRaw
 ```go
 func BatchDeleteItemsInputFromRaw(items []SchemaItem) (*dynamodb.BatchWriteItemInput, error)
 ```
-::: warning Максимум **`25`** элементов в одной batch операции. Превышение лимита вернет ошибку.
+::: warning Maximum of **`25`** items per batch operation.  
+_Exceeding the limit will result in an error._
 :::
-::: info Создает BatchWriteItemInput из SchemaItems.
-Принимает:
-- `items` - элементы схемы
+::: info Creates `BatchWriteItemInput` from SchemaItems.  
+Accepts:  
+- `items` – schema items  
 
-Возвращает:
-- `*dynamodb.BatchWriteItemInput`
-- `error`
+Returns:  
+- `*dynamodb.BatchWriteItemInput`  
+- `error`  
 :::
 
 ## Stream Functions
@@ -1894,101 +1896,101 @@ func BatchDeleteItemsInputFromRaw(items []SchemaItem) (*dynamodb.BatchWriteItemI
 ```go
 func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-::: info Извлекает новое состояние элемента из stream record.
-Принимает:
-- `record` - запись stream
+::: info Extracts the new state of the item from a stream record.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `*SchemaItem`
-- `error`
+Returns:  
+- `*SchemaItem`  
+- `error`  
 :::
 
 ### ExtractOldImage
 ```go
 func ExtractOldImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-::: info Извлекает старое состояние элемента из stream record.
-Принимает:
-- `record` - запись stream
+::: info Extracts the old state of the item from a stream record.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `*SchemaItem`
-- `error`
+Returns:  
+- `*SchemaItem`  
+- `error`  
 :::
 
 ### ExtractKeys
 ```go
 func ExtractKeys(record events.DynamoDBEventRecord) (map[string]types.AttributeValue, error)
 ```
-::: info Извлекает ключи элемента из stream record.
-Принимает:
-- `record` - запись stream
+::: info Extracts the item's keys from a stream record.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `map[string]types.AttributeValue`
-- `error`
+Returns:  
+- `map[string]types.AttributeValue`  
+- `error`  
 :::
 
 ### IsInsertEvent
 ```go
 func IsInsertEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Проверяет, является ли событие вставкой.
-Принимает:
-- `record` - запись stream
+::: info Checks if the event is an insert.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### IsModifyEvent
 ```go
 func IsModifyEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Проверяет, является ли событие модификацией.
-Принимает:
-- `record` - запись stream
+::: info Checks if the event is a modification.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### IsRemoveEvent
 ```go
 func IsRemoveEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Проверяет, является ли событие удалением.
-Принимает:
-- `record` - запись stream
+::: info Checks if the event is a deletion.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### ExtractChangedAttributes
 ```go
 func ExtractChangedAttributes(record events.DynamoDBEventRecord) ([]string, error)
 ```
-::: info Возвращает список изменившихся атрибутов.
-Принимает:
-- `record` - запись stream
+::: info Returns a list of changed attributes.  
+Accepts:  
+- `record` – stream record  
 
-Возвращает:
-- `[]string`
-- `error`
+Returns:  
+- `[]string`  
+- `error`  
 :::
 
 ### HasAttributeChanged
 ```go
 func HasAttributeChanged(record events.DynamoDBEventRecord, attributeName string) bool
 ```
-::: info Проверяет, изменился ли конкретный атрибут.
-Принимает:
-- `record` - запись stream
-- `attributeName` - имя атрибута
+::: info Checks whether a specific attribute has changed.  
+Accepts:  
+- `record` – stream record  
+- `attributeName` – name of the attribute  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ## Validation Functions
@@ -1996,102 +1998,100 @@ func HasAttributeChanged(record events.DynamoDBEventRecord, attributeName string
 ```go
 func validateHashKey(value any) error
 ```
-::: info Проверяет значение hash key.
-Принимает:
-- `value` - значение
+::: info Checks the hash key value.  
+Accepts:  
+- `value` – value to check  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ### validateRangeKey
 ```go
 func validateRangeKey(value any) error
 ```
-::: info Проверяет значение range key.
-Принимает:
-- `value` - значение
+::: info Checks the range key value.  
+Accepts:  
+- `value` – value to check  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ### validateKeyInputs
 ```go
 func validateKeyInputs(hashKeyValue, rangeKeyValue any) error
 ```
-::: info Проверяет значения ключей.
-Принимает:
-- `hashKeyValue` - значение hash key
-- `rangeKeyValue` - значение range key
+::: info Checks the key values.  
+Accepts:  
+- `hashKeyValue` – hash key value  
+- `rangeKeyValue` – range key value  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ### validateUpdatesMap
 ```go
 func validateUpdatesMap(updates map[string]any) error
 ```
-::: info Проверяет карту обновлений.
-Принимает:
-- `updates` - карта обновлений
+::: info Checks the update map.  
+Accepts:  
+- `updates` – update map  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ### validateConditionExpression
 ```go
 func validateConditionExpression(expr string) error
 ```
-::: info Проверяет условное выражение.
-Принимает:
-- `expr` - выражение
+::: info Checks the condition expression.  
+Accepts:  
+- `expr` – expression  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ### validateBatchSize
 ```go
 func validateBatchSize(size int, operation string) error
 ```
-::: info Проверяет размер batch операции.
-Принимает:
-- `size` - размер
-- `operation` - тип операции
+::: info Checks the batch operation size.  
+Accepts:  
+- `size` – size  
+- `operation` – type of operation  
 
-Возвращает:
-- `error`
+Returns:  
+- `error`  
 :::
 
 ## Operators
-::: warning Ключевые условия VS Фильтры
-**Ключевые условия (Key Conditions)** - применяются `ДО` чтения:
-- Определяют какие элементы читать из DynamoDB
-- Влияют на стоимость операции (RCU)
-- Поддерживают только: [`EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`]
-- `EQ` обязателен для partition key
-- Остальные операторы только для sort key
+::: warning Key Conditions VS Filters  
+**Key Conditions** – applied `BEFORE` reading:  
+- Define which items to read from DynamoDB  
+- Affect the cost of the operation (RCU)  
+- Only support: [`EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`]  
+- `EQ` is required for the partition key  
+- Other operators apply only to the sort key  
 
-**Фильтры (Filter Expressions)** - применяются `ПОСЛЕ` чтения:
-- Фильтруют уже прочитанные данные
-- НЕ влияют на стоимость операции (платите за все прочитанное)
-- Поддерживают ВСЕ операторы
-- Операторы только для фильтров: [`CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`]
+**Filter Expressions** – applied `AFTER` reading:  
+- Filter the data after it has been read  
+- Do NOT affect the cost (you pay for all read items)  
+- Support ALL operators  
+- Filter-only operators: [`CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`]  
 
-**Рекомендация:** 
+**Recommendation:**  
 
-Используйте ключевые условия максимально, а фильтры - только для дополнительной фильтрации.
+Use key conditions as much as possible, and filters only for additional refinement.  
 :::
 
 ### OperatorType
 ```go
 type OperatorType string
 ```
-_Тип оператора._
-
 ### Константы операторов
 ```go
 const (
@@ -2116,66 +2116,66 @@ const (
 ```go
 func ValidateValues(op OperatorType, values []any) bool
 ```
-::: info Проверяет количество значений для оператора.
-Принимает:
-- `op` - оператор
-- `values` - значения
+::: info Validates the number of values for an operator.  
+Accepts:  
+- `op` – the operator  
+- `values` – the values  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### IsKeyConditionOperator
 ```go
 func IsKeyConditionOperator(op OperatorType) bool
 ```
-::: info Проверяет, может ли оператор использоваться в key conditions.
-Принимает:
-- `op` - оператор
+::: info Checks if the operator can be used in key conditions.  
+Accepts:  
+- `op` – the operator  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### ValidateOperator
 ```go
 func ValidateOperator(fieldName string, op OperatorType) bool
 ```
-::: info Проверяет совместимость оператора с полем.
-Принимает:
-- `fieldName` - имя поля
-- `op` - оператор
+::: info Checks if the operator is compatible with the field.  
+Accepts:  
+- `fieldName` – name of the field  
+- `op` – the operator  
 
-Возвращает:
-- `bool`
+Returns:  
+- `bool`  
 :::
 
 ### BuildConditionExpression
 ```go
 func BuildConditionExpression(field string, op OperatorType, values []any) (expression.ConditionBuilder, error)
 ```
-::: info Создает условие фильтрации.
-Принимает:
-- `field` - имя поля
-- `op` - оператор
-- `values` - значения
+::: info Creates a filter condition.  
+Accepts:  
+- `field` – name of the field  
+- `op` – operator  
+- `values` – values  
 
-Возвращает:
-- `expression.ConditionBuilder`
-- `error`
+Returns:  
+- `expression.ConditionBuilder`  
+- `error`  
 :::
 
 ### BuildKeyConditionExpression
 ```go
 func BuildKeyConditionExpression(field string, op OperatorType, values []any) (expression.KeyConditionBuilder, error)
 ```
-::: info Создает ключевое условие.
-Принимает:
-- `field` - имя поля
-- `op` - оператор
-- `values` - значения
+::: info Creates a key condition.  
+Accepts:  
+- `field` – name of the field  
+- `op` – operator  
+- `values` – values  
 
-Возвращает:
-- `expression.KeyConditionBuilder`
-- `error`
+Returns:  
+- `expression.KeyConditionBuilder`  
+- `error`  
 :::

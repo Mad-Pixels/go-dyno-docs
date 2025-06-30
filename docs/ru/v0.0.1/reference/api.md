@@ -2085,8 +2085,6 @@ func validateBatchSize(size int, operation string) error
 ```go
 type OperatorType string
 ```
-_Тип оператора._
-
 ### Константы операторов
 ```go
 const (
