@@ -75,18 +75,18 @@ godyno gen --cfg user_profiles.json --dst ./generated
 ## 🎯 Шаг 3: Используйте в коде
 ### Основные операции:
 ::: code-group
-<<< @/snippets/v0.0.1/quickstart/Op-Put{go}
-<<< @/snippets/v0.0.1/quickstart/Op-Read{go}
-<<< @/snippets/v0.0.1/quickstart/Op-Update{go}
-<<< @/snippets/v0.0.1/quickstart/Op-Delete{go}
+<<< @/snippets/v0.0.1/quickstart/op-put{go}
+<<< @/snippets/v0.0.1/quickstart/op-read{go}
+<<< @/snippets/v0.0.1/quickstart/op-update{go}
+<<< @/snippets/v0.0.1/quickstart/op-delete{go}
 :::
 
 ### Query Builder:
 ::: code-group
-<<< @/snippets/v0.0.1/quickstart/Qb-Base{go}
+<<< @/snippets/v0.0.1/quickstart/qb-base{go}
 :::
 
 ### Scan операции:
 ::: code-group
-<<< @/snippets/v0.0.1/quickstart/Sc-Base{go}
+<<< @/snippets/v0.0.1/quickstart/sc-base{go}
 :::
