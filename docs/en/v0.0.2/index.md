@@ -80,10 +80,11 @@ A CLI tool that transforms declarative DynamoDB JSON schemas into production-rea
 
 ```bash
 # generate GoLang code from JSON-schema
-$ godyno -c schema.json -d ./gen
+$ godyno -c schema.json -d ./gen # -mode all
+# or
+$ godyno -c schema.json -d ./gen -mode min
 # result - new file:
 # ./gen/basemixed.go 
-# default: generate all objects
 
 # create DynamoDB table from JSON-schema (terraform)
 $ export TF_VAR_schema=$(cat schema.json)
@@ -92,6 +93,7 @@ $ terraform apply
 
 ::: code-group
 <<< @/snippets/v0.0.1/main/schema{json}
-<<< @/snippets/v0.0.1/main/generated{go}
+<<< @/snippets/v0.0.2/main/generated_all{go}
+<<< @/snippets/v0.0.2/main/generated_min{go}
 <<< @/snippets/v0.0.1/main/terraform{hcl}
 :::

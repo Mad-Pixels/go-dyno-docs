@@ -80,10 +80,11 @@ CLI инструмент, который трансформирует декла
 
 ```bash
 # генерация GoLang кода из JSON-схемы
-$ godyno -c schema.json -d ./gen
+$ godyno -c schema.json -d ./gen # -mode all
+# или
+$ godyno -c schema.json -d ./gen -mode min
 # результат - новый файл:
 # ./gen/basemixed.go 
-# по-умолчанию: генерация всех объектов
 
 # создание DynamoDB таблицы из JSON-схемы (terraform)
 $ export TF_VAR_schema=$(cat schema.json)
@@ -92,6 +93,7 @@ $ terraform apply
 
 ::: code-group
 <<< @/snippets/v0.0.1/main/schema{json}
-<<< @/snippets/v0.0.1/main/generated{go}
+<<< @/snippets/v0.0.2/main/generated_all{go}
+<<< @/snippets/v0.0.2/main/generated_min{go}
 <<< @/snippets/v0.0.1/main/terraform{hcl}
 :::
