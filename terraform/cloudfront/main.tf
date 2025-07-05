@@ -46,9 +46,9 @@ resource "aws_cloudfront_distribution" "this" {
       }
     }
 
-    min_ttl     = 0
-    default_ttl = 0
-    max_ttl     = 0
+    min_ttl     = 300
+    default_ttl = 3600
+    max_ttl     = 86400
   }
 
   ordered_cache_behavior {
@@ -194,7 +194,7 @@ resource "aws_cloudfront_distribution" "this" {
     }
 
     min_ttl     = 0
-    default_ttl = 300
+    default_ttl = 3600
     max_ttl     = 86400
   }
 
