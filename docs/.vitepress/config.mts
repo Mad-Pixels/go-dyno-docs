@@ -51,7 +51,7 @@ export default defineConfig({
             },
             {
               text: 'Reference', 
-              collapsed: true, 
+              collapsed: false, 
               items: [
                 { text: 'IaC', link: `/en/${versionsConfig.latest}/reference/iac` },
                 { text: 'JSON', link: `/en/${versionsConfig.latest}/reference/json` },
