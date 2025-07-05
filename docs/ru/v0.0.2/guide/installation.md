@@ -1,7 +1,7 @@
 # Установка
 
 ## 🐳 Использование Docker
-Список всех релизов доступен [тут](https://hub.docker.com/r/madpixels/go-dyno/tags)
+Список всех релизов доступен [тут](https://hub.docker.com/r/madpixels/go-dyno/tags).
 
 ```bash
 docker pull madpixels/go-dyno:latest
