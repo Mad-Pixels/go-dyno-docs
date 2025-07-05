@@ -1,6 +1,8 @@
 # Installation
 
 ## 🐳 Using Docker
+A list of all releases is available [here](https://hub.docker.com/r/madpixels/go-dyno/tags)
+
 ```bash
 docker pull madpixels/go-dyno:latest
 
