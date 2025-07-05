@@ -1,4 +1,15 @@
 # Установка
+
+## 🐳 Использование Docker
+```bash
+docker pull madpixels/go-dyno:latest
+
+# пример использования
+docker run --rm -ti -v /my_project:/workspace madpixels/go-dyno:latest generate \
+  --schema /workspace/schema.json \
+  --output-dir /workspace/gen
+```
+
 ## 📦 Загрузка бинарного файла
 Список всех релизов доступен [тут](https://github.com/Mad-Pixels/go-dyno/releases).
 
