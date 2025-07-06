@@ -426,10 +426,11 @@ Use WithPreferredSortKey when:
 - You know which index is more efficient or relevant for your use case
 :::
 ::: warning Important
-WithPreferredSortKey Is a Hint, Not a Requirement
-✅ The query planner prefers an index with the specified sort key
-❌ But it may choose a different one if no suitable index is found
-🎯 To force a specific index, use WithIndex(indexName) instead
+WithPreferredSortKey Is a Hint, Not a Requirement  
+
+✅ The query planner prefers an index with the specified sort key  
+❌ But it may choose a different one if no suitable index is found  
+🎯 To force a specific index, use `WithIndex(indexName)` instead
 :::
 
 ### qb.With
@@ -713,7 +714,7 @@ type PartialItem struct {
 }
 ```
 :::
-::: warning Projection reduces bandwidth usage but does NOT reduce RCU cost — you're still billed for reading the full item.
+::: warning Projection reduces `bandwidth` usage but does NOT reduce `RCU` cost — you're still billed for reading the full item.
 :::
 
 ### qb.Filter
@@ -1151,10 +1152,10 @@ func (qb *QueryBuilder) Execute(
 ```
 
 ## ScanBuilder
-::: warning `Scan` reads the entire table.
+::: warning Scan reads the entire table.
 :::
 ### NewScanBuilder
-Create new `ScanBuilder`
+Create new `ScanBuilder`.
 ```go
 func NewScanBuilder() *ScanBuilder
 ```
@@ -1307,7 +1308,11 @@ _Use with caution in production environments._
 :::
 
 ### sb.Filter
-Adds a condition to filter the values retrieved from DynamoDB.
+Adds a condition to filter the values retrieved from DynamoDB.  
+Accept:
+ - `field` - field name
+ - `value` - value
+ - `op` - operator type
 ```go
 func (sb *ScanBuilder) Filter(
   field string, 

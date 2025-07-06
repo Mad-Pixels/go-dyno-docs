@@ -282,8 +282,7 @@ func (qb *QueryBuilder) WithIndex(indexName string) *QueryBuilder
 Примеры запросов:
 ```go
 query1 := userorders.NewQueryBuilder().
-  WithEQ("user_id", "user123").
-  WithEQ("status", "active")
+  WithEQ("user_id", "user123")
 
 input1, _ := query1.BuildQuery()
 fmt.Printf("Auto: %s\n", *input1.IndexName)
@@ -349,8 +348,7 @@ func (qb *QueryBuilder) OrderByDesc() *QueryBuilder
 ```go
 query := userorders.NewQueryBuilder().
     WithEQ("user_id", "user123").
-    OrderByDesc().
-    Limit(10)
+    OrderByDesc()
 
 queryInput, err := query.BuildQuery()
 if err != nil {
@@ -379,8 +377,7 @@ func (qb *QueryBuilder) OrderByAsc() *QueryBuilder
 ```go
 query := userorders.NewQueryBuilder().
     WithEQ("user_id", "user123").
-    OrderByAsc().
-    Limit(10)
+    OrderByAsc()
 
 queryInput, err := query.BuildQuery()
 if err != nil {
@@ -1178,9 +1175,6 @@ func (sb *ScanBuilder) WithIndex(indexName string) *ScanBuilder
 ::: info Выполняем сканирование по конкретному индексу
 - **GSI** (Global Secondary Index) имеют отдельные RCU/WCU настройки.  
 - **LSI** (Local Secondary Index) используют RCU/WCU основной таблицы.
-
-Принимает:
-- `indexName` - имя индекса
 :::
 ::: details Пример
 ```go
@@ -1203,10 +1197,6 @@ for _, item := range items {
 ```go
 func (sb *ScanBuilder) Limit(limit int) *ScanBuilder
 ```
-::: info Устанавливает лимит результатов.
-Принимает:
-- `limit` - максимальное количество
-:::
 ::: details Пример
 ```go
 scan := NewScanBuilder().
@@ -1235,10 +1225,6 @@ func (sb *ScanBuilder) StartFrom(
 
 _Всегда проверяйте наличие LastEvaluatedKey для продолжения пагинации._
 :::
-::: info Устанавливает стартовый ключ для пагинации.
-Принимает:
-- `lastEvaluatedKey` - последний ключ
-:::
 ::: details Пример
 ```go
 var lastKey map[string]types.AttributeValue
@@ -1258,13 +1244,11 @@ scan2 := NewScanBuilder().
 :::
 
 ### sb.WithProjection
+Указывает какие конкретные поля вернуть из DynamoDB вместо всех полей записи.
 ```go
 func (sb *ScanBuilder) WithProjection(attributes []string) *ScanBuilder
 ```
-::: info Указывает какие конкретные поля вернуть из DynamoDB вместо всех полей записи.
-Принимает:
-- `attributes` - список полей
-
+::: info 
 Без WithProjection:
 ```go
 type SchemaItem struct {
@@ -1364,7 +1348,7 @@ for _, item := range items {
 godyno -s schema.json -o ./gen -mode all
 godyno -s schema.json -o ./gen
 ```
-В min режиме используй универсальный метод Filter:
+В `min` режиме используй универсальный метод `Filter`:
 ```go
 scan
   .Filter("status", EQ, "active")
@@ -1692,8 +1676,8 @@ func (sb *ScanBuilder) Execute(
 ```
 
 ## Input Functions
-Преобразует SchemaItem в DynamoDB AttributeValue map.
 ### ItemInput
+Преобразует SchemaItem в DynamoDB AttributeValue map.
 ```go
 func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
