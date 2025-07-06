@@ -1846,66 +1846,58 @@ godyno -s schema.json -o ./gen -mode all
 godyno -s schema.json -o ./gen
 ```
 :::
-### ExtractNewImage
+### ExtractFromDynamoDBStreamEvent
 Extracts the new state of the item from a stream record.
 ```go
-func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
+func ExtractFromDynamoDBStreamEvent(dbEvent events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
 
-### ExtractOldImage
+### ExtractOldFromDynamoDBStreamEvent
 Extracts the old state of the item from a stream record.
 ```go
-func ExtractOldImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
+func ExtractOldFromDynamoDBStreamEvent(dbEvent events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
 
-### ExtractKeys
-Extracts the item's keys from a stream record.
+### ExtractBothFromDynamoDBStreamEvent
+Extracts the old and new state of the item from a stream record.
 ```go
-func ExtractKeys(
-  record events.DynamoDBEventRecord,
+func ExtractBothFromDynamoDBStreamEvent(
+  dbEvent events.DynamoDBEventRecord,
 ) (
-  map[string]types.AttributeValue, 
+  *SchemaItem, 
+  *SchemaItem, 
   error,
 )
 ```
 
-### IsInsertEvent
-Checks if the event is an insert.
+#### CreateTriggerHandler
+Create DynamoDB Event Handler.
 ```go
-func IsInsertEvent(record events.DynamoDBEventRecord) bool
+func CreateTriggerHandler(
+  onInsert func(context.Context, *SchemaItem) error,
+  onModify func(context.Context, *SchemaItem, *SchemaItem) error,
+  onDelete func(context.Context, map[string]events.DynamoDBAttributeValue) error,
+) func(ctx context.Context, event events.DynamoDBEvent) error
 ```
+::: tip
+- onInsert — called for INSERT events, receives the new SchemaItem
+- onModify — called for MODIFY events, receives the old and new SchemaItem
+- onDelete — called for REMOVE events, receives the keys of the deleted item
+:::
 
-### IsModifyEvent
-Checks if the event is a modification.
+#### IsFieldModified
+Checks whether a given attribute was actually changed in a DynamoDB MODIFY stream event. It compares the old and new images and returns true only if the field was added, removed, or its value differs.
 ```go
-func IsModifyEvent(record events.DynamoDBEventRecord) bool
-```
-
-### IsRemoveEvent
-Checks if the event is a deletion.
-```go
-func IsRemoveEvent(record events.DynamoDBEventRecord) bool
-```
-
-### ExtractChangedAttributes
-Returns a list of changed attributes.
-```go
-func ExtractChangedAttributes(
+func IsFieldModified(
   record events.DynamoDBEventRecord,
-) (
-  []string, 
-  error,
-)
-```
-
-### HasAttributeChanged
-Checks whether a specific attribute has changed.
-```go
-func HasAttributeChanged(
-  record events.DynamoDBEventRecord, 
-  attributeName string,
+  fieldName string,
 ) bool
 ```
+::: tip return `true` if:
+- the event is MODIFY and the field previously did not exist but now does
+- the event is MODIFY and the field previously existed but now does not
+- the event is MODIFY and the field existed in both images and its serialized value differs
+:::
 
 ## Operators
 ::: warning Key Conditions VS Filters  
