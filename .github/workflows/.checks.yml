@@ -9,24 +9,39 @@ on:
 jobs:
   terraform:
     name: Terraform 
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
-      - name: TfFmt
-        uses: "Mad-Pixels/github-workflows/.github/actions/terraform-fmt@main"
+      - name: Invoke
+        uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
         with:
-          tf_dir: "./terraform"
-          tf_version: "1.6.1"
+          command: terraform/fmt
+
+  audit: 
+    name: Audit 
+    runs-on: ${{ vars.RUNS_ON }}
+    steps:
+      - name: Invoke
+        uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
+        with:
+          command: node/audit
+  
+  prettier:
+    name: Prettier
+    runs-on: ${{ vars.RUNS_ON }}
+    steps:
+      - name: Invoke
+        uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
+        with:
+          command: node/format
 
   leaks:
     name: GitLeaks
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.gitleaks }}
-          GITLEAKS_CONFIG: ./.gitleaks.toml
