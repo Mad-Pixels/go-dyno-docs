@@ -19,7 +19,7 @@ jobs:
   commit-check:
     name: (Base) Commit Check
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
       - name: All checks passed
         run: |
