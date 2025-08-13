@@ -20,9 +20,6 @@ concurrency:
   group: manual-tag-${{ inputs.tag }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-
 jobs:
   create-tag:
     name: Create Tag
