@@ -20,22 +20,22 @@ hero:
   image: /logo.png
 
 features:
-  - icon: 
+  - icon:
       src: /icons/develop.png
       alt: Schema-Driven Development
     title: Автоматическая кодогенерация
     details: Чистый Go код из JSON схем DynamoDB без внешних зависимостей, создавая типизированные структуры, константы и билдеры
-  - icon: 
+  - icon:
       src: /icons/query.png
       alt: Advanced Query Builder
     title: Полная типизация и безопасность
     details: Обеспечивает compile-time проверки, поддержку кастомных типов (int64, int32, float32, uint64, ...), автодополнение IDE и предотвращает runtime ошибки
-  - icon: 
+  - icon:
       src: /icons/integration.png
-      alt: Terraform Integration 
+      alt: Terraform Integration
     title: Единая схема для приложения и инфраструктуры
     details: Одна JSON-схема служит источником правды как для генерации Go-кода, так и для IaC-конфигураций, устраняя дублирование описаний и риск рассинхронизации
-  - icon: 
+  - icon:
       src: /icons/key.png
       alt: Composite Keys Support
     title: Умная оптимизация запросов
@@ -70,6 +70,7 @@ features:
 <br><br>
 
 # Как это работает?
+
 CLI инструмент, который трансформирует декларативные JSON схемы DynamoDB в готовые к продакшену Go модули с богатым функционалом для работы с базой данных. Одной командой `godyno gen` получаете полноценные пакеты с валидацией, билдерами запросов, helper-функциями и всей необходимой инфраструктурой для надёжной интеграции с AWS DynamoDB, минуя этап написания повторяющегося кода вручную.
 
 <div align="center" style="margin-top:64px">
@@ -84,7 +85,7 @@ $ godyno -c schema.json -d ./gen # -mode all
 # или
 $ godyno -c schema.json -d ./gen -mode min
 # результат - новый файл:
-# ./gen/basemixed.go 
+# ./gen/basemixed.go
 
 # создание DynamoDB таблицы из JSON-схемы (terraform)
 $ export TF_VAR_schema=$(cat schema.json)

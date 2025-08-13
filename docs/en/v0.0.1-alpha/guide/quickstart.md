@@ -6,20 +6,21 @@ If you haven't installed GoDyno yet, head to the [installation section](https://
 ## Creating Your First Schema
 
 Create a file called `user-posts.json` describing your DynamoDB table:
+
 ```json
 {
   "table_name": "user-posts",
   "hash_key": "user_id",
   "range_key": "created_at",
   "attributes": [
-    {"name": "user_id", "type": "S"},
-    {"name": "created_at", "type": "N"},
-    {"name": "status", "type": "S"}
+    { "name": "user_id", "type": "S" },
+    { "name": "created_at", "type": "N" },
+    { "name": "status", "type": "S" }
   ],
   "common_attributes": [
-    {"name": "title", "type": "S"},
-    {"name": "content", "type": "S"},
-    {"name": "views", "type": "N"}
+    { "name": "title", "type": "S" },
+    { "name": "content", "type": "S" },
+    { "name": "views", "type": "N" }
   ],
   "secondary_indexes": [
     {
@@ -33,6 +34,7 @@ Create a file called `user-posts.json` describing your DynamoDB table:
 ```
 
 This schema defines a DynamoDB table for user posts with:
+
 - Keys: `user_id` (hash) and `created_at` (range)
 - Indexing attribute: `status` (used in the GSI)
 - Regular data fields: `title`, `content`, `views`
@@ -46,6 +48,7 @@ _The `common_attributes` section contains regular data fields that are not index
 ## Generating Go Code
 
 To generate type-safe Go code, run:
+
 ```bash
 godyno gen --cfg user-posts.json --dest ./generated
 ```
@@ -55,6 +58,7 @@ This command will generate `./generated/user_posts/user_posts.go` with a full se
 ## Using the Generated Code
 
 Once generated, you can start using the code in your application:
+
 ```go
 package main
 
@@ -127,6 +131,7 @@ func main() {
 ### Safe Constants
 
 Use generated constants instead of string literals:
+
 ```go
 tableName := userposts.TableName        // Instead of "user-posts"
 keyName   := userposts.ColumnUserId     // Instead of "user_id"
@@ -136,6 +141,7 @@ indexName := userposts.IndexStatusIndex // Instead of "StatusIndex"
 ### Building Queries
 
 The QueryBuilder provides a fluent API for constructing queries:
+
 ```go
 query := userposts.NewQueryBuilder().
   WithUserId("user123").               // Partition key
@@ -151,6 +157,7 @@ posts, err := query.Execute(ctx, dynamoClient)
 ## Terraform Integration
 
 One of GoDyno's core features is using the same schema for both Terraform and code generation:
+
 ```tf
 # main.tf
 module "user_posts_table" {

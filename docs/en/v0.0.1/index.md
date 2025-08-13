@@ -20,22 +20,22 @@ hero:
   image: /logo.png
 
 features:
-  - icon: 
+  - icon:
       src: /icons/develop.png
       alt: Schema-Driven Development
     title: Automatic Code Generation
     details: Clean Go code from DynamoDB JSON schemas without external dependencies — generating typed structs, constants, and query builders
-  - icon: 
+  - icon:
       src: /icons/query.png
       alt: Advanced Query Builder
     title: Full Type Safety
     details: Provides compile-time checks, custom type support (int64, int32, float32, uint64, ...), IDE autocompletion, and eliminates runtime errors
-  - icon: 
+  - icon:
       src: /icons/integration.png
-      alt: Terraform Integration 
+      alt: Terraform Integration
     title: Unified Schema for App and Infrastructure
     details: A single JSON schema acts as the source of truth for both Go code and IaC configs — avoiding duplication and drift
-  - icon: 
+  - icon:
       src: /icons/key.png
       alt: Composite Keys Support
     title: Smart Query Optimization
@@ -70,6 +70,7 @@ features:
 <br><br>
 
 # How It Works
+
 A CLI tool that transforms declarative DynamoDB JSON schemas into production-ready Go modules with rich functionality for interacting with the database. With a single `godyno gen` command, you get fully-typed packages that include validation, query builders, helper functions, and all the infrastructure needed for reliable integration with AWS DynamoDB — eliminating repetitive boilerplate code.
 
 <div align="center" style="margin-top:64px">
@@ -82,7 +83,7 @@ A CLI tool that transforms declarative DynamoDB JSON schemas into production-rea
 # generate GoLang code from JSON-schema
 $ godyno -c schema.json -d ./gen
 # result - new file:
-# ./gen/basemixed.go 
+# ./gen/basemixed.go
 # default: generate all objects
 
 # create DynamoDB table from JSON-schema (terraform)

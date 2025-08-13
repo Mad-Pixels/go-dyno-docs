@@ -32,35 +32,40 @@ _If you haven’t installed GoDyno yet, head over to the [installation guide](./
 :::
 
 ## 📋 Step 1: Create a Schema
+
 Describe your DynamoDB table in a JSON file:
 ::: code-group
 <<< @/snippets/v0.0.1/quickstart/json-schema{json}
 :::
 
 ::: warning Attributes:
-* `hash_key` and `range_key` must be declared in the `attributes` array.
-_This is a DynamoDB requirement for key fields_.
 
-* `common_attributes` are regular fields used for storing data.
-:::
+- `hash_key` and `range_key` must be declared in the `attributes` array.
+  _This is a DynamoDB requirement for key fields_.
+
+- `common_attributes` are regular fields used for storing data.
+  :::
 
 [Full JSON schema reference →](../reference/json)
 
 ## ⚡ Step 2: Generate the Code
+
 ```bash
 godyno gen --cfg user_profiles.json --dst ./generated
 ```
+
 [Full reference of CLI tool, flags, and commands →](../reference/cli)
 
 <br><br>
 
 A file named `userprofiles.go` will be created in the `./generated` folder, containing a complete set of type-safe methods:
-::: details full content 
+::: details full content
 ::: code-group
 <<< @/snippets/v0.0.1/quickstart/generated{go}
 :::
 
 ::: info The generated code includes:
+
 - `Constants`: _TableName, attribute names, and index names_
 - `Types`: _SchemaItem struct with correct Go types_
 - `Marshalling`: _ItemInput(), ItemOutput() for AWS SDK_
@@ -68,12 +73,14 @@ A file named `userprofiles.go` will be created in the `./generated` folder, cont
 - `Scan Builder`: _full-table scans with filters_
 - `Pagination`: _Limit(), StartFrom() для больших результатов_
 - `Sorting`: _OrderByAsc(), OrderByDesc()_
-:::
+  :::
 
 [Full API Reference →](../reference/api)
 
 ## 🎯 Step 3: Use It in Your Code
+
 ### Core Operations:
+
 ::: code-group
 <<< @/snippets/v0.0.1/quickstart/op-put{go}
 <<< @/snippets/v0.0.1/quickstart/op-read{go}
@@ -82,11 +89,13 @@ A file named `userprofiles.go` will be created in the `./generated` folder, cont
 :::
 
 ### Query Builder:
+
 ::: code-group
 <<< @/snippets/v0.0.1/quickstart/qb-base{go}
 :::
 
 ### Scan Operations:
+
 ::: code-group
 <<< @/snippets/v0.0.1/quickstart/sc-base{go}
 :::

@@ -21,22 +21,22 @@ hero:
   image: /logo.png
 
 features:
-  - icon: 
+  - icon:
       src: /icons/develop.png
       alt: Schema-Driven Development
     title: Schema-Driven Development
     details: Transform DynamoDB table definitions into Go code with complete type safety
-  - icon: 
+  - icon:
       src: /icons/query.png
       alt: Advanced Query Builder
     title: Advanced Query Builder
     details: Fluent API with automatic index selection, range conditions and composite key handling
-  - icon: 
+  - icon:
       src: /icons/integration.png
-      alt: Terraform Integration 
+      alt: Terraform Integration
     title: Terraform Integration
     details: One JSON schema powers both your DynamoDB infrastructure and Go application code
-  - icon: 
+  - icon:
       src: /icons/key.png
       alt: Composite Keys Support
     title: Composite Keys Support

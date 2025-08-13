@@ -1,20 +1,26 @@
 # Usage
 
 ## Code Generation
+
 ### Basic Command
 
 The primary command for generating Go code from a JSON schema:
+
 ```bash
 godyno gen --cfg schema.json --dest ./generated
 ```
+
 This command will create a Go file in the `./generated/table_name/table_name.go` directory based on your schema.
 
 ### Command Line Options
+
 - **--cfg, -c** - Path to the JSON schema file (required)
 - **--dest, -d** - Directory for generated files (required)
 
 ### Environment Variables
+
 Instead of flags, you can use environment variables:
+
 ```bash
 export GODYNO_CFG=./schemas/users.json
 export GODYNO_DEST=./generated
@@ -23,7 +29,9 @@ godyno gen
 ```
 
 ### Output File Structure
+
 After generation, you will see the following structure:
+
 ```bash
 ./generated/
 └── user_posts/           # Package name derived from table_name
@@ -31,16 +39,18 @@ After generation, you will see the following structure:
 ```
 
 The package name and directory are automatically formed from the `table_name` in the schema, converted to a Go-safe format.
-::: tip 
+::: tip
 If your schema includes hyphens, they will be automatically converted to underscores.
 :::
 
 ## Working with the Generated Code
+
 ### Core Structures
 
 Each schema generates several key structures:
 
 **SchemaItem** – the primary struct for working with records:
+
 ```go
 type SchemaItem struct {
   UserId    string `dynamodbav:"user_id"`
@@ -52,11 +62,12 @@ type SchemaItem struct {
 }
 ```
 
-::: tip 
+::: tip
 The `dynamodbav` tags are used by the AWS SDK for Go to automatically marshal fields to AttributeValue.
 :::
 
 **DynamoSchema** – table metadata:
+
 ```go
 var TableSchema = DynamoSchema{
   TableName:        "user-posts",
@@ -68,7 +79,9 @@ var TableSchema = DynamoSchema{
 ```
 
 ### Constants and Metadata
+
 For type-safe usage, the following constants are generated:
+
 ```go
 // Table and index names
 const TableName = "user-posts"
@@ -91,10 +104,12 @@ var IndexProjections = map[string][]string{
 ```
 
 Using constants instead of hard-coded strings ensures:
+
 - no typos when referring to table or column names
 - safety when renaming fields (your IDE will catch all references)
 
 ### Creating Items
+
 ```go
 post := userposts.SchemaItem{
   UserId:    "user123",
@@ -142,6 +157,7 @@ log.Printf("Fetched item: %+v", fetched)
 ```
 
 **Creating a Key for Operations:**
+
 ```go
 // Create a key from values
 key, err := userposts.CreateKey("user123", 1640995200)
@@ -168,6 +184,7 @@ if err != nil {
 ### Batch Operations
 
 **Prepare a batch of items:**
+
 ```go
 posts := []userposts.SchemaItem{
   {UserId: "user1", CreatedAt: 1640995200, Title: "Post 1", Status: "published"},
@@ -182,6 +199,7 @@ if err != nil {
 ```
 
 **Use AWS BatchWriteItem:**
+
 ```go
 // Convert to WriteRequest
 writeRequests := make([]types.WriteRequest, len(batchItems))
@@ -203,14 +221,17 @@ if err != nil {
 ```
 
 ## QueryBuilder
+
 ### Basic Queries
 
 **Create a QueryBuilder:**
+
 ```go
 qb := userposts.NewQueryBuilder()
 ```
 
 **Simple hash key query:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -218,6 +239,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Hash + range key query:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -228,26 +250,30 @@ posts, err := userposts.NewQueryBuilder().
 ### Filter Conditions
 
 **Filter by attributes:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").          // KeyCondition (hash key)
-  WithStatus("published").        // KeyCondition (if using StatusIndex) or FilterExpression  
+  WithStatus("published").        // KeyCondition (if using StatusIndex) or FilterExpression
   WithTitle("Important News").    // FilterExpression
   Execute(ctx, dynamoClient)
 ```
 
 ::: danger
 QueryBuilder automatically determines the type of condition:
+
 - **KeyCondition** – attributes that are keys in the chosen index (efficient)
 - **FilterExpression** – all other attributes (inefficient, filters after read)
 
 In the example above:
+
 - `WithUserId` → KeyCondition (main table hash key)
 - `WithStatus` → KeyCondition (if StatusIndex is chosen) or FilterExpression
 - `WithTitle` → FilterExpression (increases RCU, since DynamoDB reads all user items first, then filters by title)
-:::
+  :::
 
 **Optimal queries (only KeyConditions):**
+
 ```go
 // Efficient: uses only StatusIndex
 posts, err := userposts.NewQueryBuilder().
@@ -257,6 +283,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Combining conditions:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -266,9 +293,11 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 ### Range Queries
+
 For numeric attributes, range conditions are available:
 
 **Greater than / less than:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -282,6 +311,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Between values:**
+
 ```go
 var (
   startDate = 1640995000
@@ -290,13 +320,14 @@ var (
 
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
-  WithCreatedAtBetween(startDate, endDate). 
+  WithCreatedAtBetween(startDate, endDate).
   Execute(ctx, dynamoClient)
 ```
 
 ### Sorting and Pagination
 
 **Sort control:**
+
 ```go
 // Ascending (default)
 posts, err := userposts.NewQueryBuilder().
@@ -312,6 +343,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Limit results:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -320,6 +352,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Pagination:**
+
 ```go
 // First request
 qb := userposts.NewQueryBuilder().
@@ -344,9 +377,11 @@ if result.LastEvaluatedKey != nil {
 ```
 
 ### Composite Key Handling
+
 For schemas with composite keys, special methods are generated:
 
 **Schema with a composite key:**
+
 ```json
 "secondary_indexes": [
   {
@@ -359,6 +394,7 @@ For schemas with composite keys, special methods are generated:
 ```
 
 **Use composite key:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithCategoryStatusIndexHashKey("tech", "published").  // category="tech", status="published"
@@ -367,6 +403,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Complex composite keys:**
+
 ```go
 // For key "level#category#status"
 posts, err := userposts.NewQueryBuilder().
@@ -376,14 +413,17 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 ### Index Selection
+
 QueryBuilder automatically picks the most suitable index:
 
 **Index selection principles:**
+
 1. User preference via `WithPreferredSortKey`
 2. More complex composite keys take priority
 3. Availability of all required attributes in the index
 
 **Manual index selection:**
+
 ```go
 posts, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -393,6 +433,7 @@ posts, err := userposts.NewQueryBuilder().
 ```
 
 **Build query without execution:**
+
 ```go
 queryInput, err := userposts.NewQueryBuilder().
   WithUserId("user123").
@@ -416,9 +457,11 @@ result, err := client.Query(ctx, queryInput)
 ```
 
 ## DynamoDB Streams
+
 ### Extracting Data from Events
 
 **Manually extract data from a Stream record:**
+
 ```go
 func processStreamRecord(record events.DynamoDBEventRecord) error {
   item, err := userposts.ExtractFromDynamoDBStreamEvent(record)
@@ -432,6 +475,7 @@ func processStreamRecord(record events.DynamoDBEventRecord) error {
 ```
 
 **Batch processing Stream events:**
+
 ```go
 func handleStreamEvent(ctx context.Context, event events.DynamoDBEvent) error {
   for _, record := range event.Records {
@@ -456,7 +500,9 @@ func handleStreamEvent(ctx context.Context, event events.DynamoDBEvent) error {
 ```
 
 ### Tracking Field Changes
+
 **Check if specific fields changed:**
+
 ```go
 func analyzePostChanges(record events.DynamoDBEventRecord) {
   if record.EventName != "MODIFY" {
@@ -488,6 +534,7 @@ func analyzePostChanges(record events.DynamoDBEventRecord) {
 ## Utilities
 
 **Create a key for DynamoDB operations:**
+
 ```go
 // From individual values
 key, err := userposts.CreateKey("user123", 1640995200)
@@ -503,6 +550,7 @@ result, err := client.GetItem(ctx, &dynamodb.GetItemInput{
 ```
 
 **Extract a key from an existing item:**
+
 ```go
 post := userposts.SchemaItem{
   UserId:    "user123",
@@ -526,6 +574,7 @@ _, err = client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 ### Type Conversions
 
 **Boolean values to DynamoDB-compatible numbers:**
+
 ```go
 dbValue := userposts.BoolToInt(true) // → 1
 isActive := userposts.IntToBool(1)   // → true
@@ -534,6 +583,7 @@ isActive := userposts.IntToBool(1)   // → true
 ### Helper Functions
 
 **Marshal a single item:**
+
 ```go
 post := userposts.SchemaItem{
   UserId:    "user123",
@@ -551,6 +601,7 @@ if err != nil {
 ```
 
 **Batch conversion:**
+
 ```go
 posts := []userposts.SchemaItem{
   {UserId: "user1", CreatedAt: 1640995200, Title: "Post 1"},
@@ -566,6 +617,7 @@ if err != nil {
 ```
 
 **Convert arbitrary data:**
+
 ```go
 // Convert map[string]interface{} to DynamoDB AttributeValue
 data := map[string]interface{}{
@@ -583,7 +635,9 @@ if err != nil {
 ```
 
 ## AWS Integration
+
 **Example using AWS SDK:**
+
 ```go
 package main
 
@@ -647,10 +701,13 @@ func main() {
 ```
 
 ## Terraform Integration
+
 ### Terraform Module for DynamoDB
+
 Create a Terraform module that accepts a JSON schema:
 
 **terraform/modules/dynamodb/main.tf:**
+
 ```tf
 locals {
   schema = jsondecode(file(var.schema_file))
@@ -690,6 +747,7 @@ resource "aws_dynamodb_table" "this" {
 ```
 
 **terraform/modules/dynamodb/variables.tf:**
+
 ```tf
 variable "schema_file" {
   description = "Path to JSON schema file"
@@ -712,6 +770,7 @@ variable "tags" {
 ### Using JSON Schemas
 
 **Main Terraform file:**
+
 ```tf
 module "user_posts_table" {
   source = "./terraform/modules/dynamodb"
@@ -738,7 +797,9 @@ module "categories_table" {
 ```
 
 ## LocalStack Integration
+
 **Example using LocalStack:**
+
 ```go
 package main
 
@@ -783,7 +844,7 @@ func main() {
     BillingMode: types.BillingModePayPerRequest,
   })
 
-  // Create a post 
+  // Create a post
   post := userposts.SchemaItem{
     UserId: "user123", CreatedAt: 1640995200,
     Title: "LocalStack Test", Status: "published", Views: 0,

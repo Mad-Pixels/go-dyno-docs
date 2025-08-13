@@ -1,12 +1,10 @@
 {
   "table_name": "users",
   "hash_key": "user_id",
-  "attributes": [
-    {"name": "user_id", "type": "S"}
-  ],
+  "attributes": [{ "name": "user_id", "type": "S" }],
   "common_attributes": [
-    {"name": "email",     "type": "S"},
-    {"name": "age",       "type": "N"},
-    {"name": "is_active", "type": "BOOL"}
+    { "name": "email", "type": "S" },
+    { "name": "age", "type": "N" },
+    { "name": "is_active", "type": "BOOL" }
   ]
 }

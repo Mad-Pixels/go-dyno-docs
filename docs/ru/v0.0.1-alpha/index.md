@@ -21,22 +21,22 @@ hero:
   image: /logo.png
 
 features:
-  - icon: 
+  - icon:
       src: /icons/develop.png
       alt: Schema-Driven Development
     title: Код из конфига
     details: Автоматически превращайте конфигурации таблиц DynamoDB в Go-код с полной типобезопасностью
-  - icon: 
+  - icon:
       src: /icons/query.png
       alt: Advanced Query Builder
     title: Конструктор запросов
     details: Удобный API с автоопределением индекса, поддержкой диапазонов и составных ключей
-  - icon: 
+  - icon:
       src: /icons/integration.png
-      alt: Terraform Integration 
+      alt: Terraform Integration
     title: Синхронизация с Terraform
     details: Один JSON-файл — и для инфраструктуры, и для приложения. Максимальная согласованность
-  - icon: 
+  - icon:
       src: /icons/key.png
       alt: Composite Keys Support
     title: Поддержка составных ключей
