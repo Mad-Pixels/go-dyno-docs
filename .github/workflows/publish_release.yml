@@ -49,29 +49,10 @@ jobs:
     runs-on: ${{ vars.RUNS_ON }}
     name: (Release) Build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
+      - name: Invoke
         uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
         with:
-          command: docs/build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-build
-          path: docs/.vitepress/dist/
-          retention-days: 7
+          command: node/build
 
   deploy:
     needs: [build, apply]
