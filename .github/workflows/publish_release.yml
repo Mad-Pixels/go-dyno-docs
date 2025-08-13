@@ -53,6 +53,12 @@ jobs:
         uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
         with:
           command: node/build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: docs/.vitepress/dist/
+          retention-days: 7
 
   deploy:
     needs: [build, apply]
