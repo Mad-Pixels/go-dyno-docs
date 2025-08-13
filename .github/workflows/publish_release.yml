@@ -12,7 +12,7 @@ concurrency:
 jobs:
   check-main-branch:
     name: Verify tag from main branch
-    runs-on: ubuntu-latest
+    runs-on: ${{ RUNS_ON }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
 
   build:
     needs: check-main-branch
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNS_ON }}
     name: (Release) Build
     steps:
       - name: Checkout code
@@ -62,7 +62,7 @@ jobs:
         run: npm ci
 
       - name: Build site
-        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner@main
+        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner@v1
         with:
           command: docs/build
 
@@ -75,7 +75,7 @@ jobs:
 
   deploy:
     needs: [build, apply]
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNS_ON }}
     name: (Release) Deploy
     steps:
       - name: Download build artifacts
@@ -85,7 +85,7 @@ jobs:
           path: build-output
 
       - name: Upload to S3
-        uses: Mad-Pixels/github-workflows/.github/actions/aws-s3-sync@main
+        uses: Mad-Pixels/github-workflows/.github/actions/aws-s3-sync@v1
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_MAIN }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY_MAIN }}
@@ -95,7 +95,7 @@ jobs:
           source_dir:     "build-output"
 
       - name: Invalidate CloudFront cache
-        uses: Mad-Pixels/github-workflows/.github/actions/aws-cloudfront-invalidation@main
+        uses: Mad-Pixels/github-workflows/.github/actions/aws-cloudfront-invalidation@v1
         with:
           aws_access_key:   ${{ secrets.AWS_ACCESS_KEY_MAIN }}
           aws_secret_key:   ${{ secrets.AWS_SECRET_KEY_MAIN }}
@@ -108,7 +108,7 @@ jobs:
   generate-changelog:
     name: (Release) Generate Changelog
     needs: check-main-branch
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNS_ON }}
     outputs:
       changelog: ${{ steps.changelog.outputs.changelog }}
     
@@ -180,7 +180,7 @@ jobs:
   publish-release:
     name: Publish Release
     needs: [build, apply, deploy, generate-changelog]
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

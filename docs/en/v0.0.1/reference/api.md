@@ -30,19 +30,24 @@ outline: [2, 3]
 # API Reference
 
 ## 🔢 Constants
+
 ### TableName
+
 ```go
 const TableName = "table-name"
 ```
+
 ::: info DynamoDB table name
 :::
 
 ### Column
+
 ```go
 const ColumnId = "id"
 const ColumnEmail = "email"
 const ColumnTimestamp = "timestamp"
 ```
+
 ::: info
 Table column names.
 :::
@@ -52,9 +57,11 @@ All defined columns start with `Column` and follow CamelCase syntax.
 :::
 
 ### Index
+
 ```go
 const IndexEmailIndex = "email-index"
 ```
+
 ::: info
 Names of secondary indexes.
 :::
@@ -63,23 +70,28 @@ Index naming convention:
 All defined indexes start with `Index` and follow CamelCase syntax.
 :::
 
-
 ### Attribute
+
 ```go
 var AttributeNames = []string{"id", "timestamp", "email"}
 ```
+
 ::: info Slice of strings with all attribute names from the DynamoDB table
 :::
 
 ### KeyAttribute
+
 ```go
 var KeyAttributeNames = []string{"id", "timestamp"}
 ```
+
 ::: info Slice of strings containing the primary key attributes of the DynamoDB table.
 :::
 
 ## 🧬 Data Structs
+
 ### SchemaItem
+
 ```go
 type SchemaItem struct {
   Id        string `dynamodbav:"id"`
@@ -87,10 +99,12 @@ type SchemaItem struct {
   Timestamp int64  `dynamodbav:"timestamp"`
 }
 ```
+
 ::: info Structure representing a single record in DynamoDB
 :::
 
 ### TableSchema
+
 ```go
 var TableSchema = DynamoSchema{
   TableName: "table-name",
@@ -99,29 +113,31 @@ var TableSchema = DynamoSchema{
   // ...
 }
 ```
+
 ::: info Global variable of type `DynamoSchema` that contains all table metadata
 :::
 ::: details metadata
+
 ```go
 var TableSchema = DynamoSchema{
    TableName: "user-profiles",
    HashKey:   "user_id",
    RangeKey:  "profile_type",
-   
+
    Attributes: []Attribute{
        {Name: "user_id", Type: "S"},
        {Name: "profile_type", Type: "S"},
        {Name: "created_at", Type: "N"},
        {Name: "status", Type: "S"},
    },
-   
+
    CommonAttributes: []Attribute{
        {Name: "email", Type: "S"},
        {Name: "is_active", Type: "BOOL"},
        {Name: "tags", Type: "SS"},
        {Name: "scores", Type: "NS"},
    },
-   
+
    SecondaryIndexes: []SecondaryIndex{
        {
            Name:           "status-created-index",
@@ -130,7 +146,7 @@ var TableSchema = DynamoSchema{
            ProjectionType: "ALL",
        },
        {
-           Name:           "category-profile-index", 
+           Name:           "category-profile-index",
            HashKey:        "category_id",
            RangeKey:       "profile_type",
            ProjectionType: "INCLUDE",
@@ -151,7 +167,7 @@ var TableSchema = DynamoSchema{
            },
        },
    },
-   
+
    FieldsMap: map[string]FieldInfo{
        "user_id": {
            DynamoType:       "S",
@@ -212,43 +228,53 @@ var TableSchema = DynamoSchema{
    },
 }
 ```
+
 :::
 
 ## 🎯 QueryBuilder
-::: danger `With` / `Filter`  
+
+::: danger `With` / `Filter`
+
 - `With` _(WithEQ, WithGT, etc.)_  
-Applied **BEFORE** reading data from DynamoDB and determine which items will be read.
+  Applied **BEFORE** reading data from DynamoDB and determine which items will be read.
 
 - `Filter` _(FilterEQ, FilterGT, etc.)_  
-Applied **AFTER** reading data and affect only the returned result set.  
-:::
+  Applied **AFTER** reading data and affect only the returned result set.  
+  :::
 
 ### NewQueryBuilder
+
 ```go
 func NewQueryBuilder() *QueryBuilder
 ```
+
 ::: info Create new `QueryBuilder` object.
 :::
 
 ### `Generic Method` With
+
 ::: warning Query impact:  
 All `With` methods are applied **BEFORE** reading data from DynamoDB.  
 _(This is faster and cheaper than using `Filter`)_
 :::
+
 ```go
 func (qb *QueryBuilder) With(
-  field string, 
-  op OperatorType, 
+  field string,
+  op OperatorType,
   values ...any,
 ) *QueryBuilder
 ```
+
 ::: info Adds a condition for DynamoDB queries.
 Accepts:
+
 - `field` - field name
 - `value` - value
 - `op` - operator type
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().With("user_id", EQ, "123")
 
@@ -265,18 +291,23 @@ for _, item := range items {
     fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### qb.WithEQ
+
 ```go
 func (qb *QueryBuilder) WithEQ(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds an `equal` condition for keys.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -295,18 +326,23 @@ for _, item := range items {
     fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### qb.WithGT
+
 ```go
 func (qb *QueryBuilder) WithGT(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `greater than` condition for the range key.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithGT("created_at", yesterdayTimestamp)
 
@@ -323,18 +359,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithLT
+
 ```go
 func (qb *QueryBuilder) WithLT(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `less than` condition for the range key.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithLT("created_at", yesterdayTimestamp)
 
@@ -351,18 +392,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithGTE
+
 ```go
 func (qb *QueryBuilder) WithGTE(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `greater than or equal to` condition for the range key.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithGTE("created_at", yesterdayTimestamp)
 
@@ -379,18 +425,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithLTE
+
 ```go
 func (qb *QueryBuilder) WithLTE(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `less than or equal to` condition for the range key.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithLTE("created_at", yesterdayTimestamp)
 
@@ -407,19 +458,24 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithBetween
+
 ```go
 func (qb *QueryBuilder) WithBetween(field string, start, end any) *QueryBuilder
 ```
+
 ::: info Adds a `range condition` for the range key.
 Accepts:
+
 - `field` - field name
 - `start` - start value
 - `end` - end value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithBetween("created_at", yesterdayTimestamp, todayTimestamp)
 
@@ -436,18 +492,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithBeginsWith
+
 ```go
 func (qb *QueryBuilder) WithBeginsWith(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `begins with` condition for the range key.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().WithBeginsWith("created_at", yesterdayTimestamp)
 
@@ -464,15 +525,19 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.WithIndex
+
 ```go
 func (qb *QueryBuilder) WithIndex(indexName string) *QueryBuilder
 ```
+
 ::: info Explicitly specifies which `secondary index` to use for the query instead of automatic selection.
 :::
 ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("status", "active").
@@ -491,36 +556,44 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 ::: info Additional Notes  
-`Without WithIndex:`  
-- QueryBuilder automatically selects the optimal index  
-- Searches for a GSI/LSI that supports your keys  
+`Without WithIndex:`
 
-`With WithIndex:`  
-- QueryBuilder forcibly uses the specified index  
+- QueryBuilder automatically selects the optimal index
+- Searches for a GSI/LSI that supports your keys
+
+`With WithIndex:`
+
+- QueryBuilder forcibly uses the specified index
 - Ignores automatic selection  
-:::
+  :::
 
 ### `Generic Method` Filter
+
 ::: warning Query impact:  
 All `Filter` methods are applied **AFTER** reading data from DynamoDB.  
 _(use with caution)_
 :::
+
 ```go
 func (qb *QueryBuilder) Filter(
-  field string, 
-  op OperatorType, 
+  field string,
+  op OperatorType,
   values ...any,
 ) *QueryBuilder
 ```
+
 ::: info Adds a condition for filtering values retrieved from DynamoDB.
 Accepts:
+
 - `field` - field name
 - `value` - value
 - `op` - operator type
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   With("user_id", EQ, "123").
@@ -539,18 +612,23 @@ for _, item := range items {
     fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### qb.FilterEQ
+
 ```go
 func (qb *QueryBuilder) FilterEQ(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds an `equality` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -569,18 +647,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterNE
+
 ```go
 func (qb *QueryBuilder) FilterNE(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds an `inequality` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -599,18 +682,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterGT
+
 ```go
 func (qb *QueryBuilder) FilterGT(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `greater than` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -629,18 +717,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterLT
+
 ```go
 func (qb *QueryBuilder) FilterLT(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `less than` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -659,18 +752,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterGTE
+
 ```go
 func (qb *QueryBuilder) FilterGTE(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `greater than or equal to` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -689,18 +787,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterLTE
+
 ```go
 func (qb *QueryBuilder) FilterLTE(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `less than or equal to` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -719,19 +822,24 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterBetween
+
 ```go
 func (qb *QueryBuilder) FilterBetween(field string, start, end any) *QueryBuilder
 ```
+
 ::: info Adds a `range` filter.
 Accepts:
+
 - `field` - field name
 - `start` - start value
 - `end` - end value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -750,18 +858,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterContains
+
 ```go
 func (qb *QueryBuilder) FilterContains(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `contains` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -780,18 +893,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterNotContains
+
 ```go
 func (qb *QueryBuilder) FilterNotContains(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `not contains` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -810,18 +928,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterBeginsWith
+
 ```go
 func (qb *QueryBuilder) FilterBeginsWith(field string, value any) *QueryBuilder
 ```
+
 ::: info Adds a `begins with` filter.
 Accepts:
+
 - `field` - field name
 - `value` - value
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -840,18 +963,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterIn
+
 ```go
 func (qb *QueryBuilder) FilterIn(field string, values ...any) *QueryBuilder
 ```
+
 ::: info Adds an `in list` filter.
 Accepts:
+
 - `field` - field name
 - `value` - list of values
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -870,18 +998,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterNotIn
+
 ```go
 func (qb *QueryBuilder) FilterNotIn(field string, values ...any) *QueryBuilder
 ```
+
 ::: info Adds a `not in list` filter.
 Accepts:
+
 - `field` - field name
 - `value` - list of values
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -900,17 +1033,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterExists
+
 ```go
 func (qb *QueryBuilder) FilterExists(field string) *QueryBuilder
 ```
+
 ::: info Adds a `field exists` filter.
 Accepts:
+
 - `field` - field name
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -929,17 +1067,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.FilterNotExists
+
 ```go
 func (qb *QueryBuilder) FilterNotExists(field string) *QueryBuilder
 ```
+
 ::: info Adds a `field does not exist` filter.
 Accepts:
+
 - `field` - field name
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -958,15 +1101,19 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.OrderByAsc
+
 ```go
 func (qb *QueryBuilder) OrderByAsc() *QueryBuilder
 ```
+
 ::: info Sets ascending order.
 :::
 ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -985,15 +1132,19 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.OrderByDesc
+
 ```go
 func (qb *QueryBuilder) OrderByDesc() *QueryBuilder
 ```
+
 ::: info Sets descending order.
 :::
 ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -1012,17 +1163,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.Limit
+
 ```go
 func (qb *QueryBuilder) Limit(limit int) *QueryBuilder
 ```
+
 ::: info Sets a limit on the number of results.
 Accepts:
+
 - `limit` - maximum number
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 query := NewQueryBuilder().
   WithEQ("user_id", "123").
@@ -1041,25 +1197,30 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.StartFrom
+
 ```go
 func (qb *QueryBuilder) StartFrom(
   lastEvaluatedKey map[string]types.AttributeValue,
 ) *QueryBuilder
 ```
+
 ::: warning Pagination  
-**`LastEvaluatedKey`** can be **`null`** even if more data exists and the response size exceeds `1MB`.  
+**`LastEvaluatedKey`** can be **`null`** even if more data exists and the response size exceeds `1MB`.
 
 _Always check for LastEvaluatedKey to continue pagination._
 :::
 
 ::: info Sets the starting key for pagination.  
 Accepts:
+
 - `lastEvaluatedKey` - last key
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 var lastKey map[string]types.AttributeValue
 
@@ -1075,21 +1236,26 @@ query2 := NewQueryBuilder().
     StartFrom(lastKey).
     Limit(10)
 ```
+
 :::
 
 ### qb.WithProjection
+
 ```go
 func (qb *QueryBuilder) WithProjection(attributes []string) *QueryBuilder
 ```
+
 ::: info Specifies which fields to return from DynamoDB instead of fetching all attributes.  
 Accepts:
+
 - `attributes` – list of fields to project
 
 Without `WithProjection`:
+
 ```go
 type SchemaItem struct {
     Id          string   // ✅
-    Name        string   // ✅ 
+    Name        string   // ✅
     Email       string   // ✅
     Description string   // ✅ (unneeded, but returned)
     Content     string   // ✅ (unneeded, but returned)
@@ -1099,6 +1265,7 @@ type SchemaItem struct {
 ```
 
 With WithProjection:
+
 ```go
 // Returns ONLY selected fields
 WithProjection([]string{"id", "name", "email"})
@@ -1109,15 +1276,17 @@ type PartialItem struct {
     Name  string  // ✅
     Email string  // ✅
     // Description - omitted
-    // Content - omitted  
+    // Content - omitted
     // Tags - omitted
     // ViewCount - omitted
 }
 ```
+
 :::
 ::: warning Projection reduces bandwidth usage, but does NOT reduce RCU cost – you are charged for reading the full item.
 :::
 ::: details Example
+
 ```go
 query := NewQueryBuilder().
     WithEQ("user_id", "123").
@@ -1134,62 +1303,75 @@ if err != nil {
 }
 
 for _, item := range items {
-    fmt.Printf("ID: %s, Email: %s, Created: %s\n", 
+    fmt.Printf("ID: %s, Email: %s, Created: %s\n",
         item.Id, item.Email, item.CreatedAt)
 }
 ```
+
 :::
 
 ### qb.BuildQuery
+
 ```go
 func (qb *QueryBuilder) BuildQuery() (*dynamodb.QueryInput, error)
 ```
+
 ::: info Builds a DynamoDB `QueryInput`.  
 **Returns:** `*dynamodb.QueryInput, error`
 :::
 
 ### qb.Execute
+
 ```go
 func (qb *QueryBuilder) Execute(
-  ctx context.Context, 
+  ctx context.Context,
   client *dynamodb.Client,
 ) (
-  []SchemaItem, 
+  []SchemaItem,
   error,
 )
 ```
+
 ::: info Executes the query.  
 Accepts:
+
 - `ctx` - context
 - `client` - DynamoDB client
-:::
+  :::
 
 ## 🧭 ScanBuilder
+
 ::: warning `Scan` reads the entire table.
 :::
 
 ### NewScanBuilder
+
 ```go
 func NewScanBuilder() *ScanBuilder
 ```
+
 ::: info Create new `ScanBuilder`
 :::
 
 ### `Generic method` Filter
+
 ```go
 func (sb *ScanBuilder) Filter(
-  field string, 
-  op OperatorType, 
+  field string,
+  op OperatorType,
   values ...any,
 ) *ScanBuilder
 ```
+
 ::: info Adds a condition to filter the values retrieved from DynamoDB.  
 Accepts:
-- `field` – field name  
-- `value` – value  
+
+- `field` – field name
+- `value` – value
 - `op` – type of operation  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   Filter("user_id", EQ, "123").
@@ -1204,18 +1386,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterEQ
+
 ```go
 func (sb *ScanBuilder) FilterEQ(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds an `equality` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterEQ("user_id", "123").
@@ -1229,18 +1416,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterNE
+
 ```go
 func (sb *ScanBuilder) FilterNE(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `not equal` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterNE("user_id", "123").
@@ -1254,18 +1446,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterGT
+
 ```go
 func (sb *ScanBuilder) FilterGT(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `greater than` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterGT("age", 18).
@@ -1279,18 +1476,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterLT
+
 ```go
 func (sb *ScanBuilder) FilterLT(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `less than` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterLT("age", 18).
@@ -1304,18 +1506,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterGTE
+
 ```go
 func (sb *ScanBuilder) FilterGTE(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `greater than or equal` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterGTE("age", 18).
@@ -1329,18 +1536,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterLTE
+
 ```go
 func (sb *ScanBuilder) FilterLTE(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `less than or equal` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterLTE("age", 18).
@@ -1354,23 +1566,28 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterBetween
+
 ```go
 func (sb *ScanBuilder) FilterBetween(
-  field string, 
-  start, 
+  field string,
+  start,
   end any,
 ) *ScanBuilder
 ```
+
 ::: info Adds a `between` filter.  
 Accepts:
-- `field` – field name  
-- `start` – start value  
+
+- `field` – field name
+- `start` – start value
 - `end` – end value  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterBetween("age", 18, 35).
@@ -1384,18 +1601,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterContains
+
 ```go
 func (sb *ScanBuilder) FilterContains(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `contains` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value to check for containment  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterContains("email", "@gmail.com").
@@ -1409,21 +1631,26 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterNotContains
+
 ```go
 func (sb *ScanBuilder) FilterNotContains(
-  field string, 
+  field string,
   value any,
 ) *ScanBuilder
 ```
+
 ::: info Adds a `not contains` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – value to check for non-containment  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterContains("email", "@gmail.com").
@@ -1437,18 +1664,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterBeginsWith
+
 ```go
 func (sb *ScanBuilder) FilterBeginsWith(field string, value any) *ScanBuilder
 ```
+
 ::: info Adds a `begins with` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – starting substring  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterBeginsWith("email", "alex").
@@ -1462,18 +1694,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.FilterIn
+
 ```go
 func (sb *ScanBuilder) FilterIn(field string, values ...any) *ScanBuilder
 ```
+
 ::: info Adds an `IN list` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – list of values  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterIn("email", []string{"alex@gmail.com", "john@gmail.com"})
@@ -1487,18 +1724,23 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### sb.FilterNotIn
+
 ```go
 func (sb *ScanBuilder) FilterNotIn(field string, values ...any) *ScanBuilder
 ```
+
 ::: info Adds a `NOT IN list` filter.  
 Accepts:
-- `field` – field name  
+
+- `field` – field name
 - `value` – list of values  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterNotIn("email", []string{"alex@gmail.com", "john@gmail.com"})
@@ -1512,17 +1754,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### sb.FilterExists
+
 ```go
 func (sb *ScanBuilder) FilterExists(field string) *ScanBuilder
 ```
+
 ::: info Adds a `NOT NULL` filter.  
 Accepts:
+
 - `field` – field name  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterExists("email")
@@ -1536,17 +1783,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### sb.FilterNotExists
+
 ```go
 func (sb *ScanBuilder) FilterNotExists(field string) *ScanBuilder
 ```
+
 ::: info Adds a `Empty` filter.  
 Accepts:
+
 - `field` – field name  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterNotExists("email")
@@ -1560,20 +1812,26 @@ for _, item := range items {
   fmt.Printf("User: %s, Created: %s\n", item.UserId, item.CreatedAt)
 }
 ```
+
 :::
 
 ### sb.WithIndex
+
 ```go
 func (sb *ScanBuilder) WithIndex(indexName string) *ScanBuilder
 ```
-::: info Performs a scan on a specific index  
-- **GSI** (Global Secondary Index) has its own RCU/WCU configuration  
+
+::: info Performs a scan on a specific index
+
+- **GSI** (Global Secondary Index) has its own RCU/WCU configuration
 - **LSI** (Local Secondary Index) shares RCU/WCU with the base table
 
 Accepts:
+
 - `indexName` – index name  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   WithIndex("status-index").
@@ -1588,17 +1846,22 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.Limit
+
 ```go
 func (sb *ScanBuilder) Limit(limit int) *ScanBuilder
 ```
+
 ::: info Sets the result limit.  
-Accepts:  
+Accepts:
+
 - `limit` – the maximum number of items  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 scan := NewScanBuilder().
   FilterEQ("status", "active").
@@ -1613,24 +1876,29 @@ for _, item := range items {
   fmt.Printf("User: %s, Status: %s\n", item.UserId, item.Status)
 }
 ```
+
 :::
 
 ### sb.StartFrom
+
 ```go
 func (sb *ScanBuilder) StartFrom(
   lastEvaluatedKey map[string]types.AttributeValue,
 ) *ScanBuilder
 ```
+
 ::: warning Pagination  
-**`LastEvaluatedKey`** can be **`null`** even if there is more data and the response size exceeds `1MB`.  
+**`LastEvaluatedKey`** can be **`null`** even if there is more data and the response size exceeds `1MB`.
 
 _Always check for LastEvaluatedKey to continue pagination._  
 :::
 ::: info Sets the starting key for pagination.  
-Accepts:  
+Accepts:
+
 - `lastEvaluatedKey` – the last key  
-:::
-::: details Example
+  :::
+  ::: details Example
+
 ```go
 var lastKey map[string]types.AttributeValue
 
@@ -1646,21 +1914,26 @@ scan2 := NewScanBuilder().
    StartFrom(lastKey).
    Limit(10)
 ```
+
 :::
 
 ### sb.WithProjection
+
 ```go
 func (sb *ScanBuilder) WithProjection(attributes []string) *ScanBuilder
 ```
+
 ::: info Specifies which exact fields to return from DynamoDB instead of all item attributes.  
-Accepts:  
-- `attributes` – list of fields  
+Accepts:
+
+- `attributes` – list of fields
 
 Without WithProjection:
+
 ```go
 type SchemaItem struct {
     Id          string   // ✅
-    Name        string   // ✅ 
+    Name        string   // ✅
     Email       string   // ✅
     Description string   // ✅ (not needed, but will be returned)
     Content     string   // ✅ (not needed, but will be returned)
@@ -1670,6 +1943,7 @@ type SchemaItem struct {
 ```
 
 With WithProjection:
+
 ```go
 // Returns ONLY the specified fields
 WithProjection([]string{"id", "name", "email"})
@@ -1680,15 +1954,17 @@ type PartialItem struct {
     Name  string  // ✅
     Email string  // ✅
     // Description - missing
-    // Content - missing  
+    // Content - missing
     // Tags - missing
     // ViewCount - missing
 }
 ```
+
 :::
 ::: warning Projection **reduces `bandwidth` usage** but **does NOT reduce `RCU`** — you are billed for reading all item attributes.
 :::
 ::: details Example
+
 ```go
 scan := NewScanBuilder().
    FilterEQ("status", "active").
@@ -1700,19 +1976,22 @@ if err != nil {
 }
 
 for _, item := range items {
-   fmt.Printf("ID: %s, Email: %s, Created: %s\n", 
+   fmt.Printf("ID: %s, Email: %s, Created: %s\n",
        item.Id, item.Email, item.CreatedAt)
 }
 ```
+
 :::
 
 ### sb.WithParallelScan
+
 ```go
 func (sb *ScanBuilder) WithParallelScan(
-  totalSegments, 
+  totalSegments,
   segment int,
 ) *ScanBuilder
 ```
+
 ::: warning Parallel Scan
 Increases RCU consumption proportionally to the number of segments.
 
@@ -1720,497 +1999,616 @@ _Use with caution in production environments._
 :::
 
 ### sb.BuildScan
+
 ```go
 func (sb *ScanBuilder) BuildScan() (*dynamodb.ScanInput, error)
 ```
+
 ::: info Builds a DynamoDB ScanInput.  
 **Returns:** `*dynamodb.ScanInput, error`
 :::
 
 ### sb.Execute
+
 ```go
 func (sb *ScanBuilder) Execute(
-  ctx context.Context, 
+  ctx context.Context,
   client *dynamodb.Client,
 ) (
-  []SchemaItem, 
+  []SchemaItem,
   error,
 )
 ```
+
 ::: info Executes the scan operation.  
 Takes:
-- `ctx` – context  
+
+- `ctx` – context
 - `client` – DynamoDB client  
-:::
+  :::
 
 ## 📥 Input Functions
+
 ### ItemInput
+
 ```go
 func ItemInput(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
+
 ::: info Converts a `SchemaItem` into a DynamoDB `AttributeValue` map.  
 Takes:
-- `item` – schema item  
+
+- `item` – schema item
 
 Returns:
+
 - `map[string]types.AttributeValue`
 - `error`
-:::
+  :::
 
 ### BatchItemsInput
-::: warning Maximum **`25`** items per batch operation.  
+
+::: warning Maximum **`25`** items per batch operation.
 
 _Exceeding the limit will result in an error._
 :::
+
 ```go
 func BatchItemsInput(
   items []SchemaItem,
 ) (
-  []map[string]types.AttributeValue, 
+  []map[string]types.AttributeValue,
   error,
 )
 ```
+
 ::: info Converts a slice of `SchemaItem` into a slice of `AttributeValue` maps.  
 Takes:
-- `items` – list of schema items  
+
+- `items` – list of schema items
 
 Returns:
+
 - `[]map[string]types.AttributeValue`
 - `error`
-:::
+  :::
 
 ### KeyInput
+
 ```go
 func KeyInput(
-  hashKeyValue, 
+  hashKeyValue,
   rangeKeyValue any,
 ) (
-  map[string]types.AttributeValue, 
+  map[string]types.AttributeValue,
   error,
 )
 ```
+
 ::: info Creates a key from hash and range key values.  
 _`rangeKeyValue` can be **`nil`** if the table uses only a hash key_
 
 Takes:
-- `hashKeyValue` – value of the hash key  
-- `rangeKeyValue` – value of the range key  
+
+- `hashKeyValue` – value of the hash key
+- `rangeKeyValue` – value of the range key
 
 Returns:
+
 - `map[string]types.AttributeValue`
 - `error`
-:::
+  :::
 
 ### KeyInputFromRaw
+
 ```go
 func KeyInputFromRaw(
-  hashKeyValue, 
+  hashKeyValue,
   rangeKeyValue any,
 ) (
-  map[string]types.AttributeValue, 
+  map[string]types.AttributeValue,
   error,
 )
 ```
+
 ::: info Creates a key from raw values with validation.
 Takes:
-- `hashKeyValue` – value of the hash key  
-- `rangeKeyValue` – value of the range key  
+
+- `hashKeyValue` – value of the hash key
+- `rangeKeyValue` – value of the range key
 
 Returns:
+
 - `map[string]types.AttributeValue`
 - `error`
-:::
+  :::
 
 ### KeyInputFromItem
+
 ```go
 func KeyInputFromItem(item SchemaItem) (map[string]types.AttributeValue, error)
 ```
-::: info Extracts the key from a SchemaItem.  
-Accepts:  
-- `item` – the schema item  
 
-Returns:  
-- `map[string]types.AttributeValue`  
+::: info Extracts the key from a SchemaItem.  
+Accepts:
+
+- `item` – the schema item
+
+Returns:
+
+- `map[string]types.AttributeValue`
 - `error`  
-:::
+  :::
 
 ### UpdateItemInputFromRaw
+
 ```go
 func UpdateItemInputFromRaw(
-  hashKeyValue, 
-  rangeKeyValue any, 
+  hashKeyValue,
+  rangeKeyValue any,
   updates map[string]any,
 ) (
-  *dynamodb.UpdateItemInput, 
+  *dynamodb.UpdateItemInput,
   error,
 )
 ```
-::: info Creates an UpdateItemInput from raw values.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
-- `updates` – update map  
 
-Returns:  
-- `*dynamodb.UpdateItemInput`  
+::: info Creates an UpdateItemInput from raw values.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+- `updates` – update map
+
+Returns:
+
+- `*dynamodb.UpdateItemInput`
 - `error`  
-:::
+  :::
 
 ### UpdateItemInputWithCondition
+
 ```go
 func UpdateItemInputWithCondition(
-  hashKeyValue, 
-  rangeKeyValue any, 
-  updates map[string]any, 
-  conditionExpression string, 
-  conditionAttributeNames map[string]string, 
+  hashKeyValue,
+  rangeKeyValue any,
+  updates map[string]any,
+  conditionExpression string,
+  conditionAttributeNames map[string]string,
   conditionAttributeValues map[string]types.AttributeValue,
 ) (
-  *dynamodb.UpdateItemInput, 
+  *dynamodb.UpdateItemInput,
   error,
 )
 ```
-::: info Creates an UpdateItemInput with a condition expression.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
-- `updates` – update map  
-- `conditionExpression` – condition expression  
-- `conditionAttributeNames` – condition attribute names  
-- `conditionAttributeValues` – condition attribute values  
 
-Returns:  
-- `*dynamodb.UpdateItemInput`  
+::: info Creates an UpdateItemInput with a condition expression.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+- `updates` – update map
+- `conditionExpression` – condition expression
+- `conditionAttributeNames` – condition attribute names
+- `conditionAttributeValues` – condition attribute values
+
+Returns:
+
+- `*dynamodb.UpdateItemInput`
 - `error`  
-:::
+  :::
 
 ### UpdateItemInputWithExpression
+
 ```go
 func UpdateItemInputWithExpression(
-  hashKeyValue, 
-  rangeKeyValue any, 
-  updateBuilder expression.UpdateBuilder, 
+  hashKeyValue,
+  rangeKeyValue any,
+  updateBuilder expression.UpdateBuilder,
   conditionBuilder *expression.ConditionBuilder,
 ) (
-  *dynamodb.UpdateItemInput, 
+  *dynamodb.UpdateItemInput,
   error,
 )
 ```
-::: info Creates an UpdateItemInput using expression builders.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
-- `updateBuilder` – update expression builder  
-- `conditionBuilder` – condition expression builder  
 
-Returns:  
-- `*dynamodb.UpdateItemInput`  
+::: info Creates an UpdateItemInput using expression builders.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+- `updateBuilder` – update expression builder
+- `conditionBuilder` – condition expression builder
+
+Returns:
+
+- `*dynamodb.UpdateItemInput`
 - `error`  
-:::
+  :::
 
 ### DeleteItemInputFromRaw
+
 ```go
 func DeleteItemInputFromRaw(
-  hashKeyValue, 
+  hashKeyValue,
   rangeKeyValue any,
 ) (
-  *dynamodb.DeleteItemInput, 
+  *dynamodb.DeleteItemInput,
   error,
 )
 ```
-::: info Creates a DeleteItemInput from key values.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
 
-Returns:  
-- `*dynamodb.DeleteItemInput`  
+::: info Creates a DeleteItemInput from key values.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+
+Returns:
+
+- `*dynamodb.DeleteItemInput`
 - `error`  
-:::
+  :::
 
 ### DeleteItemInputWithCondition
+
 ```go
 func DeleteItemInputWithCondition(
-  hashKeyValue, 
-  rangeKeyValue any, 
-  conditionExpression string, 
-  expressionAttributeNames map[string]string, 
+  hashKeyValue,
+  rangeKeyValue any,
+  conditionExpression string,
+  expressionAttributeNames map[string]string,
   expressionAttributeValues map[string]types.AttributeValue,
 ) (
-  *dynamodb.DeleteItemInput, 
+  *dynamodb.DeleteItemInput,
   error,
 )
 ```
-::: info Creates a DeleteItemInput with a condition expression.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
-- `conditionExpression` – condition expression  
-- `expressionAttributeNames` – condition attribute names  
-- `expressionAttributeValues` – condition attribute values  
 
-Returns:  
-- `*dynamodb.DeleteItemInput`  
+::: info Creates a DeleteItemInput with a condition expression.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+- `conditionExpression` – condition expression
+- `expressionAttributeNames` – condition attribute names
+- `expressionAttributeValues` – condition attribute values
+
+Returns:
+
+- `*dynamodb.DeleteItemInput`
 - `error`  
-:::
+  :::
 
 ### BatchDeleteItemsInput
+
 ```go
 func BatchDeleteItemsInput(
   keys []map[string]types.AttributeValue,
 ) (
-  *dynamodb.BatchWriteItemInput, 
+  *dynamodb.BatchWriteItemInput,
   error,
 )
 ```
+
 ::: warning Maximum of **`25`** items per batch operation.  
 _Exceeding the limit will result in an error._
 :::
 ::: info Creates `BatchWriteItemInput` for deleting items.  
-Accepts:  
-- `keys` – item keys  
+Accepts:
 
-Returns:  
-- `*dynamodb.BatchWriteItemInput`  
+- `keys` – item keys
+
+Returns:
+
+- `*dynamodb.BatchWriteItemInput`
 - `error`  
-:::
+  :::
 
 ### BatchDeleteItemsInputFromRaw
+
 ```go
 func BatchDeleteItemsInputFromRaw(
   items []SchemaItem,
 ) (
-  *dynamodb.BatchWriteItemInput, 
+  *dynamodb.BatchWriteItemInput,
   error,
 )
 ```
+
 ::: warning Maximum of **`25`** items per batch operation.  
 _Exceeding the limit will result in an error._
 :::
 ::: info Creates `BatchWriteItemInput` from SchemaItems.  
-Accepts:  
-- `items` – schema items  
+Accepts:
 
-Returns:  
-- `*dynamodb.BatchWriteItemInput`  
+- `items` – schema items
+
+Returns:
+
+- `*dynamodb.BatchWriteItemInput`
 - `error`  
-:::
+  :::
 
 ## 🔁 Stream Functions
+
 ### ExtractNewImage
+
 ```go
 func ExtractNewImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-::: info Extracts the new state of the item from a stream record.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
-- `*SchemaItem`  
+::: info Extracts the new state of the item from a stream record.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
+- `*SchemaItem`
 - `error`  
-:::
+  :::
 
 ### ExtractOldImage
+
 ```go
 func ExtractOldImage(record events.DynamoDBEventRecord) (*SchemaItem, error)
 ```
-::: info Extracts the old state of the item from a stream record.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
-- `*SchemaItem`  
+::: info Extracts the old state of the item from a stream record.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
+- `*SchemaItem`
 - `error`  
-:::
+  :::
 
 ### ExtractKeys
+
 ```go
 func ExtractKeys(
   record events.DynamoDBEventRecord,
 ) (
-  map[string]types.AttributeValue, 
+  map[string]types.AttributeValue,
   error,
 )
 ```
-::: info Extracts the item's keys from a stream record.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
-- `map[string]types.AttributeValue`  
+::: info Extracts the item's keys from a stream record.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
+- `map[string]types.AttributeValue`
 - `error`  
-:::
+  :::
 
 ### IsInsertEvent
+
 ```go
 func IsInsertEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Checks if the event is an insert.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
+::: info Checks if the event is an insert.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### IsModifyEvent
+
 ```go
 func IsModifyEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Checks if the event is a modification.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
+::: info Checks if the event is a modification.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### IsRemoveEvent
+
 ```go
 func IsRemoveEvent(record events.DynamoDBEventRecord) bool
 ```
-::: info Checks if the event is a deletion.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
+::: info Checks if the event is a deletion.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### ExtractChangedAttributes
+
 ```go
 func ExtractChangedAttributes(
   record events.DynamoDBEventRecord,
 ) (
-  []string, 
+  []string,
   error,
 )
 ```
-::: info Returns a list of changed attributes.  
-Accepts:  
-- `record` – stream record  
 
-Returns:  
-- `[]string`  
+::: info Returns a list of changed attributes.  
+Accepts:
+
+- `record` – stream record
+
+Returns:
+
+- `[]string`
 - `error`  
-:::
+  :::
 
 ### HasAttributeChanged
+
 ```go
 func HasAttributeChanged(
-  record events.DynamoDBEventRecord, 
+  record events.DynamoDBEventRecord,
   attributeName string,
 ) bool
 ```
-::: info Checks whether a specific attribute has changed.  
-Accepts:  
-- `record` – stream record  
-- `attributeName` – name of the attribute  
 
-Returns:  
+::: info Checks whether a specific attribute has changed.  
+Accepts:
+
+- `record` – stream record
+- `attributeName` – name of the attribute
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ## 🛡️ Validation Functions
+
 ### validateHashKey
+
 ```go
 func validateHashKey(value any) error
 ```
-::: info Checks the hash key value.  
-Accepts:  
-- `value` – value to check  
 
-Returns:  
+::: info Checks the hash key value.  
+Accepts:
+
+- `value` – value to check
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ### validateRangeKey
+
 ```go
 func validateRangeKey(value any) error
 ```
-::: info Checks the range key value.  
-Accepts:  
-- `value` – value to check  
 
-Returns:  
+::: info Checks the range key value.  
+Accepts:
+
+- `value` – value to check
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ### validateKeyInputs
+
 ```go
 func validateKeyInputs(hashKeyValue, rangeKeyValue any) error
 ```
-::: info Checks the key values.  
-Accepts:  
-- `hashKeyValue` – hash key value  
-- `rangeKeyValue` – range key value  
 
-Returns:  
+::: info Checks the key values.  
+Accepts:
+
+- `hashKeyValue` – hash key value
+- `rangeKeyValue` – range key value
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ### validateUpdatesMap
+
 ```go
 func validateUpdatesMap(updates map[string]any) error
 ```
-::: info Checks the update map.  
-Accepts:  
-- `updates` – update map  
 
-Returns:  
+::: info Checks the update map.  
+Accepts:
+
+- `updates` – update map
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ### validateConditionExpression
+
 ```go
 func validateConditionExpression(expr string) error
 ```
-::: info Checks the condition expression.  
-Accepts:  
-- `expr` – expression  
 
-Returns:  
+::: info Checks the condition expression.  
+Accepts:
+
+- `expr` – expression
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ### validateBatchSize
+
 ```go
 func validateBatchSize(size int, operation string) error
 ```
-::: info Checks the batch operation size.  
-Accepts:  
-- `size` – size  
-- `operation` – type of operation  
 
-Returns:  
+::: info Checks the batch operation size.  
+Accepts:
+
+- `size` – size
+- `operation` – type of operation
+
+Returns:
+
 - `error`  
-:::
+  :::
 
 ## ⚖️ Operators
+
 ::: warning Key Conditions VS Filters  
-**Key Conditions** – applied `BEFORE` reading:  
-- Define which items to read from DynamoDB  
-- Affect the cost of the operation (RCU)  
-- Only support: [`EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`]  
-- `EQ` is required for the partition key  
-- Other operators apply only to the sort key  
+**Key Conditions** – applied `BEFORE` reading:
 
-**Filter Expressions** – applied `AFTER` reading:  
-- Filter the data after it has been read  
-- Do NOT affect the cost (you pay for all read items)  
-- Support ALL operators  
-- Filter-only operators: [`CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`]  
+- Define which items to read from DynamoDB
+- Affect the cost of the operation (RCU)
+- Only support: [`EQ`, `GT`, `LT`, `GTE`, `LTE`, `BETWEEN`, `BEGINS_WITH`]
+- `EQ` is required for the partition key
+- Other operators apply only to the sort key
 
-**Recommendation:**  
+**Filter Expressions** – applied `AFTER` reading:
+
+- Filter the data after it has been read
+- Do NOT affect the cost (you pay for all read items)
+- Support ALL operators
+- Filter-only operators: [`CONTAINS`, `NOT_CONTAINS`, `IN`, `NOT_IN`, `EXISTS`, `NOT_EXISTS`, `NE`]
+
+**Recommendation:**
 
 Use key conditions as much as possible, and filters only for additional refinement.  
 :::
 
 ### OperatorType
+
 ```go
 type OperatorType string
 ```
+
 ### Константы операторов
+
 ```go
 const (
   EQ          OperatorType = "="
@@ -2231,83 +2629,103 @@ const (
 ```
 
 ### ValidateValues
+
 ```go
 func ValidateValues(op OperatorType, values []any) bool
 ```
-::: info Validates the number of values for an operator.  
-Accepts:  
-- `op` – the operator  
-- `values` – the values  
 
-Returns:  
+::: info Validates the number of values for an operator.  
+Accepts:
+
+- `op` – the operator
+- `values` – the values
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### IsKeyConditionOperator
+
 ```go
 func IsKeyConditionOperator(op OperatorType) bool
 ```
-::: info Checks if the operator can be used in key conditions.  
-Accepts:  
-- `op` – the operator  
 
-Returns:  
+::: info Checks if the operator can be used in key conditions.  
+Accepts:
+
+- `op` – the operator
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### ValidateOperator
+
 ```go
 func ValidateOperator(fieldName string, op OperatorType) bool
 ```
-::: info Checks if the operator is compatible with the field.  
-Accepts:  
-- `fieldName` – name of the field  
-- `op` – the operator  
 
-Returns:  
+::: info Checks if the operator is compatible with the field.  
+Accepts:
+
+- `fieldName` – name of the field
+- `op` – the operator
+
+Returns:
+
 - `bool`  
-:::
+  :::
 
 ### BuildConditionExpression
+
 ```go
 func BuildConditionExpression(
-  field string, 
-  op OperatorType, 
+  field string,
+  op OperatorType,
   values []any,
 ) (
-  expression.ConditionBuilder, 
+  expression.ConditionBuilder,
   error,
 )
 ```
-::: info Creates a filter condition.  
-Accepts:  
-- `field` – name of the field  
-- `op` – operator  
-- `values` – values  
 
-Returns:  
-- `expression.ConditionBuilder`  
+::: info Creates a filter condition.  
+Accepts:
+
+- `field` – name of the field
+- `op` – operator
+- `values` – values
+
+Returns:
+
+- `expression.ConditionBuilder`
 - `error`  
-:::
+  :::
 
 ### BuildKeyConditionExpression
+
 ```go
 func BuildKeyConditionExpression(
-  field string, 
-  op OperatorType, 
+  field string,
+  op OperatorType,
   values []any,
 ) (
-  expression.KeyConditionBuilder, 
+  expression.KeyConditionBuilder,
   error,
 )
 ```
-::: info Creates a key condition.  
-Accepts:  
-- `field` – name of the field  
-- `op` – operator  
-- `values` – values  
 
-Returns:  
-- `expression.KeyConditionBuilder`  
+::: info Creates a key condition.  
+Accepts:
+
+- `field` – name of the field
+- `op` – operator
+- `values` – values
+
+Returns:
+
+- `expression.KeyConditionBuilder`
 - `error`  
-:::
+  :::

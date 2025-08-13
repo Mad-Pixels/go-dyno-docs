@@ -1,6 +1,6 @@
 {
   "table_name": "analytics_metrics",
-  "hash_key": "user_id", 
+  "hash_key": "user_id",
   "range_key": "event_timestamp",
   "attributes": [
     {
@@ -8,7 +8,7 @@
       "type": "S"
     },
     {
-      "name": "event_timestamp", 
+      "name": "event_timestamp",
       "type": "N",
       "subtype": "int64"
     }
@@ -16,13 +16,13 @@
   "common_attributes": [
     {
       "name": "session_count",
-      "type": "N", 
+      "type": "N",
       "subtype": "int32"
     },
     {
       "name": "conversion_rate",
       "type": "N",
-      "subtype": "float32" 
+      "subtype": "float32"
     },
     {
       "name": "total_revenue_cents",
@@ -40,13 +40,13 @@
       "subtype": "int32"
     },
     {
-      "name": "conversion_rates_history", 
+      "name": "conversion_rates_history",
       "type": "NS",
       "subtype": "float32"
     },
     {
       "name": "transaction_amounts",
-      "type": "NS", 
+      "type": "NS",
       "subtype": "uint64"
     },
     {

@@ -6,20 +6,21 @@
 ## Создание первой схемы
 
 Создайте файл схемы `user-posts.json` с описанием вашей DynamoDB таблицы:
+
 ```json
 {
   "table_name": "user-posts",
   "hash_key": "user_id",
   "range_key": "created_at",
   "attributes": [
-    {"name": "user_id", "type": "S"},
-    {"name": "created_at", "type": "N"},
-    {"name": "status", "type": "S"}
+    { "name": "user_id", "type": "S" },
+    { "name": "created_at", "type": "N" },
+    { "name": "status", "type": "S" }
   ],
   "common_attributes": [
-    {"name": "title", "type": "S"},
-    {"name": "content", "type": "S"},
-    {"name": "views", "type": "N"}
+    { "name": "title", "type": "S" },
+    { "name": "content", "type": "S" },
+    { "name": "views", "type": "N" }
   ],
   "secondary_indexes": [
     {
@@ -33,6 +34,7 @@
 ```
 
 Эта схема описывает DynamoDB таблицу постов пользователей с:
+
 - Ключами: `user_id` (hash) и `created_at` (range)
 - Атрибутами для индексации: `status` (используется в GSI)
 - Обычными полями данных: `title`, `content`, `views`
@@ -46,6 +48,7 @@ _Секция `common_attributes` включает обычные поля да�
 ## Генерация Go-кода
 
 Для генерации типобезопасного Go-кода выполните:
+
 ```bash
 godyno gen --cfg user-posts.json --dest ./generated
 ```
@@ -55,6 +58,7 @@ godyno gen --cfg user-posts.json --dest ./generated
 ## Использование сгенерированного кода
 
 После генерации вы получите готовый к использованию Go-код:
+
 ```go
 package main
 
@@ -127,6 +131,7 @@ func main() {
 ### Константы для безопасности
 
 Используйте сгенерированные константы вместо строковых литералов:
+
 ```go
 tableName := userposts.TableName        // Вместо "user-posts"
 keyName   := userposts.ColumnUserId     // Вместо "user_id"
@@ -136,6 +141,7 @@ indexName := userposts.IndexStatusIndex // Вместо "StatusIndex"
 ### Строим запросы
 
 `QueryBuilder` предоставляет fluent API для создания запросов:
+
 ```go
 query := userposts.NewQueryBuilder().
   WithUserId("user123").               // Основной ключ
@@ -151,6 +157,7 @@ posts, err := query.Execute(ctx, dynamoClient)
 ## Интеграция с Terraform
 
 Одно из главных преимуществ GoDyno — возможность использовать одну схему для Terraform и генерации кода:
+
 ```tf
 # main.tf
 module "user_posts_table" {

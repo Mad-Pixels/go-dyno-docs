@@ -4,7 +4,7 @@
   "range_key": "post_created_at",
   "attributes": [
     {
-      "name": "tenant_id", 
+      "name": "tenant_id",
       "type": "S"
     },
     {
@@ -13,7 +13,7 @@
     },
     {
       "name": "user_id",
-      "type": "S" 
+      "type": "S"
     },
     {
       "name": "category",
@@ -38,7 +38,7 @@
       "type": "S"
     },
     {
-      "name": "content", 
+      "name": "content",
       "type": "S"
     },
     {
@@ -55,12 +55,12 @@
       "name": "gsi_user_posts",
       "type": "GSI",
       "hash_key": "TENANT#tenant_id#user_id",
-      "range_key": "post_created_at", 
+      "range_key": "post_created_at",
       "projection_type": "ALL"
     },
     {
       "name": "gsi_category_posts",
-      "type": "GSI", 
+      "type": "GSI",
       "hash_key": "BLOG#tenant_id#category",
       "range_key": "post_created_at",
       "projection_type": "KEYS_ONLY"
@@ -68,7 +68,7 @@
     {
       "name": "gsi_status_priority",
       "type": "GSI",
-      "hash_key": "status#tenant_id", 
+      "hash_key": "status#tenant_id",
       "range_key": "META#post_type#priority",
       "projection_type": "INCLUDE",
       "non_key_attributes": ["title", "view_count"]

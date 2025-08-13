@@ -3,17 +3,17 @@
   "hash_key": "user_id",
   "range_key": "created_at",
   "attributes": [
-    {"name": "user_id",    "type": "S"},
-    {"name": "created_at", "type": "S"},
-    {"name": "status",     "type": "S"},
-    {"name": "category",   "type": "S"},
-    {"name": "priority",   "type": "N"}
+    { "name": "user_id", "type": "S" },
+    { "name": "created_at", "type": "S" },
+    { "name": "status", "type": "S" },
+    { "name": "category", "type": "S" },
+    { "name": "priority", "type": "N" }
   ],
   "common_attributes": [
-    {"name": "title",      "type": "S"},
-    {"name": "content",    "type": "S"},
-    {"name": "tags",       "type": "SS"},
-    {"name": "view_count", "type": "N"}
+    { "name": "title", "type": "S" },
+    { "name": "content", "type": "S" },
+    { "name": "tags", "type": "SS" },
+    { "name": "view_count", "type": "N" }
   ],
   "secondary_indexes": [
     {

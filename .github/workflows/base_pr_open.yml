@@ -29,25 +29,13 @@ jobs:
       bucket_name:        ${{ secrets.SITE_BUCKET_NAME }}
 
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNS_ON }}
     name: (Base) Pr Build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Invoke
+        uses: Mad-Pixels/github-workflows/actions/taskfile-runner@v1
         with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
-        uses: Mad-Pixels/github-workflows/.github/actions/taskfile-runner@main
-        with:
-          command: docs/build
+          command: node/build
 
   pr-check:
     name: (Base) PR Check

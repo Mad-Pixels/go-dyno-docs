@@ -23,7 +23,7 @@ concurrency:
 jobs:
   create-tag:
     name: Create Tag
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v4
