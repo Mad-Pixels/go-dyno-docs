@@ -12,7 +12,7 @@ concurrency:
 jobs:
   check-main-branch:
     name: Verify tag from main branch
-    runs-on: ${{ RUNS_ON }}
+    runs-on: ${{ vars.RUNS_ON }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
